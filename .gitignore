@@ -1,4 +1,5 @@
 sequitur_.py
 sequitur_wrap.cpp
 build
+*.o
 

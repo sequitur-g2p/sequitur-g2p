@@ -27,13 +27,18 @@
 
 #ifndef _MULTIGRAM_HH
 #define _MULTIGRAM_HH
-
-#include <vector>
-#include <tr1/unordered_map>
-#include "SequenceModel.hh"
 #include "Python.hh"
 
-namespace std { using namespace tr1; }
+#include <vector>
+#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#include <unordered_map>
+using std::unordered_map;
+#else
+#include <tr1/unordered_map>
+using std::tr1::unordered_map;
+#endif
+#include "SequenceModel.hh"
+
 
 #if !defined(MULTIGRAM_SIZE)
 #error "You need to define MULTIGRAM_SIZE."
@@ -49,52 +54,52 @@ typedef std::vector<Symbol> Sequence;
 
 
 class Multigram {
-public:
+  public:
 #if (MULTIGRAM_SIZE < 2)
     static const u32 maximumLength = 4;
 #else
     static const u32 maximumLength = 8;
 #endif
-private:
+  private:
     Symbol data_[maximumLength];
-public:
+  public:
     Multigram() {
-	memset(data_, 0, sizeof(data_));
+      memset(data_, 0, sizeof(data_));
     }
 
     Multigram(const Symbol *begin, const Symbol *end) {
-	require(begin <= end && begin + maximumLength >= end);
-	memset(data_, 0, sizeof(data_));
-	for (Symbol *d = data_; begin < end; *d++ = *begin++);
+      require(begin <= end && begin + maximumLength >= end);
+      memset(data_, 0, sizeof(data_));
+      for (Symbol *d = data_; begin < end; *d++ = *begin++);
     }
 
     Multigram(PyObject*);
 
     Symbol operator[](u32 i) const {
-	require_(i < maximumLength);
-	return data_[i];
+      require_(i < maximumLength);
+      return data_[i];
     }
     Symbol &operator[](u32 i) {
-	require_(i < maximumLength);
-	return data_[i];
+      require_(i < maximumLength);
+      return data_[i];
     }
 
     u32 length() const {
-	u32 result = 0;
-	while (result < maximumLength && data_[result]) ++result;
-	return result;
+      u32 result = 0;
+      while (result < maximumLength && data_[result]) ++result;
+      return result;
     }
 
     size_t hash() const {
-	size_t result = 0;
-	for (u32 i = 0; i < maximumLength && data_[i]; ++i)
-	    result = (result << 6) ^ size_t(data_[i]);
-	return result;
+      size_t result = 0;
+      for (u32 i = 0; i < maximumLength && data_[i]; ++i)
+        result = (result << 6) ^ size_t(data_[i]);
+      return result;
     }
     struct Hash { size_t operator() (const Multigram &m) const { return m.hash(); } };
 
     friend bool operator== (const Multigram &lhs, const Multigram &rhs) {
-	return memcmp(lhs.data_, rhs.data_, sizeof(lhs.data_)) == 0;
+      return memcmp(lhs.data_, rhs.data_, sizeof(lhs.data_)) == 0;
     }
 
     /** @return NewReference */
@@ -102,81 +107,83 @@ public:
 };
 
 class JointMultigram {
-public:
+  public:
     Multigram left, right;
 
     JointMultigram() {};
     JointMultigram(const Multigram &l, const Multigram &r) : left(l), right(r) {}
     JointMultigram(const Symbol  *leftBegin, const Symbol  *leftEnd,
-		   const Symbol *rightBegin, const Symbol *rightEnd) :
-	left(leftBegin, leftEnd), right(rightBegin, rightEnd) {}
+        const Symbol *rightBegin, const Symbol *rightEnd) :
+      left(leftBegin, leftEnd), right(rightBegin, rightEnd) {}
 
     size_t hash() const {
-	return left.hash() + right.hash();
+      return left.hash() + right.hash();
     }
     struct Hash { size_t operator() (const JointMultigram &m) const { return m.hash(); } };
 
     friend bool operator== (const JointMultigram &lhs, const JointMultigram &rhs) {
-	return (lhs.left  == rhs.left) && (lhs.right == rhs.right);
+      return (lhs.left  == rhs.left) && (lhs.right == rhs.right);
     }
 };
 
 class MultigramInventory {
-public:
+  public:
     typedef u32 Index;
 
-private:
-    typedef std::unordered_map<JointMultigram, Index, JointMultigram::Hash> Map;
+  private:
+    typedef unordered_map<JointMultigram, Index, JointMultigram::Hash> Map;
     typedef std::vector<JointMultigram> List;
     Map map_;
     List list_;
 
-public:
+  public:
     MultigramInventory() {
-	list_.push_back(JointMultigram());
+      list_.push_back(JointMultigram());
     }
 
     static Index voidIndex() {
-	return 0;
+      return 0;
     }
 
     /** Number of multigrams not including VOID */
     u32 size() const {
-	return list_.size() - 1;
+      return list_.size() - 1;
     }
 
     Index index(const JointMultigram &jmg) {
-	Map::iterator i = map_.find(jmg);
-	if (i == map_.end()) {
-	    i = map_.insert(std::make_pair(jmg, list_.size())).first;
-	    list_.push_back(jmg);
-	}
-	return i->second;
+      Map::iterator i = map_.find(jmg);
+      if (i == map_.end()) {
+        i = map_.insert(std::make_pair(jmg, list_.size())).first;
+        list_.push_back(jmg);
+      }
+      return i->second;
     }
 
     Index testIndex(const JointMultigram &jmg) {
-	Map::iterator i = map_.find(jmg);
-	return (i != map_.end()) ? i->second : voidIndex();
+      Map::iterator i = map_.find(jmg);
+      return (i != map_.end()) ? i->second : voidIndex();
     }
 
     JointMultigram symbol(Index i) {
-	require_(i > 0);
-	require_(i < list_.size());
-	return list_[i];
+      require_(i > 0);
+      require_(i < list_.size());
+      return list_[i];
     }
 
     size_t memoryUsed() const {
-#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
-	typedef std::__detail::_Hash_node<Map::value_type, false> MapNode;
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) 
+      struct MapNode { Map::value_type value; bool cond;};
+#elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
+      typedef std::tr1::__detail::_Hash_node<Map::value_type, false> MapNode;
 #elif __GNUC__ == 4 && __GNUC_MINOR__ == 2
-	typedef std::tr1::__detail::_Hash_node<Map::value_type, false> MapNode;
+      typedef std::tr1::__detail::_Hash_node<Map::value_type, false> MapNode;
 #elif __GNUC__ == 4 && __GNUC_MINOR__ <= 1
-	typedef Internal::hash_node<Map::value_type, false> MapNode;
+      typedef Internal::hash_node<Map::value_type, false> MapNode;
 #endif
-	return sizeof(MultigramInventory)
-	    + list_.capacity() * sizeof(List::value_type)
-	    + map_.size() * sizeof(MapNode)
-	    + map_.bucket_count() * sizeof(MapNode*);
+      return sizeof(MultigramInventory)
+        + list_.capacity() * sizeof(List::value_type)
+        + map_.size() * sizeof(MapNode)
+        + map_.bucket_count() * sizeof(MapNode*);
     }
 };
 

@@ -62,7 +62,7 @@ sequiturExtension = Extension(
     include_dirs = [
         os.path.join(path, 'core/include') for path in numpy.__path__ ],
     extra_compile_args = [
-	'-fpermissive']
+	'-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION']
     )
 
 sequiturModules = [

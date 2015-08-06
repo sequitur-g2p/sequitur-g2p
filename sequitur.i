@@ -74,6 +74,7 @@ namespace AssertionsPrivate {
 #endif  // SWIGPYTHON
 
 %{
+#include "numpy/ndarrayobject.h"
 #include "numpy/arrayobject.h"
     typedef PyArrayObject* DoubleVector;
 %}
@@ -82,7 +83,7 @@ namespace AssertionsPrivate {
 %}
 #ifdef SWIGPYTHON
 %typemap(in) DoubleVector {
-    $1 = (PyArrayObject*) PyArray_ContiguousFromObject($input, PyArray_DOUBLE, 1, 1);
+    $1 = (PyArrayObject*) PyArray_ContiguousFromObject($input, NPY_DOUBLE, 1, 1);
     if ($1 == NULL) SWIG_fail;
 }
 %typemap(freearg) DoubleVector {
@@ -267,8 +268,8 @@ public:
 	DoubleVector discountArray) 
     {
 	std::vector<double> discounts(
-	    (double*) discountArray->data, 
-	    (double*) discountArray->data + discountArray->dimensions[0]);
+	    (double*) PyArray_DATA(discountArray), 
+	    (double*) PyArray_DATA(discountArray) + PyArray_DIMS(discountArray)[0]);
 	self->makeSequenceModel(target, vocabularySize, discounts);
     }
 };

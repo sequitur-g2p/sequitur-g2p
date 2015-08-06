@@ -28,16 +28,16 @@
 #ifndef _SEQUENCEMODEL_HH
 #define _SEQUENCEMODEL_HH
 
+#include "Python.hh"
+
 #include "Obstack.hh"
 #include "Probability.hh"
-#include "Python.hh"
 #include "Types.hh"
 #include <string>
 #include <vector>
 
 #if defined(INSTRUMENTATION)
 #include <ext/hash_map>
-namespace std { using namespace __gnu_cxx; }
 
 struct StringHash {
     size_t operator() (const char *s) const {

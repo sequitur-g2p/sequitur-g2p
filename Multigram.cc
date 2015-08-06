@@ -25,39 +25,41 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
+#include "Python.hh"
+
 #include "Assertions.hh"
 #include "Multigram.hh"
 
 
 PyObject *Multigram::asPyObject() const {
-    u32 len = length();
-    PyObject *result = PyTuple_New(len);
-    for (u32 i = 0; i < len; ++i)
-	PyTuple_SET_ITEM(result, i, PyInt_FromLong(data_[i]));
-    return result;
+  u32 len = length();
+  PyObject *result = PyTuple_New(len);
+  for (u32 i = 0; i < len; ++i)
+    PyTuple_SET_ITEM(result, i, PyInt_FromLong(data_[i]));
+  return result;
 }
 
 Multigram::Multigram(PyObject *obj) {
-    memset(data_, 0, sizeof(data_));
-    PyObject *seq = PySequence_Fast(obj, "need a sequence to create a multigram");
-    if (!seq) throw ExistingPythonException();
-    int len = PySequence_Fast_GET_SIZE(seq);
-    if (len > maximumLength) {
-	Py_DECREF(seq);
-	throw PythonException(PyExc_ValueError, "sequence too long");
-    }
-    for (int i = 0; i < len; ++i) {
-	PyObject *item = PySequence_Fast_GET_ITEM(seq, i);
-	if (!PyInt_Check(item)) {
-	    Py_DECREF(seq);
-	    throw PythonException(PyExc_TypeError, "not an integer");
-	}
-	long value = PyInt_AsLong(item);
-	if (value < 0 || value > Core::Type<Symbol>::max) {
-	    Py_DECREF(seq);
-	    throw PythonException(PyExc_ValueError, "symbol out of range");
-	}
-	data_[i] = Symbol(value);
-    }
+  memset(data_, 0, sizeof(data_));
+  PyObject *seq = PySequence_Fast(obj, "need a sequence to create a multigram");
+  if (!seq) throw ExistingPythonException();
+  int len = PySequence_Fast_GET_SIZE(seq);
+  if (len > (int)maximumLength) {
     Py_DECREF(seq);
+    throw PythonException(PyExc_ValueError, "sequence too long");
+  }
+  for (int i = 0; i < len; ++i) {
+    PyObject *item = PySequence_Fast_GET_ITEM(seq, i);
+    if (!PyInt_Check(item)) {
+      Py_DECREF(seq);
+      throw PythonException(PyExc_TypeError, "not an integer");
+    }
+    long value = PyInt_AsLong(item);
+    if (value < 0 || value > Core::Type<Symbol>::max) {
+      Py_DECREF(seq);
+      throw PythonException(PyExc_ValueError, "symbol out of range");
+    }
+    data_[i] = Symbol(value);
+  }
+  Py_DECREF(seq);
 }
