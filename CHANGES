@@ -1,0 +1,12 @@
+2011-08-03:
+- third public release
+- extends makeOvLm.py to optionally dump word fragments and fragmented LM training data
+
+2008-12-12:
+- second public release
+- uses NumPy (instead of numarray)
+- bugfix in n-best translation
+- fixes for recent GCC version (should work with 4.1, 4.2 and 4.3)
+
+2007-06-03: g2p-r96.tar.gz
+- first public release
