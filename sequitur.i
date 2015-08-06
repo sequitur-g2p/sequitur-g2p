@@ -71,7 +71,7 @@ namespace AssertionsPrivate {
     }
     $1 = std::string(PyString_AsString($input));
 }
-#endif // SWIGPYTHON
+#endif  // SWIGPYTHON
 
 %{
 #include "numpy/arrayobject.h"
@@ -88,7 +88,7 @@ namespace AssertionsPrivate {
 %typemap(freearg) DoubleVector {
     Py_DECREF($1);
 }
-#endif // SWIGPYTHON
+#endif  // SWIGPYTHON
 
 // ===========================================================================
 %{
@@ -144,7 +144,7 @@ namespace AssertionsPrivate {
 	"(NN)", 
 	$1.left.asPyObject(), $1.right.asPyObject());
 }
-#endif SWIGPYTHON
+#endif  // SWIGPYTHON
 
 class MultigramInventory {
 public:
@@ -174,14 +174,14 @@ public:
 }
 
 %typemap(out) SequenceModel::History {
-    $result = PyLong_FromVoidPtr($1);
+    $result = PyLong_FromVoidPtr(const_cast<void *>(static_cast<const void *>($1)));
 }
 %typemap(in) SequenceModel::History {
     void *ptr = PyLong_AsVoidPtr($input);
     if (ptr == NULL) SWIG_fail;
     $1 = reinterpret_cast<SequenceModel::History>(ptr);
 }
-#endif // SWIGPYTHON
+#endif  // SWIGPYTHON
 
 class SequenceModel {
 public:
@@ -213,7 +213,7 @@ public:
     StringInventory(PyObject*);
     ~StringInventory();
 };
-#endif // INSTRUMENTATION
+#endif  // INSTRUMENTATION
 
 // ===========================================================================
 %{
@@ -320,7 +320,7 @@ public:
     ~Translator_NBestContext();
 #if defined(INSTRUMENTATION)
     void draw(FILE*, const StringInventory*) const;
-#endif // INSTRUMENTATION
+#endif  // INSTRUMENTATION
 };
 
 class Translator {

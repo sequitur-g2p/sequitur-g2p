@@ -28,6 +28,7 @@
 #include "Utility.hh"
 #include <algorithm>
 #include <cstdlib>
+#include <cstdio>
 #include <iomanip>
 #include <iostream>
 #include <string>
