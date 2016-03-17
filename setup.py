@@ -33,7 +33,7 @@ sequiturExtension = Extension(
     '_sequitur_',
     language = 'c++',
     define_macros=[
-	('MULTIGRAM_SIZE', '2')],
+	('MULTIGRAM_SIZE', '4')],
     sources = [
 	'sequitur.i',
 	'Assertions.cc',
