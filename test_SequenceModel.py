@@ -1,3 +1,4 @@
+from __future__ import print_function
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1667 $'
 __date__      = '$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $'
@@ -33,39 +34,39 @@ class SequenceModelEstimatorTestCase(unittest.TestCase):
     estimator = SequenceModelEstimator()
 
     def failUnlessNormalized(self, model, hists = ['A', 'B', 'C'], preds = ['X', 'Y', 'Z']):
-	for u in hists:
-	    for v in hists:
-		sum = 0.0
-		for w in preds:
-		    p = model((u, v), w)
+        for u in hists:
+            for v in hists:
+                sum = 0.0
+                for w in preds:
+                    p = model((u, v), w)
 #                   print u, v, w, p
-		    sum += p
+                    sum += p
 #               print u, v, sum
 #               print
-		self.failUnlessAlmostEqual(sum, 1.0)
+                self.failUnlessAlmostEqual(sum, 1.0)
 
     def testEmpty(self):
-	evidence = []
-	model = self.estimator.make(3, evidence, [0.0])
+        evidence = []
+        model = self.estimator.make(3, evidence, [0.0])
 #       self.show(model)
 #       self.failUnlessEqual(model, [])
 
     def testOne(self):
-	evidence = [((), 'X', 1.0)]
-	model = self.estimator.make(3, evidence, [0.1, 0.0])
+        evidence = [((), 'X', 1.0)]
+        model = self.estimator.make(3, evidence, [0.1, 0.0])
 #       self.show(model)
 
     def testTwo(self):
-	evidence = [(('A', 'B'), 'X', 3.0),
-		    (('C', 'B'), 'Y', 3.0)]
-	model = self.estimator.make(3, evidence, [0.8, 1.0, 0.0])
+        evidence = [(('A', 'B'), 'X', 3.0),
+                    (('C', 'B'), 'Y', 3.0)]
+        model = self.estimator.make(3, evidence, [0.8, 1.0, 0.0])
 #       self.show(model)
-	self.failUnlessNormalized(model)
+        self.failUnlessNormalized(model)
 #       print model.perplexity(evidence)
 
     def show(sslf, model):
-	for (history, predicted), probability in model:
-	    print history, predicted, probability
+        for (history, predicted), probability in model:
+            print(history, predicted, probability)
 
 
 if __name__ == '__main__':
