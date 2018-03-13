@@ -77,7 +77,7 @@ def loadBlissLexicon(fname):
 def loadG2PSample(fname):
     if fname == '-':
         sample = loadPlainSample(fname)
-    else:
+    else:        
         firstLine = gOpenIn(fname, defaultEncoding).readline()
         if firstLine.startswith('<?xml'):
             sample = [ (tuple(orth), tuple(phon))
@@ -253,12 +253,17 @@ if __name__ == '__main__':
 
     options, args = optparser.parse_args()
 
-    import codecs
-    global defaultEncoding
-    defaultEncoding = options.encoding
-    global stdout, stderr
-    encoder, decoder, streamReader, streamWriter = codecs.lookup(options.encoding)
-    stdout = streamWriter(sys.stdout)
-    stderr = streamWriter(sys.stderr)
+    global stdout, stderr, defaultEncoding
+    if sys.version_info[:2] <= (2, 5):
+        import codecs
+        global defaultEncoding
+        defaultEncoding = options.encoding
+        encoder, decoder, streamReader, streamWriter = codecs.lookup(options.encoding)
+        stdout = streamWriter(sys.stdout)
+        stderr = streamWriter(sys.stderr)
+    else:
+        defaultEncoding = options.encoding
+        stdout = sys.stdout
+        stderr = sys.stderr
 
     tool.run(main, options, args)

@@ -214,7 +214,7 @@ def reportMemoryProfile(root):
     profiler.reportByType(sys.stdout)
 
 # ===========================================================================
-import codecs, gzip, errno, os, sys
+import gzip, errno, os, sys, io
 
 def gOpenOut(fname, encoding=None):
     if fname == '-':
@@ -223,10 +223,7 @@ def gOpenOut(fname, encoding=None):
         out = os.popen('gzip -fc >%s' % fname, 'w')
 #       out = gzip.open(fname, 'w')
     else:
-        out = open(fname, 'w')
-    if encoding:
-        encoder, decoder, streamReader, streamWriter = codecs.lookup(encoding)
-        out = streamWriter(out)
+        out = io.open(fname, 'w', encoding=encoding)
     return out
 
 def gOpenIn(fname, encoding=None):
@@ -236,13 +233,40 @@ def gOpenIn(fname, encoding=None):
         if not os.path.isfile(fname):
             raise IOError(errno.ENOENT, 'No such file: \'%s\'' % fname)
         inp = os.popen('gzip -dc %s' % fname, 'r')
-#       inp = gzip.open(fname)
+        # inp = gzip.open(fname, 'rb')
     else:
-        inp = open(fname)
+        inp = io.open(fname)
     if encoding:
-        encoder, decoder, streamReader, streamWriter = codecs.lookup(encoding)
-        inp = streamReader(inp)
+        inp = io.open(fname, encoding=encoding)
     return inp
+
+# def gOpenOut(fname, encoding=None):
+#     if fname == '-':
+#         out = sys.stdout
+#     elif os.path.splitext(fname)[1] == '.gz':
+#         out = os.popen('gzip -fc >%s' % fname, 'w')
+# #       out = gzip.open(fname, 'w')
+#     else:
+#         out = open(fname, 'w')
+#     if encoding:
+#         encoder, decoder, streamReader, streamWriter = codecs.lookup(encoding)
+#         out = streamWriter(out)
+#     return out
+
+# def gOpenIn(fname, encoding=None):
+#     if fname == '-':
+#         inp = sys.stdin
+#     elif os.path.splitext(fname)[1] == '.gz':
+#         if not os.path.isfile(fname):
+#             raise IOError(errno.ENOENT, 'No such file: \'%s\'' % fname)
+#         inp = os.popen('gzip -dc %s' % fname, 'r')
+#         # inp = gzip.open(fname, 'rb')
+#     else:
+#         inp = open(fname)
+#     if encoding:
+#         encoder, decoder, streamReader, streamWriter = codecs.lookup(encoding)
+#         inp = streamReader(inp)
+#     return inp
 
 # ===========================================================================
 class RestartStub:

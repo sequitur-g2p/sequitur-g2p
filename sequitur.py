@@ -318,7 +318,7 @@ class StaticDiscounts:
             highestOrderDiscount = self.discount[-1]
             self.discount.resize(order+1)
             self.discount[oldSize:] = highestOrderDiscount
-        print >> context.log, 'keep discount: %s' % self.discount
+        print('keep discount: %s' % self.discount, file=context.log)
         return self.discount
 
 
@@ -414,7 +414,7 @@ class DefaultDiscountAdjuster:
         if firstDirection is not None:
             directions = num.concatenate((firstDirection[num.newaxis,:], directions))
         directions *= 0.1
-        print (directions) # TESTING
+        print(directions) # TESTING
 
         discount, ll = Minimization.directionSetMinimization(
             criterion, initialGuess, directions, tolerance=1e-4)
@@ -433,11 +433,11 @@ class DefaultDiscountAdjuster:
             else:
                 discount, logLik = self.adjustHigherOrder(evidence, order, maximumDiscount)
             self.discounts.append(discount)
-            print >> context.log, 'optimal discount: %s' % discount
-            print >> context.log, 'max. rel. change: %s' % self.maxRelChange()
+            print('optimal discount: %s' % discount, file=context.log)
+            print('max. rel. change: %s' % self.maxRelChange(), file=context.log)
         else:
             discount = self.discounts[-1]
-            print >> context.log, 'keep discount: %s' % discount
+            print('keep discount: %s' % discount, file=context.log)
         return discount
 
     def shouldAdjustDiscount(self, context, evidence):
@@ -528,20 +528,20 @@ class ModelTemplate:
             left, right = self.sequitur.symbol(index)
             return ''.join(left) + ':' + '_'.join(right)
         def show(value, predicted, history):
-            print >> f, '    ', value, \
-                      '      ', asString(predicted), \
-                      '      ', ' '.join(map(asString, history))
+            print('    ', value, \
+                  '      ', asString(predicted), \
+                  '      ', ' '.join(map(asString, history)), file=f)
         if limit and 1.5*limit < len(sample):
             for vph in sample[:limit]:
                 show(*vph)
-            print >> f, '    ...'
+            print('    ...', file=f)
             for vph in sample[-limit//2:]:
                 show(*vph)
         else:
             for vph in sample:
                 show(*vph)
-        print >> f, len(sample), 'evidences total'
-        print >> f, self.sequitur.inventory.size(), 'multigrams ever seen'
+        print(len(sample), 'evidences total', file=f)
+        print(self.sequitur.inventory.size(), 'multigrams ever seen', file=f)
 
     # =======================================================================
     def masterSequenceModel(self, model):
@@ -562,14 +562,14 @@ class ModelTemplate:
     def initializeWithOverlappingCounts(self, context):
         counts = context.trainSample.overlappingOccurenceCounts(
             context.model.sequenceModel)
-        print >> context.log, '  count types: %s' % counts.size()
-        print >> context.log, '  count total / max: %s / %s' % (counts.total(), counts.maximum())
+        print('  count types: %s' % counts.size(), file=context.log)
+        print('  count total / max: %s / %s' % (counts.total(), counts.maximum()), file=context.log)
         self.showMostEvident(context.log, counts, 10) ### TESTING
         context.model = Model(self.sequitur)
         context.model.discount = num.zeros(counts.maximumHistoryLength() + 1)
         context.model.sequenceModel = self.sequenceModel(counts, context.model.discount)
-        print >> context.log, '  model size: %s' % context.model.sequenceModel.size()
-        print >> context.log
+        print('  model size: %s' % context.model.sequenceModel.size(), file=context.log)
+        print('', file=context.log)
         context.log.flush()
 
     def iterate(self, context):
@@ -577,30 +577,30 @@ class ModelTemplate:
             context.model.sequenceModel,
             self.shallUseMaximumApproximation)
 
-        print >> context.log, 'LL train: %s (before)' % logLikTrain
+        print(('LL train: %s (before)' % logLikTrain), file=context.log)
         context.logLikTrain.append(logLikTrain)
 
         if (not context.develSample) and (context.iteration > self.minIterations):
             context.registerNewModel(context.model, logLikTrain)
 
         order = evidence.maximumHistoryLength()
-        print >> context.log, '  evidence order: %s' % order
+        print('  evidence order: %s' % order, file=context.log)
         if context.order is not None and order != context.order:
-            print >> context.log, '  warning: evidence order changed from %d to %d!' % (context.order, order)
+            print('  warning: evidence order changed from %d to %d!' % (context.order, order), file=context.log)
         context.order = order
-
-        print >> context.log, '  evidence types: %s' % evidence.size()
-        print >> context.log, '  evidence total / max: %s / %s' % (evidence.total(), evidence.maximum())
+        
+        print('  evidence types: %s' % evidence.size(), file=context.log)
+        print('  evidence total / max: %s / %s' % (evidence.total(), evidence.maximum()), file=context.log)
         self.showMostEvident(context.log, evidence, 10) ### TESTING
 
         newModel = Model(self.sequitur)
         newModel.discount = context.discountAdjuster.adjust(context, evidence, order)
         newModel.sequenceModel = self.sequenceModel(evidence, newModel.discount)
-        print >> context.log, '  model size: %s' % newModel.sequenceModel.size()
+        print('  model size: %s' % newModel.sequenceModel.size(), file=context.log)
 
         if context.develSample:
             logLikDevel = context.develSample.logLik(newModel.sequenceModel, self.shallUseMaximumApproximation)
-            print >> context.log, 'LL devel: %s' % logLikDevel
+            print('LL devel: %s' % logLikDevel, file=context.log)
             context.logLikDevel.append(logLikDevel)
 
         for observer in self.observers:
@@ -617,7 +617,7 @@ class ModelTemplate:
                 crit = context.logLikTrain
             crit = [ -ll for ll in crit[-self.convergenceWindow:] ]
             if not Minimization.hasSignificantDecrease(crit):
-                print >> context.log, 'iteration converged.'
+                print('iteration converged.', file=context.log)
                 shouldStop = True
 
         context.model = newModel
@@ -658,15 +658,15 @@ class ModelTemplate:
         shouldStop = False
         while not shouldStop:
             if context.iteration >= self.maxIterations:
-                print >> context.log, 'maximum number of iterations reached.'
+                print('maximum number of iterations reached.', file=context.log)
                 break
-            print >> context.log, 'iteration: %s' % context.iteration
+            print('iteration: %s' % context.iteration, file=context.log)
             try:
                 shouldStop = self.iterate(context)
             except:
                 import traceback
                 traceback.print_exc()
-                print >> context.log, 'iteration failed.'
+                print('iteration failed.', file=context.log)
                 break
             if ((self.checkpointInterval) and
                 (misc.cputime() > lastCheckpoint + self.checkpointInterval)):
@@ -674,7 +674,7 @@ class ModelTemplate:
                 lastCheckpoint = misc.cputime()
             context.iteration += 1
             misc.reportMemoryUsage()
-            print >> context.log
+            print('', file=context.log)
             context.log.flush()
 
     def resume(cls, filename):
@@ -685,7 +685,7 @@ class ModelTemplate:
     resume = classmethod(resume)
 
     def checkpoint(self, context):
-        print >> context.log, 'checkpointing'
+        print('checkpointing', file=context.log)
         import cPickle as pickle
         fname = self.checkpointFile % context.iteration
         f = open(fname, 'wb')
@@ -775,7 +775,7 @@ class Translator:
         return logLik, right
 
     def reportStats(self, f):
-        print >> f, 'stack usage: ', self.translator.stackUsage()
+        print('stack usage: ', self.translator.stackUsage(), file=f)
 
 
 class Segmenter:

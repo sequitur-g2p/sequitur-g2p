@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, print_function
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1691 $'
@@ -27,7 +27,7 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-import os.path, sys
+import os.path
 import six
 from six.moves import cPickle as pickle
 import operator
@@ -36,6 +36,7 @@ from sequitur import Sequitur, ModelTemplate, DefaultDiscountAdjuster, StaticDis
 from sequitur import Translator
 from Evaluation import Evaluator
 from tool import UsageError
+import sys
 
 class OnlineTester(object):
     def __init__(self, name, sample):
@@ -46,8 +47,8 @@ class OnlineTester(object):
     def __call__(self, log, context, model):
         translator = Translator(model)
         result = self.evaluator.evaluate(translator)
-        print >> log, 'ER %s: string errors %s    symbol errors %s' % (
-            self.name, result.stringError, result.symbolError)
+        print('ER %s: string errors %s    symbol errors %s' % (
+            self.name, result.stringError, result.symbolError), file=log)
 
 
 def transposeSample(sample):
@@ -80,7 +81,7 @@ class Tool:
             self.trainSample, self.develSample = partitionSample(self.trainSample, portion)
         else:
             self.develSample = self.loadSample(self.options.develSample)
-        print >> self.log, 'training sample: %d + %d devel' % (len(self.trainSample), len(self.develSample))
+        print('training sample: %d + %d devel' % (len(self.trainSample), len(self.develSample)), file=self.log)
 
     def trainModel(self, initialModel):
         self.loadSamples()
@@ -122,8 +123,8 @@ class Tool:
         template.useMaximumApproximation(bool(self.options.viterbi))
 
         if self.options.minIterations > self.options.maxIterations:
-            print >> self.log, 'invalid limits on number of iterations %d > %d' % \
-                  (self.options.minIterations,self.options.maxIterations)
+            print('invalid limits on number of iterations %d > %d' % \
+                  (self.options.minIterations,self.options.maxIterations), file=self.log)
             return
         template.minIterations = self.options.minIterations
         template.maxIterations = self.options.maxIterations
@@ -170,7 +171,7 @@ class Tool:
         if self.options.trainSample:
             model = self.trainModel(model)
             if not model:
-                print >> self.log, 'failed to estimate or load model'
+                print('failed to estimate or load model', file=self.log)
                 return
 
         if not model:
@@ -183,23 +184,23 @@ class Tool:
 
         if self.options.newModelFile:
             oldSize, newSize = model.strip()
-            print >> self.log, 'stripped number of multigrams from %d to %d' % (oldSize, newSize)
+            print('stripped number of multigrams from %d to %d' % (oldSize, newSize), file=self.log)
             f = open(self.options.newModelFile, 'w')
             pickle.dump(model, f, pickle.HIGHEST_PROTOCOL)
             f.close()
             del f
 
         if self.options.shouldSelfTest:
-            print >> self.log, 'warning: --self-test does not treat pronunciation variants correctly'
+            print('warning: --self-test does not treat pronunciation variants correctly', file=self.log)
             if not self.develSample:
-                print >> self.log, 'error: cannot do --self-test without --devel sample'
+                print('error: cannot do --self-test without --devel sample', file=self.log)
             else:
                 translator = Translator(model)
                 evaluator = Evaluator()
                 evaluator.setSample(self.develSample)
                 evaluator.verboseLog = self.log
                 result = evaluator.evaluate(translator)
-                print >> self.log, result
+                print(result, file=self.log)
 
         return model
 
