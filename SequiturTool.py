@@ -159,7 +159,7 @@ class Tool:
             model = ModelTemplate.resume(self.options.resume_from_checkpoint)
             self.sequitur = model.sequitur
         elif self.options.modelFile:
-            model = pickle.load(open(self.options.modelFile))
+            model = pickle.load(open(self.options.modelFile, 'rb'))
             self.sequitur = model.sequitur
         else:
             self.sequitur = Sequitur()
@@ -185,7 +185,7 @@ class Tool:
         if self.options.newModelFile:
             oldSize, newSize = model.strip()
             print('stripped number of multigrams from %d to %d' % (oldSize, newSize), file=self.log)
-            f = open(self.options.newModelFile, 'w')
+            f = open(self.options.newModelFile, 'wb')
             pickle.dump(model, f, pickle.HIGHEST_PROTOCOL)
             f.close()
             del f
