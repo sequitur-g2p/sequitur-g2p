@@ -145,7 +145,7 @@ def mainTest(translator, testSample, options):
             return filter(lambda p: p not in supraSegmental, phon)
         evaluator.compareFilter = removeSupraSegmental
     result = evaluator.evaluate(translator)
-    print >> stdout, result
+    print(result)
 
 def mainApply(translator, options):
     if options.phoneme_to_phoneme:
@@ -174,17 +174,17 @@ def mainApply(translator, options):
                     except StopIteration:
                         break
                     posterior = math.exp(logLik - nBest.logLikTotal)
-                    print >> stdout, ('%s\t%d\t%f\t%s' % \
-                           (word, nVariants, posterior, ' '.join(result)))
+                    print(('%s\t%d\t%f\t%s' % \
+                          (word, nVariants, posterior, ' '.join(result))))
                     totalPosterior += posterior
                     nVariants += 1
             else:
                 result = translator(left)
-                print >> stdout, ('%s\t%s' % (word, ' '.join(result)))
+                print(('%s\t%s' % (word, ' '.join(result))))
         except translator.TranslationFailure:
             exc = sys.exc_info()[1]
             try:
-                print >> stderr, 'failed to convert "%s": %s' % (word, exc)
+                print('failed to convert "%s": %s' % (word, exc), file=stderr)
             except:
                 pass
 
