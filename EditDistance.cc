@@ -38,7 +38,7 @@ struct Hyp {
 PyObject *python_align(PyObject *self, PyObject *args) {
     struct SubstitutionCost {
 	int operator() (PyObject *a, PyObject *b) {
-	    return (PyObject_Compare(a, b)) ? 1 : 0;
+	    return (PyObject_RichCompare(a, b, Py_EQ)) ? 1 : 0;
 	}
     };
     SubstitutionCost sub_cost;

@@ -30,6 +30,11 @@
 #include "Assertions.hh"
 #include "Multigram.hh"
 
+#if PY_MAJOR_VERSION >= 3
+  #define PyInt_Check(x) PyLong_Check(x)
+  #define PyInt_AsLong(x) PyLong_AsLong(x)
+  #define PyInt_FromLong(x) PyLong_FromLong(x)
+#endif
 
 PyObject *Multigram::asPyObject() const {
   u32 len = length();

@@ -31,40 +31,40 @@ from misc import restartable
 # ===========================================================================
 if __debug__:
     class assertIsSorted:
-	def __init__(self, seq):
-	    self.seq = seq
-	def __iter__(self):
-	    it = iter(self.seq)
-	    previous = it.next()
-	    yield previous
-	    for item in it:
-		if previous[0] > item[0]:
-		    raise ValueError('sequence must be sorted', previous, item)
-		yield item
-		previous = item
+        def __init__(self, seq):
+            self.seq = seq
+        def __iter__(self):
+            it = iter(self.seq)
+            previous = it.next()
+            yield previous
+            for item in it:
+                if previous[0] > item[0]:
+                    raise ValueError('sequence must be sorted', previous, item)
+                yield item
+                previous = item
 
     class assertIsSortedAndConsolidated:
-	def __init__(self, seq):
-	    self.seq = seq
-	def __iter__(self):
-	    it = iter(self.seq)
-	    previous = it.next()
-	    yield previous
-	    for item in it:
-		if previous[0] >= item[0]:
-		    raise ValueError('sequence must be sorted and consolidated')
-		yield item
-		previous = item
+        def __init__(self, seq):
+            self.seq = seq
+        def __iter__(self):
+            it = iter(self.seq)
+            previous = it.next()
+            yield previous
+            for item in it:
+                if previous[0] >= item[0]:
+                    raise ValueError('sequence must be sorted and consolidated')
+                yield item
+                previous = item
 
     assertIsConsolidated = assertIsSortedAndConsolidated
 
 else:
     def assertIsSorted(seq):
-	return seq
+        return seq
     def assertIsSortedAndConsolidated(seq):
-	return seq
+        return seq
     def assertIsConsolidated(seq):
-	return seq
+        return seq
 
 # ===========================================================================
 def mergeSort(seqs):
@@ -73,20 +73,20 @@ def mergeSort(seqs):
     """
     queue = []
     for s in seqs:
-	s = assertIsSorted(s)
-	it = iter(s)
-	try:
-	    queue.append((it.next(), it.next))
-	except StopIteration:
-	    pass
+        s = assertIsSorted(s)
+        it = iter(s)
+        try:
+            queue.append((it.next(), it.next))
+        except StopIteration:
+            pass
     heapq.heapify(queue)
     while queue:
-	item, it = queue[0]
-	yield item
-	try:
-	    heapq.heapreplace(queue, (it(), it))
-	except StopIteration:
-	    heapq.heappop(queue)
+        item, it = queue[0]
+        yield item
+        try:
+            heapq.heapreplace(queue, (it(), it))
+        except StopIteration:
+            heapq.heappop(queue)
 
 # ---------------------------------------------------------------------------
 def consolidateInPlaceAdd(seq):
@@ -98,15 +98,15 @@ def consolidateInPlaceAdd(seq):
     key, value = it.next()
     ownsValue = False
     for k, v in it:
-	if k == key:
-	    if not ownsValue:
-		value = copy.copy(value)
-		ownsValue = True
-	    value += v
-	else:
-	    yield key, value
-	    key, value = k, v
-	    ownsValue = False
+        if k == key:
+            if not ownsValue:
+                value = copy.copy(value)
+                ownsValue = True
+            value += v
+        else:
+            yield key, value
+            key, value = k, v
+            ownsValue = False
     yield key, value
 
 consolidate = consolidateInPlaceAdd
@@ -121,12 +121,12 @@ def aggregate(seq):
     key, value = it.next()
     current = [value]
     for k, value in it:
-	if k == key:
-	    current.append(value)
-	else:
-	    yield key, current
-	    key = k
-	    current = [value]
+        if k == key:
+            current.append(value)
+        else:
+            yield key, current
+            key = k
+            current = [value]
     yield key, current
 aggregate = restartable(aggregate)
 
@@ -139,16 +139,16 @@ def leftJoin(seqA, seqB):
 
     bKey = None
     try:
-	for aKey, aValue in aIter:
-	    while aKey > bKey:
-		bKey, bValue = bIter.next()
-	    if aKey == bKey:
-		yield aKey, aValue, bValue
-	    else:
-		yield aKey, aValue, None
+        for aKey, aValue in aIter:
+            while aKey > bKey:
+                bKey, bValue = bIter.next()
+            if aKey == bKey:
+                yield aKey, aValue, bValue
+            else:
+                yield aKey, aValue, None
     except StopIteration:
-	for aKey, aValue in aIter:
-	    yield aKey, aValue, None
+        for aKey, aValue in aIter:
+            yield aKey, aValue, None
 
 
 def innerJoin(seqA, seqB):
@@ -159,13 +159,13 @@ def innerJoin(seqA, seqB):
 
     bKey = None
     for aKey, aValue in aIter:
-	while aKey > bKey:
-	    try:
-		bKey, bValue = bIter.next()
-	    except StopIteration:
-		return
-	if aKey == bKey:
-	    yield aKey, aValue, bValue
+        while aKey > bKey:
+            try:
+                bKey, bValue = bIter.next()
+            except StopIteration:
+                return
+        if aKey == bKey:
+            yield aKey, aValue, bValue
 
 
 def outerJoin(seqA, seqB):
@@ -175,109 +175,109 @@ def outerJoin(seqA, seqB):
     bIter = iter(seqB)
 
     try:
-	aKey, aValue = aIter.next()
+        aKey, aValue = aIter.next()
     except StopIteration:
-	aIter = None
+        aIter = None
     try:
-	bKey, bValue = bIter.next()
+        bKey, bValue = bIter.next()
     except StopIteration:
-	bIter = None
+        bIter = None
 
     while (aIter is not None) and (bIter is not None):
-	aNext = bNext = False
-	if aKey < bKey:
-	    yield aKey, aValue, None
-	    aNext = True
-	elif aKey > bKey:
-	    yield bKey, None, bValue
-	    bNext = True
-	elif aKey == bKey:
-	    yield aKey, aValue, bValue
-	    aNext = bNext = True
-	else:
-	    raise ValueError('tertium non datur')
+        aNext = bNext = False
+        if aKey < bKey:
+            yield aKey, aValue, None
+            aNext = True
+        elif aKey > bKey:
+            yield bKey, None, bValue
+            bNext = True
+        elif aKey == bKey:
+            yield aKey, aValue, bValue
+            aNext = bNext = True
+        else:
+            raise ValueError('tertium non datur')
 
-	if aNext:
-	    try:
-		aKey, aValue = aIter.next()
-	    except StopIteration:
-		aIter = None
-	if bNext:
-	    try:
-		bKey, bValue = bIter.next()
-	    except StopIteration:
-		bIter = None
+        if aNext:
+            try:
+                aKey, aValue = aIter.next()
+            except StopIteration:
+                aIter = None
+        if bNext:
+            try:
+                bKey, bValue = bIter.next()
+            except StopIteration:
+                bIter = None
 
     if aIter is not None:
-	yield aKey, aValue, None
-	for aKey, aValue in aIter:
-	    yield aKey, aValue, None
+        yield aKey, aValue, None
+        for aKey, aValue in aIter:
+            yield aKey, aValue, None
     if bIter is not None:
-	yield bKey, None, bValue
-	for bKey, bValue in bIter:
-	    yield bKey, None, bValue
+        yield bKey, None, bValue
+        for bKey, bValue in bIter:
+            yield bKey, None, bValue
 
 
 def outerJoinMany(*seqs):
     front = []
     for ii, s in enumerate(seqs):
-	s = assertIsSorted(s)
-	it = iter(s)
-	try:
-	    key, value = it.next()
-	    front.append([ii+1, key, value, it])
-	except StopIteration:
-	    pass
+        s = assertIsSorted(s)
+        it = iter(s)
+        try:
+            key, value = it.next()
+            front.append([ii+1, key, value, it])
+        except StopIteration:
+            pass
     row = [None] + len(seqs) * [None]
     while front:
-	minKey = min([ key  for ii, key, value, it in front ])
-	row[0] = minKey
+        minKey = min([ key  for ii, key, value, it in front ])
+        row[0] = minKey
 
-	remove = []
-	for f, (ii, key, value, it) in enumerate(front):
-	    if key == minKey:
-		row[ii] = value
-		try:
-		    front[f][1:3] = it.next()
-		except StopIteration:
-		    remove.append(ii)
-	    else:
-		row[ii] = None
+        remove = []
+        for f, (ii, key, value, it) in enumerate(front):
+            if key == minKey:
+                row[ii] = value
+                try:
+                    front[f][1:3] = it.next()
+                except StopIteration:
+                    remove.append(ii)
+            else:
+                row[ii] = None
 
-	yield tuple(row)
+        yield tuple(row)
 
-	if remove:
-	    for ii in remove:
-		row[ii] = None
-	    front = [ f for f in front if f[0] not in remove ]
+        if remove:
+            for ii in remove:
+                row[ii] = None
+            front = [ f for f in front if f[0] not in remove ]
 
 # ===========================================================================
 class monodict(object):
     def __init__(self, seq):
-	seq = assertIsSortedAndConsolidated(seq)
-	self.it = iter(seq)
-	self.recentKey = None
-	try:
-	    self.key, self.value = self.it.next()
-	except StopIteration:
-	    self.key = None
+        seq = assertIsSortedAndConsolidated(seq)
+        self.it = iter(seq)
+        self.recentKey = None
+        try:
+            self.key, self.value = self.it.next()
+        except StopIteration:
+            self.key = None
 
     def __getitem__(self, key):
-	if key != self.key:
-	    if key < self.recentKey:
-		raise ValueError('access not monotonous', self.recentKey, key)
-	    self.recentKey = key
-	    while key > self.key:
-		try:
-		    self.key, self.value = self.it.next()
-		except StopIteration:
-		    raise KeyError(key)
-	    if key != self.key:
-		raise KeyError(key)
-	return self.value
+        if key != self.key:
+            if key < self.recentKey:
+                raise ValueError('access not monotonous', self.recentKey, key)
+            self.recentKey = key
+            while key > self.key:
+                try:
+                    self.key, self.value = self.it.next()
+                except StopIteration:
+                    raise KeyError(key)
+            if key != self.key:
+                raise KeyError(key)
+        return self.value
 
     def get(self, key, default=None):
-	try:
-	    return self[key]
-	except KeyError:
-	    return default
+        try:
+            return self[key]
+        except KeyError:
+            return default

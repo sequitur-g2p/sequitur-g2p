@@ -31,16 +31,16 @@ from Minimization import *
 
 class LinearMinimizationTestCase(unittest.TestCase):
     def testPolynomial(self):
-	f = lambda x: x**2 - 84*x + 1700
-	xMin, fMin = linearMinimization(f, 0)
-	self.failUnlessAlmostEqual(xMin,  42, 6)
-	self.failUnlessAlmostEqual(fMin, -64, 6)
+        f = lambda x: x**2 - 84*x + 1700
+        xMin, fMin = linearMinimization(f, 0)
+        self.failUnlessAlmostEqual(xMin,  42, 6)
+        self.failUnlessAlmostEqual(fMin, -64, 6)
 
     def testPolynomial2(self):
-	f = lambda x: x**2 + 84*x + 1700
-	xMin, fMin = linearMinimization(f, 0)
-	self.failUnlessAlmostEqual(xMin, -42, 6)
-	self.failUnlessAlmostEqual(fMin, -64, 6)
+        f = lambda x: x**2 + 84*x + 1700
+        xMin, fMin = linearMinimization(f, 0)
+        self.failUnlessAlmostEqual(xMin, -42, 6)
+        self.failUnlessAlmostEqual(fMin, -64, 6)
 
 
 if __name__ == '__main__':

@@ -38,26 +38,26 @@ class SymbolInventory:
     term = 1
 
     def __init__(self):
-	self.list = ['__void__', '__term__']
-	self.dir  = { '__term__' : self.term }
+        self.list = ['__void__', '__term__']
+        self.dir  = { '__term__' : self.term }
 
     def size(self):
-	"The number of symbols, including __term__, but not counting __void__."
-	return len(self.list) - 1
+        "The number of symbols, including __term__, but not counting __void__."
+        return len(self.list) - 1
 
     def index(self, sym):
-	try:
-	    return self.dir[sym]
-	except KeyError:
-	    result = self.dir[sym] = len(self.list)
-	    self.list.append(sym)
-	    return result
+        try:
+            return self.dir[sym]
+        except KeyError:
+            result = self.dir[sym] = len(self.list)
+            self.list.append(sym)
+            return result
 
     def parse(self, seq):
-	return tuple(map(self.index, list(seq)))
+        return tuple(map(self.index, list(seq)))
 
     def symbol(self, ind):
-	return self.list[ind]
+        return self.list[ind]
 
     def format(self, seq):
-	return tuple(map(self.symbol, seq))
+        return tuple(map(self.symbol, seq))

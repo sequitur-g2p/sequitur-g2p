@@ -1,3 +1,4 @@
+from __future__ import print_function
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1668 $'
 __date__      = '$LastChangedDate: 2007-06-02 18:14:47 +0200 (Sat, 02 Jun 2007) $'
@@ -31,69 +32,69 @@ class UsageError(RuntimeError):
 
 def addOptions(optparser):
     optparser.add_option(
-	'-p', '--profile',
-	help='Profile execution time and store result in FILE', metavar='FILE')
+        '-p', '--profile',
+        help='Profile execution time and store result in FILE', metavar='FILE')
     optparser.add_option(
-	'-R', '--resource-usage', action='store_true',
-	help='Report resource usage execution time')
+        '-R', '--resource-usage', action='store_true',
+        help='Report resource usage execution time')
     optparser.add_option(
-	'-Y', '--psyco', action='store_true',
-	help='Use Psyco to speed up execution')
+        '-Y', '--psyco', action='store_true',
+        help='Use Psyco to speed up execution')
     optparser.add_option(
-	'--tempdir',
-	help='store temporary files in PATH', metavar='PATH')
+        '--tempdir',
+        help='store temporary files in PATH', metavar='PATH')
 
 def run(main, options, args):
     import sys
 
     if options.tempdir:
-	import tempfile, os
-	if os.path.isdir(options.tempdir):
-	    tempfile.tempdir = options.tempdir
-	else:
-	    raise ValueError('path does not exist', options.tempdir)
+        import tempfile, os
+        if os.path.isdir(options.tempdir):
+            tempfile.tempdir = options.tempdir
+        else:
+            raise ValueError('path does not exist', options.tempdir)
 
     if options.resource_usage:
-	import datetime, time
-	startTime = datetime.datetime.now()
-	startClock = time.clock()
+        import datetime, time
+        startTime = datetime.datetime.now()
+        startClock = time.clock()
 
     try:
         status = runMain(main, options, args)
     except UsageError:
         status = 1
-        print >> sys.stdout, "Try '%s --help'" % sys.argv[0]
+        print("Try '%s --help'" % sys.argv[0], file=sys.stdout)
 
     if options.resource_usage:
-	stopTime = datetime.datetime.now()
-	stopClock = time.clock()
-	print >> sys.stderr, 'elapsed time:   ', stopTime - startTime
-	print >> sys.stderr, 'processor time: ', datetime.timedelta(seconds=stopClock - startClock)
+        stopTime = datetime.datetime.now()
+        stopClock = time.clock()
+        print('elapsed time:   ', stopTime - startTime, file=sys.stderr)
+        print('processor time: ', datetime.timedelta(seconds=stopClock - startClock), file=sys.stderr)
 
     sys.exit(status)
 
 
 def runMain(main, options, args):
     if options.profile:
-	if True:
-	    import hotshot
-	    profile = hotshot.Profile(options.profile)
-	    profile.runcall(main, options, args)
-	    profile.close()
-	    import hotshot.stats
-	    stats = hotshot.stats.load(options.profile)
-	else:
-	    import profile
-	    profile.run('main(options, args)', options.profile)
-	    import pstats
-	    stats = pstats.Stats(options.profile)
-	stats.strip_dirs()
-	stats.sort_stats('time', 'calls')
-	stats.print_stats(20)
+        if True:
+            import hotshot
+            profile = hotshot.Profile(options.profile)
+            profile.runcall(main, options, args)
+            profile.close()
+            import hotshot.stats
+            stats = hotshot.stats.load(options.profile)
+        else:
+            import profile
+            profile.run('main(options, args)', options.profile)
+            import pstats
+            stats = pstats.Stats(options.profile)
+        stats.strip_dirs()
+        stats.sort_stats('time', 'calls')
+        stats.print_stats(20)
     elif options.psyco:
-	import psyco
-	psyco.full()
-	status = main(options, args)
+        import psyco
+        psyco.full()
+        status = main(options, args)
     else:
-	status = main(options, args)
+        status = main(options, args)
     return status
