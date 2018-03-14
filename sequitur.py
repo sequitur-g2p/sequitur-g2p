@@ -202,7 +202,7 @@ class Sample(object):
             try:
                 eg = self.builder.create(left, right)
             except RuntimeError:
-                error = sys.exec_info()[1]
+                error = sys.exc_info()[1]
                 if str(error) != 'final node not reachable':
                     raise
                 print('warning: dropping one sample that has no segmentation', repr((left, right)))
@@ -721,7 +721,7 @@ class Translator:
         try:
             logLik, joint = self.translator(left)
         except RuntimeError:
-            exc = sys.exec_info()[1]
+            exc = sys.exc_info()[1]
             raise self.TranslationFailure(*exc.args)
         return logLik, self.unpackJoint(joint)
 
@@ -754,7 +754,7 @@ class Translator:
         try:
             result = self.translator.nBestInit(left)
         except RuntimeError:
-            exc = sys.exec_info()[1]
+            exc = sys.exc_info()[1]
             raise self.TranslationFailure(*exc.args)
         result.thisown = True
         result.logLikBest = self.translator.nBestBestLogLik(result)
@@ -765,7 +765,7 @@ class Translator:
         try:
             logLik, joint = self.translator.nBestNext(nBestContext)
         except RuntimeError:
-            exc = sys.exec_info()[1]
+            exc = sys.exc_info()[1]
             if exc.args[0] == 'no further translations':
                 raise StopIteration
             else:
@@ -799,7 +799,7 @@ class Segmenter:
                 self.sequitur.rightInventory.parse(right))
             logLik, joint = self.viterbi.segment(eg)
         except RuntimeError:
-            exc = sys.exec_info()[1]
+            exc = sys.exc_info()[1]
             raise self.SegmentationFailure(*exc.args)
         assert joint[-1] == self.sequitur.term
         joint = map(self.sequitur.inventory.symbol, joint[:-1])
