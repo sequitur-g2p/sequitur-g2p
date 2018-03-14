@@ -159,7 +159,15 @@ class Tool:
             model = ModelTemplate.resume(self.options.resume_from_checkpoint)
             self.sequitur = model.sequitur
         elif self.options.modelFile:
-            model = pickle.load(open(self.options.modelFile, 'rb'))
+            if sys.version_info[:2] >= (3, 0):
+                model = pickle.load(open(self.options.modelFile, 'rb'), encoding='latin1')
+            else:
+                try:
+                    model = pickle.load(open(self.options.modelFile, 'rb'))
+                except ValueError:
+                    print('This error most likely occured because the loaded model was created in python3.\n', file=sys.stderr)
+                    raise
+                
             self.sequitur = model.sequitur
         else:
             self.sequitur = Sequitur()

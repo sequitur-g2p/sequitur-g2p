@@ -678,8 +678,15 @@ class ModelTemplate:
             context.log.flush()
 
     def resume(cls, filename):
-        import cPickle as pickle
-        self, context = pickle.load(open(filename))
+        from six.moves import cPickle as pickle
+        if sys.version_info[:2] >= (3, 0):
+            self, context = pickle.load(open(filename), encoding='latin1')
+        else:
+            try:
+                self, context = pickle.load(open(filename))
+            except ValueError:
+                print('This error most likely occured because the loaded model was created in python3.\n', file=sys.stderr)
+                raise
         self.run(context)
         return context.bestModel
     resume = classmethod(resume)
