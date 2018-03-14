@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, print_function
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1668 $'
@@ -43,7 +43,7 @@ class Result:
         self.nStringErrors = 0
         if self.tableFile:
             row = [ column for column, var in self.tableFormat if column is not None ]
-            print >> self.tableFile, u'\t'.join(row)
+            print(u'\t'.join(row), self.tableFile)
 
     tableFormat = [
         (None,      '"".join(source)'),
@@ -84,7 +84,7 @@ class Result:
 
         if self.tableFile:
             row = [ unicode(eval(var)) for column, var in self.tableFormat ]
-            print >> self.tableFile, u'\t'.join(row)
+            print(u'\t'.join(row), file=self.tableFile)
 
     def accuFailure(self, reference, weight = 1):
         self.nStringsFailed += weight
@@ -149,7 +149,7 @@ def showAlignedResult(source, alignment, errors, out):
             vis.append('%s' % rr)
         else:
             vis.append('\033[0;31m%s/%s\033[0m' % (rr, ss))
-    print >> out, u'%s\t%s\t(%d errors)' % (''.join(source), ' '.join(vis), errors)
+    print(u'%s\t%s\t(%d errors)' % (''.join(source), ' '.join(vis), errors), file=out)
 
 
 def collateSample(sample):
