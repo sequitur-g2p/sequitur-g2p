@@ -25,11 +25,16 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-from distutils.command.build import build
-from distutils.core import setup, Extension
-import numpy
 import os
 
+from distutils.command.build import build
+from distutils.core import Extension
+from setuptools import setup
+
+import numpy
+
+with open('requirements.txt') as fp:
+    required = fp.read().splitlines()
 
 class CustomBuild(build):
     """Custom build class to swig before handling python modules."""
@@ -113,6 +118,7 @@ setup(
     description = 'sequence and joint-sequence modelling tool',
     author      = 'Maximilian Bisani',
     cmdclass    = {'build': CustomBuild},
+    install_requires=required,
     py_modules = sequiturModules,
     ext_modules = [sequiturExtension],
     scripts = sequiturScripts)
