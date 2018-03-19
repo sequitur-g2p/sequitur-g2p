@@ -30,8 +30,6 @@ from distutils.core import setup, Extension
 import numpy
 import os
 
-with open('requirements.txt') as f:
-    required = f.read().splitlines()
 
 class CustomBuild(build):
     """Custom build class to swig before handling python modules."""
@@ -115,7 +113,6 @@ setup(
     description = 'sequence and joint-sequence modelling tool',
     author      = 'Maximilian Bisani',
     cmdclass    = {'build': CustomBuild},
-    install_requires=required,
     py_modules = sequiturModules,
     ext_modules = [sequiturExtension],
     scripts = sequiturScripts)
