@@ -130,6 +130,8 @@ Here is step-by-step guide to get you started:
 
 
 Random comments:
+- You cannot open models created in a python3 environment inside a 
+  python2 environment. The opposite works.
 - Whenever a file name is required, you can specify "-" to mean
   standard in, or standard out.
 - If a file name ends in ".gz", it is assumed that the file is (or
