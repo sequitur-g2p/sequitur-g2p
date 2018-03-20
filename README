@@ -60,7 +60,7 @@ Installing
 
 To build and use this software you need to have the following part installed:
 - Python (http://www.python.org)
-  tested with 2.5
+  tested with 2.5, 2.7 and 3.6
 - SWIG (http://www.swig.org)
   tested with 1.3.31
 - NumPy (http://numpy.scipy.org)
@@ -74,6 +74,13 @@ You may substitue /usr/local with some other directory.  If you do so
 make sure that some-other-directory/lib/python2.5/site-packages/ is in
 your PYTHONPATH, e.g. by typing
     export PYTHONPATH=some-other-directory/lib/python2.5/site-packages
+
+You can also install via `pip` by pointing it at this repository. You still
+need SWIG and a C++ compiler.
+```
+pip install numpy
+pip install git+https://github.com/sequitur-g2p/sequitur-g2p@master
+```
 
 
 Using
