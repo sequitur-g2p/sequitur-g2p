@@ -25,9 +25,25 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-from distutils.core import setup, Extension
-import numpy
 import os
+
+from distutils.command.build import build
+from distutils.core import Extension
+from setuptools import setup
+
+import numpy
+
+with open('requirements.txt') as fp:
+    required = fp.read().splitlines()
+
+class CustomBuild(build):
+    """Custom build class to swig before handling python modules."""
+    sub_commands = [
+        ('build_ext', build.has_ext_modules),
+        ('build_py', build.has_pure_modules),
+        ('build_clib', build.has_c_libraries),
+        ('build_scripts', build.has_scripts)
+    ]
 
 sequiturExtension = Extension(
     '_sequitur_',
@@ -101,6 +117,8 @@ setup(
     version     = 'perpetually-alpha',
     description = 'sequence and joint-sequence modelling tool',
     author      = 'Maximilian Bisani',
+    cmdclass    = {'build': CustomBuild},
+    install_requires=required,
     py_modules = sequiturModules,
     ext_modules = [sequiturExtension],
     scripts = sequiturScripts)
