@@ -28,8 +28,7 @@ negligent actions or intended actions or fraudulent concealment.
 import os
 
 from distutils.command.build import build
-from distutils.core import Extension
-from setuptools import setup
+from setuptools import setup, Extension
 
 import numpy
 
@@ -114,7 +113,7 @@ lmScripts = [
 
 setup(
     name        = 'sequitur',
-    version     = 'perpetually-alpha',
+    version     = '1.0a1',
     description = 'sequence and joint-sequence modelling tool',
     author      = 'Maximilian Bisani',
     cmdclass    = {'build': CustomBuild},
