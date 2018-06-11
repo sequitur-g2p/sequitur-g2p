@@ -236,8 +236,9 @@ def gOpenIn(fname, encoding=None):
         # inp = gzip.open(fname, 'rb')
     else:
         inp = io.open(fname)
+
     if encoding:
-        inp = io.open(fname, encoding=encoding)
+        inp = codecs.getreader(encoding)(inp)
     return inp
 
 # def gOpenOut(fname, encoding=None):
