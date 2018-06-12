@@ -214,7 +214,7 @@ def reportMemoryProfile(root):
     profiler.reportByType(sys.stdout)
 
 # ===========================================================================
-import gzip, errno, os, sys, io
+import gzip, errno, os, sys, io, codecs
 
 def gOpenOut(fname, encoding=None):
     if fname == '-':
