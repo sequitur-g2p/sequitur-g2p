@@ -235,7 +235,8 @@ def gOpenIn(fname, encoding=None):
         inp = os.popen('gzip -dc %s' % fname, 'r')
         # inp = gzip.open(fname, 'rb')
     else:
-        inp = io.open(fname)
+        inp = io.open(fname, encoding=encoding)
+        return inp
 
     if encoding:
         inp = codecs.getreader(encoding)(inp)
