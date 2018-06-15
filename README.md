@@ -109,24 +109,32 @@ Here is step-by-step guide to get you started:
 
 2. Train a model.
    To create a first model type:
+   
        ```g2p.py --train train.lex --devel 5% --write-model model-1```
+       
    This first model will be rather poor because it is only a unigram.
    To create higher order models you need to run g2p.py again:
+   
        ```g2p.py --model model-1 --ramp-up --train train.lex --devel 5% --write-model model-2```
+       
    Repeat this a couple of times
+   
        ```g2p.py --model model-2 --ramp-up --train train.lex --devel 5% --write-model model-3
        g2p.py --model model-3 --ramp-up --train train.lex --devel 5% --write-model model-4
        ...
        ```
 
+
 3. Evaluate the model.
    To find out how accurately your model can transcribe unseen words type:
+   
        ```g2p.py --model model-6 --test test.lex```
 
 4. Transcribe new words.
    Prepare a list of words you want to transcribe as a simple text
    file words.txt with one word per line (and no phonemic
    transcription), then type:
+   
        ```g2p.py --model model-3 --apply words.txt```
 
 
