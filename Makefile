@@ -10,7 +10,7 @@ build-py:
 .PHONY:	build
 
 test:	build
-	mkdir -p tmp-test-install
+	mkdir -p tmp-test-install/lib/python2.7/site-packages/
 	sleep 3s
 	$(PYTHON) setup.py install --skip-build --prefix tmp-test-install
 	$(PYTHON) test_mGramCounts.py		;\
