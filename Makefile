@@ -11,8 +11,8 @@ build-py:
 
 test:	build
 	mkdir -p tmp-test-install
+	sleep 3s
 	$(PYTHON) setup.py install --skip-build --prefix tmp-test-install
-	export PYTHONPATH=tmp-test-install/lib/python2.5/site-packages; \
 	$(PYTHON) test_mGramCounts.py		;\
 #	$(PYTHON) test_SparseVector.py		;\
 #	$(PYTHON) test_LanguageModel.py		;\
