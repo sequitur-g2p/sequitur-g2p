@@ -15,7 +15,7 @@ __license__   = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -26,7 +26,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -77,7 +77,7 @@ def loadBlissLexicon(fname):
 def loadG2PSample(fname):
     if fname == '-':
         sample = loadPlainSample(fname)
-    else:        
+    else:
         firstLine = gOpenIn(fname, defaultEncoding).readline()
         if firstLine.startswith('<?xml'):
             sample = [ (tuple(orth), tuple(phon))
@@ -97,14 +97,14 @@ def loadP2PSample(compfname):
     return sample
 
 # ===========================================================================
-def readApply(fname):
-    for line in gOpenIn(fname, defaultEncoding):
+def readApply(fname, encoding = None):
+    for line in gOpenIn(fname, encoding):
         word = line.strip()
         left = tuple(word)
         yield word, left
 
-def readApplyP2P(fname):
-    for line in gOpenIn(fname, defaultEncoding):
+def readApplyP2P(fname, encoding = None):
+    for line in gOpenIn(fname, encoding):
         fields = line.split()
         word = fields[0]
         left = tuple(fields[1:])
@@ -149,11 +149,11 @@ def mainTest(translator, testSample, options):
 
 def mainApply(translator, options):
     if options.phoneme_to_phoneme:
-        words = readApplyP2P(options.applySample)
+        words = readApplyP2P(options.applySample, options.encoding)
     elif options.shouldTranspose:
-        words = readApplyP2P(options.applySample)
+        words = readApplyP2P(options.applySample, options.encoding)
     else:
-        words = readApply(options.applySample)
+        words = readApply(options.applySample, options.encoding)
 
     if options.variants_mass or options.variants_number:
         wantVariants = True
