@@ -1,0 +1,13 @@
+language: python
+python:
+  - "2.7"
+    #  - "3.5" not working yet
+# command to install dependencies
+addons:
+ apt_packages:
+   - swig
+install:
+  - pip install -r requirements.txt
+# command to run tests
+script:
+  - PYTHONPATH=`pwd`/tmp-test-install/lib/python2.7/site-packages/  make test
