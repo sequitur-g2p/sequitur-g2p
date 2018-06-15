@@ -69,11 +69,11 @@ To build and use this software you need to have the following part installed:
   tested with GCC 4.1, 4.2 and 4.3
 
 To install change to the source directory and type:
-    python setup.py install --prefix /usr/local
+    ```python setup.py install --prefix /usr/local```
 You may substitue /usr/local with some other directory.  If you do so
-make sure that some-other-directory/lib/python2.5/site-packages/ is in
+make sure that `some-other-directory/lib/python2.5/site-packages/` is in
 your PYTHONPATH, e.g. by typing
-    export PYTHONPATH=some-other-directory/lib/python2.5/site-packages
+    ```export PYTHONPATH=some-other-directory/lib/python2.7/site-packages```
 
 You can also install via `pip` by pointing it at this repository. You still
 need SWIG and a C++ compiler.
@@ -109,24 +109,25 @@ Here is step-by-step guide to get you started:
 
 2. Train a model.
    To create a first model type:
-       g2p.py --train train.lex --devel 5% --write-model model-1
+       ```g2p.py --train train.lex --devel 5% --write-model model-1```
    This first model will be rather poor because it is only a unigram.
    To create higher order models you need to run g2p.py again:
-       g2p.py --model model-1 --ramp-up --train train.lex --devel 5% --write-model model-2
+       ```g2p.py --model model-1 --ramp-up --train train.lex --devel 5% --write-model model-2```
    Repeat this a couple of times
-       g2p.py --model model-2 --ramp-up --train train.lex --devel 5% --write-model model-3
+       ```g2p.py --model model-2 --ramp-up --train train.lex --devel 5% --write-model model-3
        g2p.py --model model-3 --ramp-up --train train.lex --devel 5% --write-model model-4
        ...
+       ```
 
 3. Evaluate the model.
    To find out how accurately your model can transcribe unseen words type:
-       g2p.py --model model-6 --test test.lex
+       ```g2p.py --model model-6 --test test.lex```
 
 4. Transcribe new words.
    Prepare a list of words you want to transcribe as a simple text
    file words.txt with one word per line (and no phonemic
    transcription), then type:
-       g2p.py --model model-3 --apply words.txt
+       ```g2p.py --model model-3 --apply words.txt```
 
 
 Random comments:
