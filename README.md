@@ -110,7 +110,7 @@ Here is step-by-step guide to get you started:
 2. Train a model.
    To create a first model type:
    
-       ```g2p.py --train train.lex --devel 5% --write-model model-1```
+       g2p.py --train train.lex --devel 5% --write-model model-1
        
    This first model will be rather poor because it is only a unigram.
    To create higher order models you need to run g2p.py again:
