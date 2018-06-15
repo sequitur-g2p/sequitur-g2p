@@ -10,4 +10,4 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - PATH=`pwd`/tmp-test-install/lib/python2.7/site-packages/  make test
+  - PYTHONPATH=`pwd`/tmp-test-install/lib/python2.7/site-packages/  make test
