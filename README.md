@@ -15,7 +15,7 @@ The method used in this software is described in
 ```
    M. Bisani and H. Ney: "Joint-Sequence Models for Grapheme-to-Phoneme
    Conversion". Speech Communication, Volume 50, Issue 5, May 2008,
-   Pages 434-451 
+   Pages 434-451
 
    (avaliable online at http://dx.doi.org/10.1016/j.specom.2008.01.002)
 ```
@@ -38,7 +38,7 @@ License
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -49,7 +49,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -111,39 +111,39 @@ Here is step-by-step guide to get you started:
 
 2. Train a model.
    To create a first model type:
-   
+
    ```g2p.py --train train.lex --devel 5% --write-model model-1```
-       
+
    This first model will be rather poor because it is only a unigram.
    To create higher order models you need to run g2p.py again:
-   
+
    ```g2p.py --model model-1 --ramp-up --train train.lex --devel 5% --write-model model-2```
-       
+
    Repeat this a couple of times
-   
+
    ```
    g2p.py --model model-2 --ramp-up --train train.lex --devel 5% --write-model model-3
    g2p.py --model model-3 --ramp-up --train train.lex --devel 5% --write-model model-4
    ...
    ```
-       
+
 
 
 3. Evaluate the model.
    To find out how accurately your model can transcribe unseen words type:
-   
+
    ```g2p.py --model model-6 --test test.lex```
 
 4. Transcribe new words.
    Prepare a list of words you want to transcribe as a simple text
    file words.txt with one word per line (and no phonemic
    transcription), then type:
-   
+
    ```g2p.py --model model-3 --apply words.txt```
 
 
 Random comments:
-- You cannot open models created in a `python3` environment inside a 
+- You cannot open models created in a `python3` environment inside a
   python2 environment. The opposite works.
 - Whenever a file name is required, you can specify `"-"` to mean
   standard in, or standard out.
