@@ -4,3 +4,6 @@ build
 *.o
 .vscode/
 *.py[cod]
+sequitur.egg-info/
+tmp-test-install/
+dist/
