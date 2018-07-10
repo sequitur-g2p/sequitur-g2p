@@ -12,13 +12,14 @@ build-py:
 test:	build
 	mkdir -p tmp-test-install/lib/python2.7/site-packages/
 	sleep 3s
-	$(PYTHON) setup.py install --skip-build --prefix tmp-test-install
+	PYTHONPATH=./tmp-test-install/lib/python2.7/site-packages/ $(PYTHON) setup.py install --skip-build --prefix tmp-test-install
+	export PYTHONPATH=./tmp-test-install/lib/python2.7/site-packages/:${PYTHONPATH} ;\
 	$(PYTHON) test_mGramCounts.py		;\
 #	$(PYTHON) test_SparseVector.py		;\
 #	$(PYTHON) test_LanguageModel.py		;\
 	$(PYTHON) test_Minimization.py		;\
 	$(PYTHON) test_SequenceModel.py		;\
-#	$(PYTHON) test_IntTuple.py		;\
+# $(PYTHON) test_IntTuple.py		;\
 	$(PYTHON) test_sequitur.py
 #	rm -r tmp-test-install
 
