@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -463,7 +463,7 @@ void SequenceModel::set(PyObject *obj) {
   if (!PySequence_Check(obj))
     throw PythonException(PyExc_TypeError, "not a sequence");
 
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
   std::shared_ptr<InitData> data(new InitData);
 #else
   std::auto_ptr<InitData> data(new InitData);

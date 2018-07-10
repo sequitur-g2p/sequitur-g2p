@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,7 +27,7 @@
 
 #include "Python.hh"  // Must be first to prevent some warnings
 
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
 #include <unordered_map>
 using std::unordered_multimap;
 using std::unordered_map;
@@ -220,7 +220,7 @@ class Translator {
         verify(current.state.pos <= left.size());
         int lb = current.state.pos;
         LeftMap::const_iterator mi, mi_end;
-        for (int le = lb + (int)minLeftLen_; 
+        for (int le = lb + (int)minLeftLen_;
                  le <= lb + (int)maxLeftLen_ && le <= (int)left.size(); ++le) {
           Multigram lmg(&left[lb], &left[le]);
           for (Core::tie(mi, mi_end) = leftMap_.equal_range(lmg); mi != mi_end; ++mi) {
@@ -412,7 +412,7 @@ goalStateReached:
         verify(current.state.pos <= left.size());
         int lb = current.state.pos;
         LeftMap::const_iterator mi, mi_end;
-        for (int le = lb + (int)minLeftLen_; 
+        for (int le = lb + (int)minLeftLen_;
                  le <= lb +(int) maxLeftLen_ && le <= (int)left.size(); ++le) {
           Multigram lmg(&left[lb], &left[le]);
           for (Core::tie(mi, mi_end) = leftMap_.equal_range(lmg); mi != mi_end; ++mi) {

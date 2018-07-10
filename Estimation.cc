@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,7 +27,7 @@
 
 #include "Python.hh"  // Must be first to prevent some warnings
 
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
 #include <unordered_map>
 using std::unordered_map;
 #else
@@ -222,7 +222,7 @@ class EvidenceStore {
     SequenceModelEstimator *makeSequenceModelEstimator() const;
 
     size_t memoryUsed() const {
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) 
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
       struct StoreNode { typename Store::value_type value; bool cond;};
 #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
       typedef std::tr1::__detail::_Hash_node<Store::value_type, false> StoreNode;
@@ -629,7 +629,7 @@ class EstimationGraphBuilder :
     }
 
     size_t memoryUsed() const {
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) 
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
       struct NodeStateMapNode { typename NodeStateMap::value_type value; bool cond;};
 #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
       typedef std::tr1::__detail::_Hash_node<NodeStateMap::value_type, false> NodeStateMapNode;
@@ -738,8 +738,8 @@ void SequenceModelEstimator::makeSequenceModel(
   doKneserNeyDiscounting(discounts);
   computeProbabilities(vocabularySize);
 
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
-  std::auto_ptr<SequenceModel::InitData> data = std::auto_ptr<SequenceModel::InitData>(new SequenceModel::InitData);
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
+  std::shared_ptr<SequenceModel::InitData> data(new SequenceModel::InitData);
   //std::unique_ptr<SequenceModel::InitData> data;
   //data = std::move(new SequenceModel::InitData);
 #else
