@@ -188,6 +188,18 @@ def mainApply(translator, options):
             except:
                 pass
 
+def mainApplyWord(translator, options):
+    word = options.applyWord
+    left = tuple(word)
+    try:
+        result = translator(left)
+        print(('%s\t%s' % (word, ' '.join(result))))
+    except translator.TranslationFailure:
+        exc = sys.exc_info()[1]
+        try:
+            print('failed to convert "%s": %s' % (word, exc), file=stderr)
+        except:
+            pass
 
 def main(options, args):
     if options.phoneme_to_phoneme:
@@ -201,7 +213,7 @@ def main(options, args):
         model = SequiturTool.procureModel(options, loadSample, log=stdout)
         if not model:
             return 1
-        if options.testSample or options.applySample:
+        if options.testSample or options.applySample or options.applyWord:
             translator = Translator(model)
             if options.stack_limit:
                 translator.setStackLimit(options.stack_limit)
@@ -214,6 +226,9 @@ def main(options, args):
     if options.applySample:
         mainApply(translator, options)
         translator.reportStats(sys.stderr)
+
+    if options.applyWord:
+        mainApplyWord(translator, options)
 
 # ===========================================================================
 if __name__ == '__main__':
@@ -238,6 +253,9 @@ if __name__ == '__main__':
     optparser.add_option(
         '-a', '--apply', dest='applySample',
         help='apply grapheme-to-phoneme conversion to words read from FILE', metavar='FILE')
+    optparser.add_option(
+        '-w', '--word', dest='applyWord',
+        help='apply grapheme-to-phoneme conversion to word', metavar='string')
     optparser.add_option(
         '-V', '--variants-mass', type='float',
         help='generate pronunciation variants until \sum_i p(var_i) >= Q (only effective with --apply)', metavar='Q')
