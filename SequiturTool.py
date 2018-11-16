@@ -193,6 +193,7 @@ class Tool:
         if self.options.newModelFile:
             oldSize, newSize = model.strip()
             print('stripped number of multigrams from %d to %d' % (oldSize, newSize), file=self.log)
+            model.discount = model.discount.tolist()
             f = open(self.options.newModelFile, 'wb')
             pickle.dump(model, f, pickle.HIGHEST_PROTOCOL)
             f.close()
