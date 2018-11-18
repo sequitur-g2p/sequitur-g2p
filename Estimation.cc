@@ -27,7 +27,7 @@
 
 #include "Python.hh"  // Must be first to prevent some warnings
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
 #include <unordered_map>
 using std::unordered_map;
 #else
@@ -222,7 +222,7 @@ class EvidenceStore {
     SequenceModelEstimator *makeSequenceModelEstimator() const;
 
     size_t memoryUsed() const {
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
       struct StoreNode { typename Store::value_type value; bool cond;};
 #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
       typedef std::tr1::__detail::_Hash_node<Store::value_type, false> StoreNode;
@@ -629,7 +629,7 @@ class EstimationGraphBuilder :
     }
 
     size_t memoryUsed() const {
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
       struct NodeStateMapNode { typename NodeStateMap::value_type value; bool cond;};
 #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
       typedef std::tr1::__detail::_Hash_node<NodeStateMap::value_type, false> NodeStateMapNode;
@@ -738,7 +738,7 @@ void SequenceModelEstimator::makeSequenceModel(
   doKneserNeyDiscounting(discounts);
   computeProbabilities(vocabularySize);
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
   std::shared_ptr<SequenceModel::InitData> data(new SequenceModel::InitData);
   //std::unique_ptr<SequenceModel::InitData> data;
   //data = std::move(new SequenceModel::InitData);

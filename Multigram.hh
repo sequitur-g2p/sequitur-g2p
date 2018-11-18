@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -30,7 +30,7 @@
 #include "Python.hh"
 
 #include <vector>
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
 #include <unordered_map>
 using std::unordered_map;
 #else
@@ -171,7 +171,7 @@ class MultigramInventory {
     }
 
     size_t memoryUsed() const {
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) 
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
       struct MapNode { Map::value_type value; bool cond;};
 #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
       typedef std::tr1::__detail::_Hash_node<Map::value_type, false> MapNode;
