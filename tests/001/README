@@ -1,0 +1,22 @@
+reported_by: 
+  Ekaterina Levitskaya <el2727@nyu.edu>
+  github:@pehonnet
+  github:@JurPasha
+
+symptoms:
+  Traceback (most recent call last):
+    File "~/Tools/venv/g2p-sequitur/lib/python3.5/site-packages/g2p.py", line 269, in <module>
+      tool.run(main, options, args)
+    File "~/Tools/venv/g2p-sequitur/lib/python3.5/site-packages/tool.py", line 63, in run
+      status = runMain(main, options, args)
+    File "~/Tools/venv/g2p-sequitur/lib/python3.5/site-packages/tool.py", line 99, in runMain
+      status = main(options, args)
+    File "~/Tools/venv/g2p-sequitur/lib/python3.5/site-packages/g2p.py", line 215, in main
+      mainApply(translator, options)
+    File "~/Tools/venv/g2p-sequitur/lib/python3.5/site-packages/g2p.py", line 183, in mainApply
+      print(('%s\t%s' % (word, ' '.join(result))))
+  UnicodeEncodeError: 'ascii' codec can't encode characters in position 5-6: ordinal not in range(128)
+
+resolution:
+  adapt the printing of the debugging prints to run on codecs-writer with backslashescape enabled
+  enforce the debug prints to be always encoded as utf-8

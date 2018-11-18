@@ -38,6 +38,7 @@ import math, sys
 import SequiturTool
 from sequitur import Translator
 from misc import gOpenIn, gOpenOut, set
+import codecs
 
 # ===========================================================================
 def loadPlainSample(fname, encoding = None):
@@ -202,15 +203,31 @@ def mainApplyWord(translator, options):
             pass
 
 def main(options, args):
+    import locale
     if options.phoneme_to_phoneme:
         loadSample = loadP2PSample
     else:
         loadSample = loadG2PSample
 
+    enc = locale.getpreferredencoding()
+    if hasattr(sys.stdout, 'buffer'):
+        log_stdout = codecs.getwriter(enc)(sys.stdout.buffer, errors='backslashreplace')
+    else:
+        log_stdout = codecs.getwriter(enc)(sys.stdout, errors='backslashreplace')
+
+    if hasattr(sys.stderr, 'buffer'):
+        log_stderr = codecs.getwriter(enc)(sys.stderr.buffer, errors='backslashreplace')
+    else:
+        log_stderr = codecs.getwriter(enc)(sys.stderr, errors='backslashreplace')
+
+    #the encoding relates to the lexicon, not the standard IO
+    #log_stdout = codecs.getwriter(options.encoding, errors='backslashreplace')(sys.stdout) if options.encoding else sys.stdout;
+    #log_stderr = codecs.getwriter(options.encoding, errors='backslashreplace')(sys.stderr) if options.encoding else sys.stderr;
+
     if options.fakeTranslator:
         translator = MemoryTranslator(loadSample(options.fakeTranslator))
     else:
-        model = SequiturTool.procureModel(options, loadSample, log=stdout)
+        model = SequiturTool.procureModel(options, loadSample, log=log_stdout)
         if not model:
             return 1
         if options.testSample or options.applySample or options.applyWord:
@@ -221,11 +238,11 @@ def main(options, args):
 
     if options.testSample:
         mainTest(translator, loadSample(options.testSample), options)
-        translator.reportStats(sys.stdout)
+        translator.reportStats(log_stdout)
 
     if options.applySample:
         mainApply(translator, options)
-        translator.reportStats(sys.stderr)
+        translator.reportStats(log_stderr)
 
     if options.applyWord:
         mainApplyWord(translator, options)

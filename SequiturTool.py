@@ -8,7 +8,7 @@ __license__   = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -19,7 +19,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -96,10 +96,10 @@ class Tool:
             discount = num.array(discount)
         else:
             discount = None
-            
+
         template = ModelTemplate(self.sequitur)
         if self.options.fixed_discount:
-            template.DiscountAdjustmentStrategy = FixedDiscounts(discount)            
+            template.DiscountAdjustmentStrategy = FixedDiscounts(discount)
         elif self.develSample:
             if self.options.eager_discount_adjustment:
                 template.DiscountAdjustmentStrategy = EagerDiscountAdjuster
@@ -167,7 +167,7 @@ class Tool:
                 except ValueError:
                     print('This error most likely occured because the loaded model was created in python3.\n', file=sys.stderr)
                     raise
-                
+
             self.sequitur = model.sequitur
         else:
             self.sequitur = Sequitur()

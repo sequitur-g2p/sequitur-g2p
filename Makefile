@@ -9,6 +9,7 @@ build-py:
 
 .PHONY:	build
 
+# note the test won't probably work well for python3
 test:	build
 	mkdir -p tmp-test-install/lib/python2.7/site-packages/
 	sleep 3s

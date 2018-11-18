@@ -1,0 +1,21 @@
+reported_by: 
+  Ekaterina Levitskaya <el2727@nyu.edu>
+
+symptoms:
+  Traceback (most recent call last):
+    File "/home/user/sequitur-g2p-master-updated/sequitur.py", line 665, in run
+      shouldStop = self.iterate(context)
+    File "/home/user/sequitur-g2p-master-updated/sequitur.py", line 578, in iterate
+      self.shallUseMaximumApproximation)
+    File "/home/user/sequitur-g2p-master-updated/sequitur.py", line 263, in evidence
+      for eg in self.graphs(model):
+    File "/home/user/sequitur-g2p-master-updated/sequitur.py", line 203, in makeGraphs
+      eg = self.builder.create(left, right)
+    File "/home/user/.local/lib/python2.7/site-packages/sequitur_.py", line 227, in create
+      return _sequitur_.EstimationGraphBuilder_create(self, left, right)
+  ValueError: symbol out of range: 65536
+  iteration failed.
+  failed to estimate or load model
+
+resolution:
+  None (works for me)
