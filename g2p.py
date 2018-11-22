@@ -128,7 +128,7 @@ class MemoryTranslator:
         pass
 
 # ===========================================================================
-def mainTest(translator, testSample, options):
+def mainTest(translator, testSample, options, output_file):
     if options.shouldTranspose:
         testSample = transposeSample(testSample)
     if options.testResult:
@@ -139,7 +139,7 @@ def mainTest(translator, testSample, options):
     evaluator = Evaluator()
     evaluator.setSample(testSample)
     evaluator.resultFile = resultFile
-    evaluator.verboseLog = stdout
+    evaluator.verboseLog = output_file
     if options.test_segmental:
         supraSegmental = set(['.', "'", '"'])
         def removeSupraSegmental(phon):
@@ -148,7 +148,7 @@ def mainTest(translator, testSample, options):
     result = evaluator.evaluate(translator)
     print(result)
 
-def mainApply(translator, options):
+def mainApply(translator, options, output_file):
     if options.phoneme_to_phoneme:
         words = readApplyP2P(options.applySample, options.encoding)
     elif options.shouldTranspose:
@@ -176,29 +176,29 @@ def mainApply(translator, options):
                         break
                     posterior = math.exp(logLik - nBest.logLikTotal)
                     print(('%s\t%d\t%f\t%s' % \
-                          (word, nVariants, posterior, ' '.join(result))))
+                          (word, nVariants, posterior, ' '.join(result))), file=output_file)
                     totalPosterior += posterior
                     nVariants += 1
             else:
                 result = translator(left)
-                print(('%s\t%s' % (word, ' '.join(result))))
+                print(('%s\t%s' % (word, ' '.join(result))), file = output_file)
         except translator.TranslationFailure:
             exc = sys.exc_info()[1]
             try:
-                print('failed to convert "%s": %s' % (word, exc), file=stderr)
+                print('failed to convert "%s": %s' % (word, exc), file = stderr)
             except:
                 pass
 
-def mainApplyWord(translator, options):
-    word = options.applyWord
+def mainApplyWord(translator, options, output_file):
+    word = options.applyWord.decode(options.encoding)
     left = tuple(word)
     try:
         result = translator(left)
-        print(('%s\t%s' % (word, ' '.join(result))))
+        print(('%s\t%s' % (word, ' '.join(result))), file = output_file)
     except translator.TranslationFailure:
         exc = sys.exc_info()[1]
         try:
-            print('failed to convert "%s": %s' % (word, exc), file=stderr)
+            print('failed to convert "%s": %s' % (word, exc), file = stderr)
         except:
             pass
 
@@ -237,15 +237,15 @@ def main(options, args):
         del model
 
     if options.testSample:
-        mainTest(translator, loadSample(options.testSample), options)
+        mainTest(translator, loadSample(options.testSample), options, log_stdout)
         translator.reportStats(log_stdout)
 
     if options.applySample:
-        mainApply(translator, options)
+        mainApply(translator, options, gOpenOut(options.applySample, options.encoding or defaultEncoding))
         translator.reportStats(log_stderr)
 
     if options.applyWord:
-        mainApplyWord(translator, options)
+        mainApplyWord(translator, options, log_stdout)
 
 # ===========================================================================
 if __name__ == '__main__':

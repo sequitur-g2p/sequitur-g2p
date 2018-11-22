@@ -1,0 +1,24 @@
+reported_by: 
+  github: @wonkyuml
+
+symptoms:
+  Used command:
+  split -n l/1/10 data/local/dict_g2p//wordlist.txt | g2p.py -V 0.9 --variants-number 3 --encoding utf-8 --model exp/g2p//g2p.model.final --apply - > data/local/dict_g2p//output.1
+  
+  Traceback (most recent call last):
+    File "../build//lib.macosx-10.13-x86_64-2.7/g2p.py", line 304, in <module>
+      tool.run(main, options, args)
+    File "/Users/jtrmal/Downloads/sequitur-g2p/build/lib.macosx-10.13-x86_64-2.7/tool.py", line 63, in run
+      status = runMain(main, options, args)
+    File "/Users/jtrmal/Downloads/sequitur-g2p/build/lib.macosx-10.13-x86_64-2.7/tool.py", line 99, in runMain
+      status = main(options, args)
+    File "../build//lib.macosx-10.13-x86_64-2.7/g2p.py", line 244, in main
+      mainApply(translator, options)
+    File "../build//lib.macosx-10.13-x86_64-2.7/g2p.py", line 179, in mainApply
+      (word, nVariants, posterior, ' '.join(result))))
+  UnicodeEncodeError: 'ascii' codec can't encode character u'\u0438' in position 0: ordinal not in range(128)
+
+
+resolution:
+  adapt the printing of the debugging prints to run on codecs-writer with backslashescape enabled
+  enforce the debug prints to be always encoded using encoding obtain from sys.getpreferredencoding()
