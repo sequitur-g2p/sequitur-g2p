@@ -1,0 +1,17 @@
+reported_by: 
+  github: @vvasily
+
+symptoms:
+  When input file is specified with apply option g2p.py clears it and nothing to do:
+  ```
+  echo HELLO > file.txt
+  g2p.py --model conf/g2p_model --apply file.txt
+  ```
+  After that file.txt is cleared and no any output is displayed.
+  ```
+  cat file.txt | g2p.py --model conf/g2p_model --apply - works properly
+  ```
+
+resolution:
+  for the mainApply, direct the output to stdout, not file  applySample variable
+  (that file is only for reading)

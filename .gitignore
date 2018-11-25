@@ -7,3 +7,4 @@ build
 sequitur.egg-info/
 tmp-test-install/
 dist/
+tests/002/cmudict-0.7b
