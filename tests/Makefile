@@ -1,7 +1,7 @@
 PYTHON := python
 
-.PHONY: 001 002 003
-all : 001 002 003
+.PHONY: 001 002 003 004
+all : 001 002 003 004
 
 
 G2P := $(shell find ../build/ -name g2p.py | head -n 1)
@@ -25,3 +25,18 @@ PYTHON_PATH := $(shell find ../build/ -name "_sequitur*.so"| head -n 1| sed 's/_
 		PYTHONPATH=$(PYTHON_PATH) $(PYTHON) $(G2P) --encoding=utf-8 -V 0.9 --variants-number 3 --model 003/model-1 --word $$(tail -n 1 003/lexicon.txt | cut -f 1 -d ' ')  > 003/test_word.out
 		-@echo "Test 003 passed"
 		-@rm 003/log  003/model-1 003/test_word.out 003/test.out
+
+004:
+		PYTHONPATH=$(PYTHON_PATH) $(PYTHON) $(G2P) --encoding=utf-8 --devel 5% \
+							 --train $@/lexicon.txt --test $@/lexicon.txt \
+							 --continuous-test --self-test  --write-model $@/model-1 > $@/log
+		awk '{print $$1}' $@/lexicon.txt > $@/words.txt
+		cat $@/words.txt |  PYTHONPATH=$(PYTHON_PATH) $(PYTHON) $(G2P) \
+			--encoding=utf-8 -V 0.9 --variants-number 3 \
+			--model $@/model-1 --apply - > $@/test_1.out
+		PYTHONPATH=$(PYTHON_PATH) $(PYTHON) $(G2P) \
+			--encoding=utf-8 -V 0.9 --variants-number 3 \
+			--model $@/model-1 --apply $@/words.txt > $@/test_2.out
+		cmp $@/test_1.out $@/test_2.out
+		-@rm $@/log $@/model-1 $@/test_1.out $@/test_2.out $@/words.txt
+		-@echo "Test $@ passed"

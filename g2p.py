@@ -241,7 +241,7 @@ def main(options, args):
         translator.reportStats(log_stdout)
 
     if options.applySample:
-        mainApply(translator, options, gOpenOut(options.applySample, options.encoding or defaultEncoding))
+        mainApply(translator, options, gOpenOut('-', options.encoding or defaultEncoding))
         translator.reportStats(log_stderr)
 
     if options.applyWord:
