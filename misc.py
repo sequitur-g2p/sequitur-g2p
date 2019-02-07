@@ -218,7 +218,10 @@ import gzip, errno, os, sys, io, codecs
 
 def gOpenOut(fname, encoding=None):
     if fname == '-':
-        out = sys.stdout
+        if hasattr(sys.stdout, 'buffer'):
+            out = sys.stdout.buffer
+        else:
+            out = sys.stdout
     elif os.path.splitext(fname)[1] == '.gz':
         out = os.popen('gzip -fc >%s' % fname, 'w')
 #       out = gzip.open(fname, 'w')
