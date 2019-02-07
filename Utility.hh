@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -291,14 +291,5 @@ namespace Core {
 
 } // namespace Core
 
-
-/**
- * This seems to be obsolete for GCC >= 3.3.4
- */
-#include <functional>
-namespace std {
-    template <class _Pair> struct select1st : public std::_Select1st<_Pair> {};
-    template <class _Pair> struct select2nd : public std::_Select2nd<_Pair> {};
-}
 
 #endif // _CORE_UTILITY_HH

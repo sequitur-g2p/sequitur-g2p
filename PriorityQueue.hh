@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -28,7 +28,7 @@
 #ifndef _CORE_PRIORITY_QUEUE_HH
 #define _CORE_PRIORITY_QUEUE_HH
 
-#ifdef __GXX_EXPERIMENTAL_CXX0X__
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
 #include <unordered_map>
 using std::unordered_map;
 #define stdhash std::hash
@@ -38,13 +38,34 @@ using std::tr1::unordered_map;
 #define stdhash std::tr1::hash
 #endif
 #include <functional>
-#include <ext/functional>
+//#include <ext/functional>
+
 
 #include "Assertions.hh"
 #include "Types.hh"
 
 
 namespace Core {
+
+template< typename P >
+struct select1st
+{
+   typename P::first_type const& operator()( P const& p ) const
+   {
+       return p.first;
+   }
+};
+
+template< typename P >
+struct select2nd
+{
+   typename P::second_type const& operator()( P const& p ) const
+   {
+       return p.second;
+   }
+};
+
+
 
   template <class T_Heap, class T_PriorityFunction>
     class PriorityQueueBase :
@@ -236,9 +257,9 @@ namespace Core {
    * Heap-based priority queue class template with random access.
    */
   // the lambda version:
-  template <class T_Item, class T_Key = typename T_Item::first_type, class T_KeyFunction = __gnu_cxx::select1st<T_Item>,
+  template <class T_Item, class T_Key = typename T_Item::first_type, class T_KeyFunction = select1st<T_Item>,
            class T_PriorityFunction = std::binary_function<std::less<typename T_Item::second_type>,
-           __gnu_cxx::select2nd<T_Item>, __gnu_cxx::select2nd<T_Item> >,
+           select2nd<T_Item>, select2nd<T_Item> >,
            class T_Hash_Obj = stdhash<T_Key> >
              class TracedPriorityQueue :
                public PriorityQueueBase<

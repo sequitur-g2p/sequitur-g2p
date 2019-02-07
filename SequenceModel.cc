@@ -463,7 +463,7 @@ void SequenceModel::set(PyObject *obj) {
   if (!PySequence_Check(obj))
     throw PythonException(PyExc_TypeError, "not a sequence");
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
   std::shared_ptr<InitData> data(new InitData);
 #else
   std::auto_ptr<InitData> data(new InitData);
