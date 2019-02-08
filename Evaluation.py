@@ -29,8 +29,15 @@ negligent actions or intended actions or fraudulent concealment.
 
 from sequitur_ import align
 
+try:
+    unicode
+except NameError:
+    # In Python 3:
+    unicode = str
+
+
 class Result:
-    def __init__(self, name = None, tableFile = None):
+    def __init__(self, name = None, tableFile = None, print_header = False):
         self.name = name
         self.tableFile = tableFile
         self.nStringsTranslated = 0
@@ -41,18 +48,29 @@ class Result:
         self.nDeletions = 0
         self.nSubstitutions = 0
         self.nStringErrors = 0
-        if self.tableFile:
-            row = [ column for column, var in self.tableFormat if column is not None ]
-            print(u'\t'.join(row), self.tableFile)
+        if self.tableFile and print_header:
+            print(self.build_row(True), file=self.tableFile)
 
-    tableFormat = [
-        (None,      '"".join(source)'),
-        ('weight',  'weight'),
-        ('symbols', 'nSymbols'),
-        ('ins',     'nInsertions'),
-        ('del',     'nDeletions'),
-        ('sub',     'nSubstitutions'),
-        ('err',     'nStringErrors')]
+    def build_row(self, header, source=tuple(), weight=None, nSymbols=None,
+                  nInsertions=None, nDeletions=None,
+                  nSubstitutions=None, nStringErrors=None):
+        tableFormat = [
+            ('entry',      "".join(source)),
+            ('weight',  weight),
+            ('symbols', nSymbols),
+            ('ins',     nInsertions),
+            ('del',     nDeletions),
+            ('sub',     nSubstitutions),
+            ('err',     nStringErrors)]
+        if header:
+            row = [
+                unicode(column) for column, var in tableFormat
+            ]
+        else:
+            row = [
+                unicode(var) for column, var in tableFormat
+            ]
+        return u'\t'.join(row)
 
     def accu(self, source, reference, candidate, alignment, errors, weight = 1):
         self.nStringsTranslated += weight
@@ -83,8 +101,12 @@ class Result:
         self.nSubstitutions += nSubstitutions
 
         if self.tableFile:
-            row = [ unicode(eval(var)) for column, var in self.tableFormat ]
-            print(u'\t'.join(row), file=self.tableFile)
+            row = self.build_row(False, source=source, weight=weight,
+                                 nSymbols=nSymbols, nInsertions=nInsertions,
+                                 nDeletions=nDeletions,
+                                 nSubstitutions=nSubstitutions,
+                                 nStringErrors=nStringErrors)
+            print(row, file=self.tableFile)
 
     def accuFailure(self, reference, weight = 1):
         self.nStringsFailed += weight
