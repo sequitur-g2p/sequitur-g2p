@@ -37,7 +37,7 @@ except NameError:
 
 
 class Result:
-    def __init__(self, name = None, tableFile = None):
+    def __init__(self, name = None, tableFile = None, print_header = False):
         self.name = name
         self.tableFile = tableFile
         self.nStringsTranslated = 0
@@ -48,14 +48,14 @@ class Result:
         self.nDeletions = 0
         self.nSubstitutions = 0
         self.nStringErrors = 0
-        if self.tableFile:
+        if self.tableFile and print_header:
             print(self.build_row(True), file=self.tableFile)
 
     def build_row(self, header, source=tuple(), weight=None, nSymbols=None,
                   nInsertions=None, nDeletions=None,
                   nSubstitutions=None, nStringErrors=None):
         tableFormat = [
-            (None,      "".join(source)),
+            ('entry',      "".join(source)),
             ('weight',  weight),
             ('symbols', nSymbols),
             ('ins',     nInsertions),
@@ -65,12 +65,10 @@ class Result:
         if header:
             row = [
                 unicode(column) for column, var in tableFormat
-                if column is not None
             ]
         else:
             row = [
                 unicode(var) for column, var in tableFormat
-                if column is not None
             ]
         return u'\t'.join(row)
 
