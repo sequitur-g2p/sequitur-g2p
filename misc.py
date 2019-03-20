@@ -1,5 +1,15 @@
+#!/usr/bin/env python
 from __future__ import division
 from __future__ import print_function
+
+import sys
+import errno
+import os
+import io
+import codecs
+import gc
+import resource
+
 
 __author__    = 'Maximilian Bisani'
 __version__   = '$LastChangedRevision: 1691 $'
@@ -29,20 +39,20 @@ negligent actions or intended actions or fraudulent concealment.
 """
 
 # ===========================================================================
-import sys
 
 if sys.version_info[:2] < (2, 4):
     def sorted(l):
-        l = list(l)
-        l.sort()
-        return l
+        lx = list(l)
+        lx.sort()
+        return lx
 
     def reversed(l):
-        l = list(l)
-        l.reverse()
-        return l
+        lx = list(l)
+        lx.reverse()
+        return lx
 
-    from sets import Set; set = Set
+    from sets import Set
+    set = Set
 
 else:
     sorted = sorted
@@ -52,15 +62,17 @@ else:
 if sys.version_info[:2] >= (3, 0):
     unicode = None
     object_or_InstanceType = object
+
+    def cmp(a, b):
+        return (a > b) - (b > a)
 else:
     import types
     object_or_InstanceType = types.InstanceType
 
 # ===========================================================================
-import gc, os, resource, sys
-
 pageSize = resource.getpagesize()
 megabyte = 1024 * 1024
+
 
 def meminfo():
     pid = os.getpid()
@@ -72,21 +84,25 @@ def meminfo():
     size, resident, shared, trs, drs, lrs, dt = tuple(data)
     return size * pageSize, resident * pageSize
 
+
 def reportMemoryUsage():
     try:
         size, resident = meminfo()
     except NotImplementedError:
         return
-    print('memory usage:  virtual %1.1f MB   resident %1.1f MB' % \
+    print('memory usage:  virtual %1.1f MB   resident %1.1f MB' %
           (size / megabyte, resident / megabyte))
+
 
 def cputime():
     user, system, childUser, childSystem, wall = os.times()
     return user
 
+
 class MemoryProfiler:
     class Record(object):
         __slots__ = ['id', 'object', 'type', 'path', 'usage']
+
         def __init__(self, object, path):
             self.id = id(object)
             self.object = object
@@ -145,7 +161,6 @@ class MemoryProfiler:
             for child in children:
                 self.add(child)
 
-
     def inspectList(self, current):
         for index, item in enumerate(current.object):
             yield self.Record(item, '%s[%d]' % (current.path, index))
@@ -170,18 +185,18 @@ class MemoryProfiler:
         list:  inspectList,
         tuple: inspectList,
         dict:  inspectDict,
-        object_or_InstanceType: inspectInstance # old-style class
+        object_or_InstanceType: inspectInstance  # old-style class
         }
 
     def report(self, out):
         records = self.records.values()
-        records.sort(key = lambda rec: rec.path)
+        records.sort(key=lambda rec: rec.path)
         sum = 0
         for record in records:
             what = repr(record.object)
             if len(what) > 50:
                 what = what[:46] + ' ...'
-            fields =  [record.path, str(record.usage), what]
+            fields = [record.path, str(record.usage), what]
             print('\t'.join(fields), file=out)
             sum += record.usage
         print('total:', sum, file=out)
@@ -214,7 +229,7 @@ def reportMemoryProfile(root):
     profiler.reportByType(sys.stdout)
 
 # ===========================================================================
-import gzip, errno, os, sys, io, codecs
+
 
 def gOpenOut(fname, encoding=None):
     if fname == '-':
@@ -234,9 +249,13 @@ def gOpenOut(fname, encoding=None):
 
     return out
 
+
 def gOpenIn(fname, encoding=None):
     if fname == '-':
-        inp = sys.stdin
+        if hasattr(sys.stdin, 'buffer'):
+            inp = sys.stdin.buffer
+        else:
+            inp = sys.stdin
     elif os.path.splitext(fname)[1] == '.gz':
         if not os.path.isfile(fname):
             raise IOError(errno.ENOENT, 'No such file: \'%s\'' % fname)
@@ -279,19 +298,22 @@ def gOpenIn(fname, encoding=None):
 #     return inp
 
 # ===========================================================================
+
+
 class RestartStub:
     def __init__(self, fun, args):
-        self.fun  = fun
+        self.fun = fun
         self.args = args
 
     def __iter__(self):
         return self.fun(*self.args)
+
 
 def restartable(fun):
     def restartableFun(*args):
         return RestartStub(fun, args)
     return restartableFun
 
+
 def once(fun):
     return fun()
-
