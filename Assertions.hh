@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, you will find it at
  * http://www.gnu.org/licenses/gpl.html, or write to the Free Software
- * Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
  * USA.
  *
  * Should a provision of no. 9 and 10 of the GNU General Public License
@@ -35,7 +35,7 @@
  * @page DesignByContract Design by Contract
  * @see Assertions.hh
  *
- * @subsection faq Two FAQs for the extremely impacient:
+ * @subsection faq Two FAQs for the extremely impatient:
  *
  * - Q: I get a precondition violation in somebody else's code. Why?
  *   A: A recondition violation is caused by a require() statement.
@@ -82,14 +82,14 @@
  * @subsubsection prepost Preconditions and Postconditions
  *
  * The basic idea is to view the relation between classes as a
- * client-supplier releationship.  The interface of a function or
+ * client-supplier relationship.  The interface of a function or
  * class is a contract between these parties, which states their
  * mutual obligations.  The obligations of the client, i.e. the
- * caller, are called precoditions; they must be satisfied before the
+ * caller, are called preconditions; they must be satisfied before the
  * function is called.  The supplier, i.e. the called function,
  * benefits from its preconditions, because it may rely on them.  The
  * obligations of the callee are called postconditions; they must be
- * fulfilled when the function returns.
+ * fulfiled when the function returns.
  *
  * Preconditions and postconditions are two types of assertions.  If
  * under any circumstances an assertion does not hold, this indicates
@@ -102,13 +102,13 @@
  * and return types can also be considered pre- and postconditions
  * respectively, but they are checked statically by the compiler.
  * require(), ensure() and verify() all take a boolean expression as
- * argument and abort execution immediatelly with an error message,
+ * argument and abort execution immediately with an error message,
  * when it evaluates to false.
  *
  * @warning Remember that assertions must NEVER have SIDE-EFFECTS.
  *
  * The use of assertions resembles a formal proof of correctness:
- * Precoditions (require()) correspond to the presumptions, verify()
+ * Preconditions (require()) correspond to the presumptions, verify()
  * assertions denote the intermediate steps of the proof, and
  * postconditions (ensure()) state the proposition to be proved.
  *
@@ -122,7 +122,7 @@
  * in a production version, is like wearing a life jacket on the
  * shore, and leaving it behind when going to the sea."  In consequence
  * Sprint adopts a three way build system:
- * - the release verion checks no assertions at all.  Maximum speed,
+ * - the release version checks no assertions at all.  Maximum speed,
  * maximum risk
  * - the standard version checks most assertions, except for those incurring
  * a significant performance penalty.  High speed, moderate risk.
@@ -163,11 +163,11 @@ namespace AssertionsPrivate {
 
 #if !defined(RELEASE)
 /**
- * Check precodition.   Abort if @c expr is false.
+ * Check precondition.   Abort if @c expr is false.
  *
  * Use require() to state requirements you impose on the value of the
  * functions argument or on the state of objects when the function is
- * called.  The caller is the obliged take care of this and fullfil
+ * called.  The caller is the obliged take care of this and fulfil
  * all requirements.  Your function should not test for any these
  * preconditions anymore.
  * @warning @c expr must not have side-effects.
@@ -204,7 +204,7 @@ namespace AssertionsPrivate {
  *
  * Use ensure() to state an assurance about the return value and the
  * state of objects after your function returns.  You are obliged to
- * fulfill these promised.  Any caller may rely on them, if he has
+ * fulfil these promised.  Any caller may rely on them, if he has
  * satisfied all preconditions.
  * @warning @c expr must not have side-effects.
  * If your function is very short, inlined and called frequently,
@@ -238,7 +238,7 @@ namespace AssertionsPrivate {
 /**
  * Check assertion.  Abort if @c expr is false.
  *
- * Use verify() to state a proposition about the correctnes of the
+ * Use verify() to state a proposition about the correctness of the
  * program.  In principle it must be logically deducible that given
  * the expression is true.  Reason to include verify() statements
  * nevertheless are: a) You might be wrong. b) (You and) Others will
@@ -275,7 +275,7 @@ namespace AssertionsPrivate {
 
 #if !defined(RELEASE)
 /**
- * Program has a defect.  Abort immediatelly.
+ * Program has a defect.  Abort immediately.
  *
  * This is a shorthand for verify(false).  Use defect() for points in
  * the code which cannot be reached in a correct program, like some
@@ -292,7 +292,7 @@ namespace AssertionsPrivate {
 
 #if defined(DEBUG)
 /**
- * Check polymorphic type precodition.
+ * Check polymorphic type precondition.
  *
  * This performs a down-cast to type @c T.  In the debug version the
  * correctness of this cast is checked and an assertion violation is
@@ -303,7 +303,7 @@ namespace AssertionsPrivate {
  * Discussion: Due to C++ adhering to the contravariance principle,
  * many polymorphic functions need to down-cast their arguments.  In
  * such cases it can be considered a pre-condition, that this cast
- * must not fail.  It is preferrable to use required_cast() rather
+ * must not fail.  It is preferable to use required_cast() rather
  * than @c dynamic_cast or @c static_cast in such cases, since @c
  * dynamic_cast has considerable run-time over-head and @c static_cast
  * is unsafe.
@@ -326,7 +326,7 @@ namespace AssertionsPrivate {
  * hope() is similar to verify(), but the test will be executed in
  * standard, debug and release versions regardless.  Use hope() instead of
  * verify() when there is no logically infallible argument for the
- * expresion being true, but you have good reason to believe that the
+ * expression being true, but you have good reason to believe that the
  * contrary will hardly ever occur.  The use of hope() is discouraged,
  * you should write proper runtime error handling.  But during
  * development or for very obscure sources of failure, it is
