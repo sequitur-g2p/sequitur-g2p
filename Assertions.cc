@@ -106,7 +106,7 @@ void ErrorSignalHandler::handler(int sig) {
 	std::cerr << std::endl << std::endl
 		  << "PROGRAM DEFECTIVE:"
 		  << std::endl
-		  << strsignal(sig) << " occured" << std::endl
+		  << strsignal(sig) << " occurred" << std::endl
 		  << std::endl;
 	stackTrace(std::cerr, 1);
 	std::cerr << std::endl;

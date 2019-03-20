@@ -690,7 +690,7 @@ class ModelTemplate:
             try:
                 self, context = pickle.load(open(filename))
             except ValueError:
-                print('This error most likely occured because the loaded model was created in python3.\n', file=sys.stderr)
+                print('This error most likely occurred because the loaded model was created in python3.\n', file=sys.stderr)
                 raise
         self.run(context)
         return context.bestModel

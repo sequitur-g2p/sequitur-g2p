@@ -714,7 +714,7 @@ SequenceModelEstimator *EvidenceStore::makeSequenceModelEstimator() const {
     sme->items.push_back(item);
   }
 
-  // ensure all events we are going to discout to are present
+  // ensure all events we are going to discount to are present
   for (size_t i = 0; i < sme->items.size(); ++i) {
     item = sme->items[i];
     item.evidence = Probability(0.0);

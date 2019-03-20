@@ -242,7 +242,7 @@ namespace AssertionsPrivate {
  * program.  In principle it must be logically deducible that given
  * the expression is true.  Reason to include verify() statements
  * nevertheless are: a) You might be wrong. b) (You and) Others will
- * find it easier to understand you code.  If the trueness of @c expr
+ * find it easier to understand your code.  If the trueness of @c expr
  * depends of the functions arguments, use require() instead.  If it
  * depends on some runtime event, do not use assertions at all.
  * @warning @c expr must not have side-effects.

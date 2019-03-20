@@ -84,8 +84,8 @@ namespace Core {
 
     /** A helper for conveniently assigning the two values from a pair
      * into separate variables. The idea for this comes from Jaakko
-     * J„rvi's Binder/Lambda Library.  Code stolen from Boost, to
-     * which it was constributed by Jeremy Siek */
+     * Jarvi's Binder/Lambda Library.  Code stolen from Boost, to
+     * which it was contributed by Jeremy Siek */
 
     template <class A, class B>
     class tied {
@@ -264,7 +264,7 @@ namespace Core {
      * thought of as the number of different normalized floating point
      * numbers between @c a and @c b.
      *
-     * This method is preferrable to the older isAlmostEqual(),
+     * This method is preferable to the older isAlmostEqual(),
      * because it is faster and theoretically more sound.  So maybe
      * isAlmostEqual() should be removed some time.
      */
