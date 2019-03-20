@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
-Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
  
 Should a provision of no. 9 and 10 of the GNU General Public License
@@ -41,7 +41,7 @@ def bracketMinimum(f, xa, xb):
     Given a unary function f and initial point xa and xb, search in
     downhill direction and returns new points xa, xb, xc which bracket
     a minimum of f.
-    adapted from: W. H. Press et. al., "Numerical Recipies", section 10.1
+    adapted from: W. H. Press et. al., "Numerical Recipes", section 10.1
     """
     fa = f(xa)
     fb = f(xb)
@@ -102,7 +102,7 @@ def linearMinimization(f, x=None, lower=None, upper=None, tolerance = 1.0e-10, m
     Given a function f and staring point x, this function determines
     the minimum of x using Brent's method of parabolic interpolation.
     Alternatively lower and upper bounds can be given instead of x.
-    adapted from: W. H. Press et. al., "Numerical Recipies", section 10.2
+    adapted from: W. H. Press et. al., "Numerical Recipes", section 10.2
     """
 
     if x is not None:
@@ -196,7 +196,7 @@ def hasConverged(fCurrent, fOld, tolerance):
 def directionSetMinimization(f, initialPoint, directions = None, tolerance = 1.0e-10, maxIterations = maxIterations):
     """
     Powell's method of multi-dimension minimization.
-    inspired from: W. H. Press et. al., "Numerical Recipies", section 10.5
+    inspired from: W. H. Press et. al., "Numerical Recipes", section 10.5
     """
     if directions is None:
         directions = identity(len(initialPoint), type=Float64)

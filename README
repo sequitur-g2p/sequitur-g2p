@@ -15,7 +15,7 @@ The method used in this software is described in
   Conversion". Speech Communication, Volume 50, Issue 5, May 2008,
   Pages 434-451 
 
-  (avaliable online at http://dx.doi.org/10.1016/j.specom.2008.01.002)
+  (available online at http://dx.doi.org/10.1016/j.specom.2008.01.002)
 
 This software is made available to you under terms of the GNU Public
 License. It can be used for experimentation and as part of other free
@@ -44,7 +44,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
-Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
  
 Should a provision of no. 9 and 10 of the GNU General Public License
@@ -69,7 +69,7 @@ To build and use this software you need to have the following part installed:
 
 To install change to the source directory and type:
     python setup.py install --prefix /usr/local
-You may substitue /usr/local with some other directory.  If you do so
+You may substitute /usr/local with some other directory.  If you do so
 make sure that some-other-directory/lib/python2.5/site-packages/ is in
 your PYTHONPATH, e.g. by typing
     export PYTHONPATH=some-other-directory/lib/python2.5/site-packages

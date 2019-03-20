@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, you will find it at
  * http://www.gnu.org/licenses/gpl.html, or write to the Free Software
- * Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
  * USA.
  *
  * Should a provision of no. 9 and 10 of the GNU General Public License
@@ -714,7 +714,7 @@ SequenceModelEstimator *EvidenceStore::makeSequenceModelEstimator() const {
     sme->items.push_back(item);
   }
 
-  // ensure all events we are going to discout to are present
+  // ensure all events we are going to discount to are present
   for (size_t i = 0; i < sme->items.size(); ++i) {
     item = sme->items[i];
     item.evidence = Probability(0.0);

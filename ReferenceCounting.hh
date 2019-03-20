@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, you will find it at
  * http://www.gnu.org/licenses/gpl.html, or write to the Free Software
- * Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
  * USA.
  *
  * Should a provision of no. 9 and 10 of the GNU General Public License
@@ -38,8 +38,8 @@ namespace Core {
     /**
      * Base class for reference-counted objects.
      *
-     * To enable reference counting for a class it need to inhert this
-     * class publically.
+     * To enable reference counting for a class it need to inherit this
+     * class publicly.
      */
 
     class ReferenceCounted {
@@ -78,15 +78,15 @@ namespace Core {
      * Naming: Concrete smart pointer types should have a "Ref" suffix:
      * e.g. typedef Ref<Foo> FooRef;
      * (Obviously calling this class "Ref" instead of more
-     * correcly "Reference" deviates from the naming conventions.
+     * correctly "Reference" deviates from the naming conventions.
      * However since this class is used extensively a shorter name is
-     * mandated.  "Ref" is analogious to the "REF" keyword in
+     * mandated.  "Ref" is analogous to the "REF" keyword in
      * Modula-3.)
      *
-     * @c T should be a decendent of ReferenceCounted.
+     * @c T should be a descendant of ReferenceCounted.
      *
      * Note: Virtual derivation from ReferenceCounted is not allowed
-     * currently.  Reasons are many but the most imporatant one is
+     * currently.  Reasons are many but the most important one is
      * that we use a sentinel instead of null to represent a reference
      * is invalid (i.e. void).  Advantage of using a sentinel is that
      * in the most frequently used functions (e.g. copy constructor)
@@ -105,7 +105,7 @@ namespace Core {
      * derivation from ReferenceCounted is not permitted by
      * static_cast.  It does not mean that ReferenceCounting and
      * virtual inheritance does not go along at all: Make your virtual
-     * inheritance hiearchy first, and derive only the most specific
+     * inheritance hierarchy first, and derive only the most specific
      * class from ReferenceCounted.
      */
 
@@ -142,7 +142,7 @@ namespace Core {
 	/**
 	 * Copy Constructor for the Type Ref<T>
 	 *
-	 * @warning: Implementaion of this constructor is necesseary
+	 * @warning: Implementation of this constructor is necessary
 	 * although the template copy constructor implements exactly
 	 * the same function.  If this constructor is not defined, the
 	 * compiler creates a default copy constructor instead of
@@ -152,7 +152,7 @@ namespace Core {
 	    ++object_->referenceCount_;
 	}
 	/**
-	 * Template Copy Constuctor.
+	 * Template Copy Constructor.
 	 *
 	 * Using a template allows automatic conversion in following cases:
 	 * - from non-const to const reference
@@ -236,7 +236,7 @@ namespace Core {
 	}
 	/** Value of internal pointer.
 	 * @warning Do not use this function. It is only used in the
-	 * template copy contructor and the template operator= functions.
+	 * template copy constructor and the template operator= functions.
 	 */
 	Object* _get() const { return object_; }
     };

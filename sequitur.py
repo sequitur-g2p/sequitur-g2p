@@ -18,7 +18,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
-Foundation, Inc., 51 Franlin Street, Fifth Floor, Boston, MA 02110,
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
 
 Should a provision of no. 9 and 10 of the GNU General Public License
@@ -690,7 +690,7 @@ class ModelTemplate:
             try:
                 self, context = pickle.load(open(filename))
             except ValueError:
-                print('This error most likely occured because the loaded model was created in python3.\n', file=sys.stderr)
+                print('This error most likely occurred because the loaded model was created in python3.\n', file=sys.stderr)
                 raise
         self.run(context)
         return context.bestModel
