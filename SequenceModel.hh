@@ -41,12 +41,12 @@
 
 struct StringHash {
     size_t operator() (const char *s) const {
-	size_t result = 0;
-	while (*s) result = 5 * result + size_t(*s++);
-	return result;
+        size_t result = 0;
+        while (*s) result = 5 * result + size_t(*s++);
+        return result;
     }
     size_t operator() (const std::string &s) const {
-	return (*this)(s.c_str());
+        return (*this)(s.c_str());
     }
 };
 
@@ -54,10 +54,10 @@ struct StringEquality :
     std::binary_function<const char*, const char*, bool>
 {
     bool operator() (const char *s, const char *t) const {
-	return (s == t) || (strcmp(s, t) == 0);
+        return (s == t) || (strcmp(s, t) == 0);
     }
     bool operator() (const std::string &s, const std::string &t) const {
-	return (s == t);
+        return (s == t);
     }
 };
 
@@ -74,28 +74,28 @@ public:
     ~StringInventory();
 
     std::string symbol(u32 i) const {
-	require(i < list_.size());
-	const char *result = list_[i];
-	return (result) ? result : "(void)";
+        require(i < list_.size());
+        const char *result = list_[i];
+        return (result) ? result : "(void)";
     }
 
     u32 findOrAdd(const char *str) {
-	Map::const_iterator wmi = map_.find(str);
-	if (wmi == map_.end()) {
-	    u32 i = list_.size();
-	    const char *myStr = strdup(str);
-	    wmi = map_.insert(std::make_pair(myStr, i)).first;
-	    list_.push_back(myStr);
-	}
-	return wmi->second;
+        Map::const_iterator wmi = map_.find(str);
+        if (wmi == map_.end()) {
+            u32 i = list_.size();
+            const char *myStr = strdup(str);
+            wmi = map_.insert(std::make_pair(myStr, i)).first;
+            list_.push_back(myStr);
+        }
+        return wmi->second;
     }
 
     u32 index(const char *str) {
-	Map::const_iterator wmi = map_.find(str);
-	if (wmi == map_.end()) {
-	    return invalidIndex;
-	} else
-	    return wmi->second;
+        Map::const_iterator wmi = map_.find(str);
+        if (wmi == map_.end()) {
+            return invalidIndex;
+        } else
+            return wmi->second;
     }
 };
 #endif // INSTRUMENTATION

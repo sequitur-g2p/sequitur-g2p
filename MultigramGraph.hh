@@ -42,16 +42,16 @@ public:
     typedef std::vector<Graph::NodeId> NodeList;
 
     MultigramGraph() :
-	initial_(0), final_(0),
-	token_(&graph_),
-	probability_(&graph_)
-	{}
+        initial_(0), final_(0),
+        token_(&graph_),
+        probability_(&graph_)
+        {}
 
     size_t memoryUsed() const {
-	return sizeof(this)
-	    + graph_.memoryUsed() - sizeof(Graph)
-	    + token_.memoryUsed() - sizeof(EdgeMap<SequenceModel::Token>)
-	    + probability_.memoryUsed() - sizeof(EdgeMap<LogProbability>);
+        return sizeof(this)
+            + graph_.memoryUsed() - sizeof(Graph)
+            + token_.memoryUsed() - sizeof(EdgeMap<SequenceModel::Token>)
+            + probability_.memoryUsed() - sizeof(EdgeMap<LogProbability>);
     }
 };
 
@@ -72,38 +72,38 @@ public:
      * CAVEAT: If we detect a cycle, we just pretend we didn't notice!
      */
     void sort(
-	Graph &g,
-	Graph::NodeId initial,
-	MultigramGraph::NodeList &nodesInTopologicalOrder)
+        Graph &g,
+        Graph::NodeId initial,
+        MultigramGraph::NodeList &nodesInTopologicalOrder)
     {
-	dfsState_.sync(&g);
-	dfsState_.fill(white);
-	dfsState_[initial] = grey;
-	dfsStack_.push_back(DfsStackItem(initial, g.outgoingEdges(initial)));
-	while (!dfsStack_.empty()) {
-	    DfsStackItem &current(dfsStack_.back());
-	    if (current.second) {
-		Graph::NodeId next = g.target(*current.second);
-		++current.second;
-	     // verify(dfsState_[next] != grey); // cycle detected!
-		if (dfsState_[next] == white) {
-		    dfsState_[next] = grey;
-		    dfsStack_.push_back(DfsStackItem(next, g.outgoingEdges(next)));
-		}
-	    } else {
-		dfsState_[current.first] = black;
-		nodesInTopologicalOrder.push_back(current.first);
-		dfsStack_.pop_back();
-	    }
-	}
-	verify(dfsState_[initial] == black);
-	std::reverse(nodesInTopologicalOrder.begin(), nodesInTopologicalOrder.end());
+        dfsState_.sync(&g);
+        dfsState_.fill(white);
+        dfsState_[initial] = grey;
+        dfsStack_.push_back(DfsStackItem(initial, g.outgoingEdges(initial)));
+        while (!dfsStack_.empty()) {
+            DfsStackItem &current(dfsStack_.back());
+            if (current.second) {
+                Graph::NodeId next = g.target(*current.second);
+                ++current.second;
+             // verify(dfsState_[next] != grey); // cycle detected!
+                if (dfsState_[next] == white) {
+                    dfsState_[next] = grey;
+                    dfsStack_.push_back(DfsStackItem(next, g.outgoingEdges(next)));
+                }
+            } else {
+                dfsState_[current.first] = black;
+                nodesInTopologicalOrder.push_back(current.first);
+                dfsStack_.pop_back();
+            }
+        }
+        verify(dfsState_[initial] == black);
+        std::reverse(nodesInTopologicalOrder.begin(), nodesInTopologicalOrder.end());
     }
 
     size_t memoryUsed() const {
-	return sizeof(GraphSorter)
-	    + dfsState_.memoryUsed() - sizeof(dfsState_)
-	    + dfsStack_.capacity() * sizeof(DfsStack::value_type);
+        return sizeof(GraphSorter)
+            + dfsState_.memoryUsed() - sizeof(dfsState_)
+            + dfsStack_.capacity() * sizeof(DfsStack::value_type);
     }
 };
 

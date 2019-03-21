@@ -41,23 +41,23 @@ public:
     typedef T BaseType;
 
     static BaseType logOnePlusExp(BaseType x) {
-	return ::log1p(exp(x));
+        return ::log1p(exp(x));
     }
 
     static BaseType logOneMinusExp(BaseType x) {
-	return ::log1p(-exp(x));
+        return ::log1p(-exp(x));
     }
 
     static BaseType exp(BaseType x) {
-	return ::exp(x);
+        return ::exp(x);
     }
 
     static BaseType log(BaseType x) {
-	return ::log(x);
+        return ::log(x);
     }
 
     static BaseType logOnePlus(BaseType x) {
-	return ::log1p(x);
+        return ::log1p(x);
     }
 };
 
@@ -75,105 +75,105 @@ public:
     Probability(const LogProbability &_s);
 
     BaseType probability() const {
-	return p;
+        return p;
     }
 
     BaseType score() const {
-	require_(std::isfinite(p));
-	return (p > 0.0) ? (- ::log(p)) : (-1.0E8 * ::log(DBL_MIN));
+        require_(std::isfinite(p));
+        return (p > 0.0) ? (- ::log(p)) : (-1.0E8 * ::log(DBL_MIN));
     }
 
     static const Probability certain() {
-	return Probability(1.0);
+        return Probability(1.0);
     }
 
     static const Probability impossible() {
-	return Probability(0.0);
+        return Probability(0.0);
     }
 
     static const Probability epsilon() {
-	return Probability(DBL_EPSILON);
+        return Probability(DBL_EPSILON);
     }
 
     static const Probability max() {
-	return Probability(DBL_MAX);
+        return Probability(DBL_MAX);
     }
 
     static const Probability invalid() {
-	return Probability(-1.0);
+        return Probability(-1.0);
     }
 
     bool isValid() const {
-	return std::isfinite(p) && p >= 0;
+        return std::isfinite(p) && p >= 0;
     }
 
     Probability operator+(const Probability &o) const {
-	require_(isValid());
-	require_(o.isValid());
-	return Probability(probability() + o.probability());
+        require_(isValid());
+        require_(o.isValid());
+        return Probability(probability() + o.probability());
     }
 
     Probability &operator+=(const Probability &o) {
-	require_(isValid());
-	require_(o.isValid());
-	p += o.probability();
-	return *this;
+        require_(isValid());
+        require_(o.isValid());
+        p += o.probability();
+        return *this;
     }
 
     Probability operator-(const Probability &o) const {
-	require_(isValid());
-	require_(o.isValid());
-	return Probability(probability() - o.probability());
+        require_(isValid());
+        require_(o.isValid());
+        return Probability(probability() - o.probability());
     }
 
     Probability &operator-=(const Probability &o) {
-	require_(isValid());
-	require_(o.isValid());
-	p -= o.probability();
-	return *this;
+        require_(isValid());
+        require_(o.isValid());
+        p -= o.probability();
+        return *this;
     }
 
     Probability operator*(const Probability &o) const {
-	require_(isValid());
-	require_(o.isValid());
-	return Probability(probability() * o.probability());
+        require_(isValid());
+        require_(o.isValid());
+        return Probability(probability() * o.probability());
     }
 
     Probability &operator*=(const Probability &o) {
-	require_(isValid());
-	require_(o.isValid());
-	p *= o.probability();
-	return *this;
+        require_(isValid());
+        require_(o.isValid());
+        p *= o.probability();
+        return *this;
     }
 
     Probability operator/(const Probability &o) const {
-	require_(isValid());
-	require_(o.isValid());
-	return Probability(probability() / o.probability());
+        require_(isValid());
+        require_(o.isValid());
+        return Probability(probability() / o.probability());
     }
 
     Probability &operator/=(const Probability &o) {
-	require_(isValid());
-	require_(o.isValid());
-	p /= o.probability();
-	return *this;
+        require_(isValid());
+        require_(o.isValid());
+        p /= o.probability();
+        return *this;
     }
 
     Probability complement() const {
-	require_(isValid());
-	return Probability(1.0 - probability());
+        require_(isValid());
+        return Probability(1.0 - probability());
     }
 
     BaseType entropy() const {
-	return probability() * score();
+        return probability() * score();
     }
 
     BaseType log() const {
-	return StandardMaths<BaseType>::log(p);
+        return StandardMaths<BaseType>::log(p);
     }
 
     Probability pow(double e) const {
-	return Probability(::pow(probability(), e));
+        return Probability(::pow(probability(), e));
     }
 
 };
@@ -193,72 +193,72 @@ public:
     BaseType score() const { return s; }
 
     static const LogProbability certain() {
-	return LogProbability(0.0);
+        return LogProbability(0.0);
     }
 
     static const LogProbability impossible() {
-	return LogProbability(-1.0E8*::log(DBL_MIN));  // ~ 70839600888
+        return LogProbability(-1.0E8*::log(DBL_MIN));  // ~ 70839600888
     }
 
     static const LogProbability epsilon() {
-	return LogProbability(-::log(DBL_EPSILON));    // ~   36.04
+        return LogProbability(-::log(DBL_EPSILON));    // ~   36.04
     }
 
     static const LogProbability max() {
-	return LogProbability(-::log(DBL_MAX));        // ~ -709.78
+        return LogProbability(-::log(DBL_MAX));        // ~ -709.78
     }
 
     static const LogProbability invalid() {
-	return LogProbability(-DBL_MAX);
+        return LogProbability(-DBL_MAX);
     }
 
     bool isValid() const {
-	return std::isfinite(s) && s > - DBL_MAX;
+        return std::isfinite(s) && s > - DBL_MAX;
     }
 
     LogProbability &operator+=(const LogProbability &o);
 
     LogProbability operator*(const LogProbability &o) const {
-	require_(isValid());
-	require_(o.isValid());
-	return LogProbability(score() + o.score());
+        require_(isValid());
+        require_(o.isValid());
+        return LogProbability(score() + o.score());
     }
 
     LogProbability &operator*=(const LogProbability &o) {
-	require_(isValid());
-	require_(o.isValid());
-	s += o.score();
-	return *this;
+        require_(isValid());
+        require_(o.isValid());
+        s += o.score();
+        return *this;
     }
 
     LogProbability operator/(const LogProbability &o) const {
-	require_(isValid());
-	require_(o.isValid());
-	return LogProbability(score() - o.score());
+        require_(isValid());
+        require_(o.isValid());
+        return LogProbability(score() - o.score());
     }
 
     LogProbability &operator/=(const LogProbability &o) {
-	require_(isValid());
-	require_(o.isValid());
-	s -= o.score();
-	return *this;
+        require_(isValid());
+        require_(o.isValid());
+        s -= o.score();
+        return *this;
     }
 
     LogProbability complement() const {
-	require_(isValid());
-	return LogProbability(- log1p( - probability()));
+        require_(isValid());
+        return LogProbability(- log1p( - probability()));
     }
 
     BaseType entropy() const {
-	return probability() * score();
+        return probability() * score();
     }
 
     BaseType log() const {
-	return -s;
+        return -s;
     }
 
     LogProbability pow(double e) const {
-	return LogProbability(score() * e);
+        return LogProbability(score() * e);
     }
 };
 
@@ -375,13 +375,13 @@ inline LogProbability &LogProbability::operator+=(const LogProbability &o) {
     require_(isValid());
     require_(o.isValid());
     if (score() > o.score()) {
-	if (score() - o.score() < LogProbability::epsilon().score())
-	    s = o.score() - StandardMaths<BaseType>::logOnePlusExp(o.score() - score());
-	else
-	    s = o.score();
+        if (score() - o.score() < LogProbability::epsilon().score())
+            s = o.score() - StandardMaths<BaseType>::logOnePlusExp(o.score() - score());
+        else
+            s = o.score();
     } else {
-	if (o.score() - score() < LogProbability::epsilon().score())
-	    s = score() - StandardMaths<BaseType>::logOnePlusExp(score() - o.score());
+        if (o.score() - score() < LogProbability::epsilon().score())
+            s = score() - StandardMaths<BaseType>::logOnePlusExp(score() - o.score());
     }
     return *this;
 }
@@ -390,21 +390,21 @@ inline LogProbability operator+(const LogProbability &lhs, const LogProbability 
     require_(lhs.isValid());
     require_(rhs.isValid());
     if (lhs.score() > rhs.score()) {
-	if (lhs.score() - rhs.score() < LogProbability::epsilon().score())
-	    return LogProbability(
-		rhs.score() -
-		StandardMaths<LogProbability::BaseType>::logOnePlusExp(
-		    rhs.score() - lhs.score()));
-	else
-	    return rhs;
+        if (lhs.score() - rhs.score() < LogProbability::epsilon().score())
+            return LogProbability(
+                rhs.score() -
+                StandardMaths<LogProbability::BaseType>::logOnePlusExp(
+                    rhs.score() - lhs.score()));
+        else
+            return rhs;
     } else {
-	if (rhs.score() - lhs.score() < LogProbability::epsilon().score())
-	    return LogProbability(
-		lhs.score() -
-		StandardMaths<LogProbability::BaseType>::logOnePlusExp(
-		    lhs.score() - rhs.score()));
-	else
-	    return lhs;
+        if (rhs.score() - lhs.score() < LogProbability::epsilon().score())
+            return LogProbability(
+                lhs.score() -
+                StandardMaths<LogProbability::BaseType>::logOnePlusExp(
+                    lhs.score() - rhs.score()));
+        else
+            return lhs;
     }
 }
 
@@ -414,12 +414,12 @@ inline LogProbability operator-(const LogProbability &lhs, const LogProbability 
     require_(lhs.score() <= rhs.score());
 
     if (rhs.score() - lhs.score() > - log(1.0 - DBL_EPSILON))
-	return LogProbability(
-	    lhs.score() -
-	    StandardMaths<LogProbability::BaseType>::logOneMinusExp(
-		lhs.score() - rhs.score()));
+        return LogProbability(
+            lhs.score() -
+            StandardMaths<LogProbability::BaseType>::logOneMinusExp(
+                lhs.score() - rhs.score()));
     else
-	return lhs;
+        return lhs;
 }
 
 
@@ -432,52 +432,52 @@ private:
     std::vector<BaseType> terms;
 public:
     ProbabilityAccumulator() {
-	min = LogProbability::impossible().score();
+        min = LogProbability::impossible().score();
     }
 
     void add(LogProbability s) {
-	require_(s.isValid());
-	if (min > s.score()) {
-	    terms.push_back(min);
-	    min = s.score();
-	} else {
-	    terms.push_back(s.score());
-	}
+        require_(s.isValid());
+        if (min > s.score()) {
+            terms.push_back(min);
+            min = s.score();
+        } else {
+            terms.push_back(s.score());
+        }
     }
 
     Self &operator+=(LogProbability s) {
-	add(s);
-	return *this;
+        add(s);
+        return *this;
     }
 
     void clear() {
-	terms.clear();
-	min = LogProbability::impossible().score();
+        terms.clear();
+        min = LogProbability::impossible().score();
     }
 
     LogProbability sum() const {
-	BaseType s = 0.0 ;
-	for (std::vector<BaseType>::const_iterator t = terms.begin() ; t != terms.end() ; ++t)
-	    if (*t - min < LogProbability::epsilon().score())
-		s += StandardMaths<BaseType>::exp(min - *t);
+        BaseType s = 0.0 ;
+        for (std::vector<BaseType>::const_iterator t = terms.begin() ; t != terms.end() ; ++t)
+            if (*t - min < LogProbability::epsilon().score())
+                s += StandardMaths<BaseType>::exp(min - *t);
 #if 1
-	return LogProbability(min - StandardMaths<BaseType>::logOnePlus(s)) ;
+        return LogProbability(min - StandardMaths<BaseType>::logOnePlus(s)) ;
 #else
-	min -= StandardMaths<BaseType>::logOnePlus(s);
-	terms.clear();
-	return LogProbability(min);
+        min -= StandardMaths<BaseType>::logOnePlus(s);
+        terms.clear();
+        return LogProbability(min);
 #endif
     }
 
     operator LogProbability() const {
-	return sum();
+        return sum();
     }
 };
 
 inline bool isNearlyEqual(float af, float bf, int tolerance) {
     union {
-	int32_t i;
-	float f;
+        int32_t i;
+        float f;
     } a, b;
     a.f = af;
     b.f = bf;
@@ -489,8 +489,8 @@ inline bool isNearlyEqual(float af, float bf, int tolerance) {
 
 inline bool isNearlyEqual(double af, double bf, int tolerance) {
     union {
-	int64_t i;
-	double f;
+        int64_t i;
+        double f;
     } a, b;
     a.f = af;
     b.f = bf;
