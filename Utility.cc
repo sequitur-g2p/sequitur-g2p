@@ -47,8 +47,8 @@ int Core::getline(std::istream& is, std::string& str, std::string delim) {
     // tokenize stream contents
     str = "";
     while (((token = is.get()) != EOF) &&
-	   ((pos = delim.find(token)) == std::string::npos)) {
-	str += char(token);
+           ((pos = delim.find(token)) == std::string::npos)) {
+        str += char(token);
     }
 
     if (pos == std::string::npos) return 0;
@@ -59,21 +59,21 @@ int Core::getline(std::istream& is, std::string& str, std::string delim) {
 std::string& Core::itoa(std::string &s, unsigned int val) {
     s = "";
     if (val < 10) { // small integers are very frequent
-	s += ('0' + val);
+        s += ('0' + val);
     } else {
-	do {
-	    s += ('0' + (val % 10));
-	    val /= 10;
-	} while (val);
-	std::reverse(s.begin(), s.end());
+        do {
+            s += ('0' + (val % 10));
+            val /= 10;
+        } while (val);
+        std::reverse(s.begin(), s.end());
     }
     return s;
 }
 
 s32 Core::differenceUlp(f32 af, f32 bf) {
     union {
-	s32 i;
-	f32 f;
+        s32 i;
+        f32 f;
     } a, b;
     a.f = af;
     b.f = bf;
@@ -84,8 +84,8 @@ s32 Core::differenceUlp(f32 af, f32 bf) {
 
 s64 Core::differenceUlp(f64 af, f64 bf) {
     union {
-	s64 i;
-	f64 f;
+        s64 i;
+        f64 f;
     } a, b;
     a.f = af;
     b.f = bf;

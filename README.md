@@ -28,8 +28,12 @@ If you publish about work that involves the use of this software,
 please cite the above paper. (You should feel obliged to do so by
 rules of good scientific conduct.)
 
-You may contact the author with any questions or comments via e-mail:
-maximilian.bisani@rwth-aachen.de
+The original README contains also these lines:
+*You may contact the author with any questions or comments via e-mail:
+maximilian.bisani@rwth-aachen.de. For questions regarding current
+releases of Sequitur G2P contact Pavel Golik (golik@cs.rwth-aachen.de).*
+but we are not sure how active they are. If needed, feel free to create
+an issue on https://github.com/sequitur-g2p/sequitur-g2p. We will try to help.
 
 
 License

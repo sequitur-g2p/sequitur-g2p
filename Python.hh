@@ -36,7 +36,7 @@ public:
     const char *message_;
 public:
     PythonException(PyObject *type, const char *message) :
-	type_(type), message_(message) {}
+        type_(type), message_(message) {}
 };
 
 class ExistingPythonException {};

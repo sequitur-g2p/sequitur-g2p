@@ -95,7 +95,7 @@ PyObject *python_align(PyObject *self, PyObject *args) {
   int j = len_b;
   while (i > 0 || j > 0) {
     Hyp &h(D[i][j]);
-    //	alignment.append((a[pi:i], b[pj:j]))
+    //        alignment.append((a[pi:i], b[pj:j]))
     PyObject *p = 0;
     if (h.pre_i == i-1 && h.pre_j == j) {
       p = Py_BuildValue("(N,O)",

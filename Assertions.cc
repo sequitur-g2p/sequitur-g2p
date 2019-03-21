@@ -48,46 +48,46 @@ void stackTrace(std::ostream &os, int cutoff) {
     size_t nTraces = backtrace(array, maxTraces);
     char **strings = backtrace_symbols(array, nTraces);
     for (size_t i = cutoff+1; i < nTraces; i++)
-	os << '#' << i << "  " << strings[i] << std::endl;
+        os << '#' << i << "  " << strings[i] << std::endl;
     free(strings);
 #endif
 }
 
 void assertionFailed(const char *type,
-		     const char *expr,
-		     const char *function,
-		     const char *filename,
-		     unsigned int line) {
+                     const char *expr,
+                     const char *function,
+                     const char *filename,
+                     unsigned int line) {
     std::ostringstream msg;
     msg << std::endl << std::endl
-	<< "PROGRAM DEFECTIVE:"
-	<< std::endl
-	<< type << ' ' << expr << " violated" << std::endl
-	<< "in " << function
-	<< " file " << filename << " line " << line << std::endl
-	<< std::endl;
+        << "PROGRAM DEFECTIVE:"
+        << std::endl
+        << type << ' ' << expr << " violated" << std::endl
+        << "in " << function
+        << " file " << filename << " line " << line << std::endl
+        << std::endl;
     stackTrace(msg, 1);
     msg << std::endl;
     throw std::logic_error(msg.str());
 }
 
 void hopeDisappointed(const char *expr,
-		      const char *function,
-		      const char *filename,
-		      unsigned int line) {
+                      const char *function,
+                      const char *filename,
+                      unsigned int line) {
     std::ostringstream msg;
     msg << std::endl << std::endl
-	<< "RUNTIME ERROR:"
-	<< std::endl
-	<< "hope " << expr << " disappointed" << std::endl
-	<< "in " << function
-	<< " file " << filename << " line " << line;
+        << "RUNTIME ERROR:"
+        << std::endl
+        << "hope " << expr << " disappointed" << std::endl
+        << "in " << function
+        << " file " << filename << " line " << line;
     if (errno) msg << ": " << strerror(errno);
     msg << std::endl << std::endl;
     stackTrace(msg, 1);
     msg << std::endl
-	<< "PLEASE CONSIDER ADDING PROPER ERROR HANDLING !!!" << std::endl
-	<< std::endl;
+        << "PLEASE CONSIDER ADDING PROPER ERROR HANDLING !!!" << std::endl
+        << std::endl;
     throw std::runtime_error(msg.str());
 }
 
@@ -102,14 +102,14 @@ volatile sig_atomic_t ErrorSignalHandler::isHandlerActive = 0;
 
 void ErrorSignalHandler::handler(int sig) {
     if (!isHandlerActive) {
-	isHandlerActive = 1;
-	std::cerr << std::endl << std::endl
-		  << "PROGRAM DEFECTIVE:"
-		  << std::endl
-		  << strsignal(sig) << " occurred" << std::endl
-		  << std::endl;
-	stackTrace(std::cerr, 1);
-	std::cerr << std::endl;
+        isHandlerActive = 1;
+        std::cerr << std::endl << std::endl
+                  << "PROGRAM DEFECTIVE:"
+                  << std::endl
+                  << strsignal(sig) << " occurred" << std::endl
+                  << std::endl;
+        stackTrace(std::cerr, 1);
+        std::cerr << std::endl;
     }
     signal(sig, SIG_DFL);
     raise(sig);
