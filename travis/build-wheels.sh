@@ -8,8 +8,8 @@ set -e -o pipefail
 set -o nounset                              # Treat unset variables as an error
 set -x
 
-yum install curl
-yum install wget
+yum install -y curl
+yum install -y wget
 
 wget https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz
 
