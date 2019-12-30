@@ -12,8 +12,8 @@ set -x
 #yum install -y wget
 
 #wget https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz
+#tar xzf swig-4.0.1.tar.gz
 
-tar xzf swig-4.0.1.tar.gz
 (cd swig-4.0.1; ./configure --without-pcre && make && make install) || exit 1
 
 # Compile wheels
