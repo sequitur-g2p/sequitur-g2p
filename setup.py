@@ -117,7 +117,6 @@ lmScripts = [
 
 setup(
     name             = 'sequitur-g2p',
-    packages         = ['sequitur-g2p'],
     version          = VERSION,
     license          = 'gpl-2.0',
     description      = 'sequence and joint-sequence modelling tool for g2p',
