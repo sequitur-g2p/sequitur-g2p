@@ -10,7 +10,7 @@ set -x
 
 yum install curl
 curl -o swig-4.0.1.tar.gz \
-  https://netix.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz 
+  https://dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz 
 
 tar xzf swig-4.0.1.tar.gz
 (cd swig-4.0.1; ./configure --without-pcre && make && make install) || exit 1
