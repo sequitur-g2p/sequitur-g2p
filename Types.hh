@@ -29,6 +29,7 @@
 #define _CORE_TYPES_HH
 
 #include <stdint.h>
+#include <limits.h>
 #include <string>
 #include <vector>
 #include <complex>
