@@ -322,7 +322,9 @@ SequenceModel::History SequenceModel::advanced(const Node *old, Token w) const {
     result = n;
   }
   ensure(result);
+#ifdef _MSC_VER
   delete[] hist;
+#endif
   return result;
 }
 
