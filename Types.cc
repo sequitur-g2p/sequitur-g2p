@@ -26,6 +26,7 @@
  */
 
 #include "Types.hh"
+#include <float.h>
 
 namespace Core {
   const char *Type<u32>::name("u32");
