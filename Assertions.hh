@@ -306,9 +306,16 @@ namespace AssertionsPrivate {
  * default clauses in a switch statement.
  * @see @ref DesignByContract
  */
+#ifdef _MSC_VER
 #define defect()                                                 \
     AssertionsPrivate::assertionFailed("control flow assertion", \
         "", __FUNCSIG__,__FILE__, __LINE__)
+#else
+#define defect()                                                 \
+    AssertionsPrivate::assertionFailed("control flow assertion", \
+        "", __PRETTY_FUNCTION__,__FILE__, __LINE__)
+#endif
+
 #else
 #define defect()      ((void) 0)
 #endif
@@ -361,8 +368,13 @@ namespace AssertionsPrivate {
  * @see @ref DesignByContract
  */
 
+#ifdef _MSC_VER
 #define hope(expr)                                                        \
     ((expr) ? (void) 0 : AssertionsPrivate::hopeDisappointed                \
      (__STRING(expr), __FUNCSIG__,__FILE__, __LINE__))
-
+#else
+#define hope(expr)                                                        \
+    ((expr) ? (void) 0 : AssertionsPrivate::hopeDisappointed                \
+     (__STRING(expr), __PRETTY_FUNCTION__,__FILE__, __LINE__))
+#endif
 #endif // _ASSERTIONS_H
