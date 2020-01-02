@@ -48,8 +48,8 @@ PyObject *python_align(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, "OO", &a, &b)) return NULL;
   if (!PySequence_Check(a)) return NULL;
   if (!PySequence_Check(b)) return NULL;
-  int len_a = PyObject_Length(a);
-  int len_b = PyObject_Length(b);
+  size_t len_a = PyObject_Length(a);
+  size_t len_b = PyObject_Length(b);
 
   std::vector< std::vector<Hyp> > D(len_a + 1, std::vector<Hyp>(len_b + 1));
   int c;
@@ -91,8 +91,8 @@ PyObject *python_align(PyObject *self, PyObject *args) {
 
   // traceback
   PyObject *alignment = PyList_New(0);
-  int i = len_a;
-  int j = len_b;
+  size_t i = len_a;
+  size_t j = len_b;
   while (i > 0 || j > 0) {
     Hyp &h(D[i][j]);
     //        alignment.append((a[pi:i], b[pj:j]))

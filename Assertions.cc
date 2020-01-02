@@ -100,6 +100,22 @@ public:
 
 volatile sig_atomic_t ErrorSignalHandler::isHandlerActive = 0;
 
+#ifdef _MSC_VER
+void ErrorSignalHandler::handler(int sig) {
+    if (!isHandlerActive) {
+        isHandlerActive = 1;
+        std::cerr << std::endl << std::endl
+            << "PROGRAM DEFECTIVE:"
+            << std::endl
+            << (sig) << " occurred" << std::endl
+            << std::endl;
+        stackTrace(std::cerr, 1);
+        std::cerr << std::endl;
+    }
+    signal(sig, SIG_DFL);
+    raise(sig);
+}
+#else
 void ErrorSignalHandler::handler(int sig) {
     if (!isHandlerActive) {
         isHandlerActive = 1;
@@ -114,14 +130,22 @@ void ErrorSignalHandler::handler(int sig) {
     signal(sig, SIG_DFL);
     raise(sig);
 }
-
+#endif
+#ifndef _MSCVER
 ErrorSignalHandler::ErrorSignalHandler() {
-    signal(SIGBUS,  handler);
     signal(SIGFPE,  handler);
     signal(SIGILL,  handler);
     signal(SIGSEGV, handler);
-    signal(SIGSYS,  handler);
 }
+#else
+ErrorSignalHandler::ErrorSignalHandler() {
+    signal(SIGBUS, handler);
+    signal(SIGFPE, handler);
+    signal(SIGILL, handler);
+    signal(SIGSEGV, handler);
+    signal(SIGSYS, handler);
+}
+#endif
 
 #if 0
 static ErrorSignalHandler errorSignalHandler;

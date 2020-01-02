@@ -28,7 +28,13 @@
 #ifndef _ASSERTIONS_H
 #define _ASSERTIONS_H
 
+#ifndef _MSC_VER
 #include <sys/cdefs.h>
+#else
+#define __attribute__(x)
+#define STR(x) #x
+#define __STRING(x) STR(x)
+#endif
 #include <iostream>
 
 /**
@@ -175,9 +181,15 @@ namespace AssertionsPrivate {
  * you may consider to use require_() instead.
  * @see @ref DesignByContract
  */
+#ifdef _MSC_VER
+#define require(expr)                                                        \
+    ((expr) ? ((void) 0) : AssertionsPrivate::assertionFailed                \
+     ("precondition", __STRING(expr), __FUNCSIG__, __FILE__, __LINE__))
+#else
 #define require(expr)                                                        \
     ((expr) ? ((void) 0) : AssertionsPrivate::assertionFailed                \
      ("precondition", __STRING(expr), __PRETTY_FUNCTION__, __FILE__, __LINE__))
+#endif
 #else
 #define require(expr) ((void) 0)
 #endif
@@ -211,9 +223,15 @@ namespace AssertionsPrivate {
  * you may consider to use ensure_() instead.
  * @see @ref DesignByContract
  */
+#ifdef _MSC_VER
+#define ensure(expr)                                                        \
+    ((expr) ? ((void) 0) : AssertionsPrivate::assertionFailed                \
+     ("postcondition", __STRING(expr),  __FUNCSIG__,  __FILE__, __LINE__))
+#else
 #define ensure(expr)                                                        \
     ((expr) ? ((void) 0) : AssertionsPrivate::assertionFailed                \
      ("postcondition", __STRING(expr), __PRETTY_FUNCTION__,  __FILE__, __LINE__))
+#endif
 #else
 #define ensure(expr) ((void) 0)
 #endif
@@ -250,9 +268,15 @@ namespace AssertionsPrivate {
  * you may consider to use verify_() instead.
  * @see @ref DesignByContract
  */
+#ifdef _MSC_VER
+#define verify(expr)                                                        \
+    ((expr) ? ((void) 0) : AssertionsPrivate::assertionFailed                \
+     ("assertion", __STRING(expr), __FUNCSIG__,__FILE__, __LINE__))
+#else
 #define verify(expr)                                                        \
     ((expr) ? ((void) 0) : AssertionsPrivate::assertionFailed                \
      ("assertion", __STRING(expr), __PRETTY_FUNCTION__,__FILE__, __LINE__))
+#endif
 #else
 #define verify(expr) ((void) 0)
 #endif
@@ -284,7 +308,7 @@ namespace AssertionsPrivate {
  */
 #define defect()                                                 \
     AssertionsPrivate::assertionFailed("control flow assertion", \
-        "", __PRETTY_FUNCTION__,__FILE__, __LINE__)
+        "", __FUNCSIG__,__FILE__, __LINE__)
 #else
 #define defect()      ((void) 0)
 #endif
@@ -339,6 +363,6 @@ namespace AssertionsPrivate {
 
 #define hope(expr)                                                        \
     ((expr) ? (void) 0 : AssertionsPrivate::hopeDisappointed                \
-     (__STRING(expr), __PRETTY_FUNCTION__,__FILE__, __LINE__))
+     (__STRING(expr), __FUNCSIG__,__FILE__, __LINE__))
 
 #endif // _ASSERTIONS_H

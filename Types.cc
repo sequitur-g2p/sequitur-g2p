@@ -75,14 +75,14 @@ namespace Core {
     const s64 Type<s64>::min(-9223372036854775808LL);
 #endif
     const char *Type<f32>::name("f32");
-    const f32 Type<f32>::max(+3.40282347e+38F);
-    const f32 Type<f32>::min(-3.40282347e+38F);
-    const f32 Type<f32>::epsilon(1.19209290e-07F);
+    const f32 Type<f32>::max(FLT_MAX);
+    const f32 Type<f32>::min(-FLT_MAX);
+    const f32 Type<f32>::epsilon(FLT_EPSILON);
     const f32 Type<f32>::delta(1.17549435e-38F);
     const char *Type<f64>::name("f64");
-    const f64 Type<f64>::max(+1.7976931348623157e+308);
-    const f64 Type<f64>::min(-1.7976931348623157e+308);
-    const f64 Type<f64>::epsilon(2.2204460492503131e-16);
+    const f64 Type<f64>::max(DBL_MAX);
+    const f64 Type<f64>::min(-DBL_MAX);
+    const f64 Type<f64>::epsilon(DBL_EPSILON);
     const f64 Type<f64>::delta(2.2250738585072014e-308);
 
     template <size_t size>
