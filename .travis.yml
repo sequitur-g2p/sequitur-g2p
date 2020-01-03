@@ -9,7 +9,8 @@ env:
     - PKG_NAME=sequitur-g2p
     #- CIBW_SKIP="cp27-* cp34-* cp35-* *i686*"
     - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
-    - CIBW_BEFORE_BUILD_WINDOWS="dir; .\\travis\\before-build-windows"
+    - CIBW_BEFORE_BUILD_WINDOWS=".\\travis\\before-build-windows"
+    - CIBW_ENVIRONMENT_MACOS="CXXFLAGS=\"-std=c++11\""
     #- CIBW_BEFORE_BUILD_MACOS=travis/before-build-macos
     #- CIBW_TEST_COMMAND="python -c \"import $PKG_NAME; import sys; sys.exit($PKG_NAME.test())\""
 
