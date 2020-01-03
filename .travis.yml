@@ -22,12 +22,11 @@ addons:
    - swig
 
 install:
-  - python -m pip install twine cibuildwheel
+  - pip install -r requirements.txt
+  - pip install -r dev-requirements.txt
 
 script:
   # build the wheels, put them into './wheelhouse'
-  - pip install -r requirements.txt
-  - pip install -r dev_requirements.txt
   - python -m cibuildwheel --output-dir wheelhouse
 
 after_success:
