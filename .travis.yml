@@ -1,9 +1,9 @@
 language: python
 
-env:
-  global:
-    - TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
-    - TWINE_USER: __token__
+#env:
+#  global:
+#    - TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
+#    - TWINE_USER: __token__
 
 matrix:
   include:
@@ -22,11 +22,12 @@ addons:
    - swig
 
 install:
-  - pip install -r requirements.txt
-  - pip install -r dev_requirements.txt
+  - python -m pip install twine cibuildwheel
 
 script:
   # build the wheels, put them into './wheelhouse'
+  - pip install -r requirements.txt
+  - pip install -r dev_requirements.txt
   - python -m cibuildwheel --output-dir wheelhouse
 
 after_success:
