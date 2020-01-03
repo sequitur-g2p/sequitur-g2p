@@ -7,5 +7,5 @@
 set -e -o pipefail 
 set -o nounset                              # Treat unset variables as an error
 set -x
-(cd /io/swig-4.0.1; ./configure --without-pcre && make && make install) || exit 1
+(cd /host/swig-4.0.1; ./configure --without-pcre && make && make install) || exit 1
 
