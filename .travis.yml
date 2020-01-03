@@ -1,9 +1,9 @@
 language: python
 
-#env:
-#  global:
-#    - TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
-#    - TWINE_USER: __token__
+env:
+  global:
+    - TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
+    - TWINE_USER: __token__
 env:
   global:
     - PKG_NAME=sequitur-g2p
@@ -57,4 +57,5 @@ script:
 after_success:
   # if the release was tagged, upload them to PyPI
   - if [[ $TRAVIS_TAG ]]; then python -m twine upload wheelhouse/*.whl; fi
+  - twine  --non-interactive  -p $TWINE_PASSWORD -u $TWINE_PASSWORD  --repository-url https://test.pypi.org/legacy/ wheelhouse/*
 
