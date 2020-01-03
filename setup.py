@@ -37,6 +37,8 @@ VERSION = '1.0a1'
 with open('requirements.txt') as fp:
     required = fp.read().splitlines()
 
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
 class CustomBuild(build):
     """Custom build class to swig before handling python modules."""
@@ -120,6 +122,8 @@ setup(
     version          = VERSION,
     license          = 'gpl-2.0',
     description      = 'sequence and joint-sequence modelling tool for g2p',
+    long_description =long_description,
+    long_description_content_type="text/markdown",
     author           = 'Maximilian Bisani',
     maintainer       = "Jan 'Yenda' Trmal",
     maintainer_email = 'jtrmal@gmail.com',
@@ -128,5 +132,13 @@ setup(
     install_requires = required,
     py_modules       = sequiturModules,
     ext_modules      = [sequiturExtension],
-    scripts          = sequiturScripts
+    scripts          = sequiturScripts,
+    classifiers      = [
+        "Development Status :: 6 - Mature",
+        "Environment :: Console",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+        "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering"
+    ]
 )

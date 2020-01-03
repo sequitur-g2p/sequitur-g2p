@@ -33,7 +33,7 @@ install: build
 clean:
 	rm -rf tmp-test-install
 	rm -f *~
-	rm -rf build dist
+	rm -rf build dist sequitur_g2p.egg-info
 	rm -f *.pyc
 	rm -f SparseVector.c
 	rm -f sequitur_.py sequitur_wrap.cpp
