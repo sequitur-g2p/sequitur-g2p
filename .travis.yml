@@ -1,37 +1,34 @@
 language: python
-python:
-  - "2.7"
+
+env:
+  global:
+    - TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
+    - TWINE_USER: __token__
 
 matrix:
   include:
-    - sudo: required
-      services:
-        - docker
-      env: DOCKER_IMAGE=quay.io/pypa/manylinux1_x86_64
-           PLAT=manylinux1_x86_64
-    - sudo: required
-      services:
-        - docker
-      env: DOCKER_IMAGE=quay.io/pypa/manylinux2010_x86_64
-           PLAT=manylinux2010_x86_64
- #    - sudo: required
- #      services:
- #        - docker
- #      env: DOCKER_IMAGE=quay.io/pypa/manylinux1_i686
- #           PRE_CMD=linux32
- #           PLAT=manylinux1_i686
-
+    - services: docker
+    # and a mac build
+    - os: osx
+      language: shell
+    # and a windows build
+    - os: windows
+      language: shell
+      before_install:
+        - choco install python --version 3.8.0
+        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
 addons:
  apt_packages:
    - swig
 
 install:
-  - docker pull $DOCKER_IMAGE
   - pip install -r requirements.txt
 
 script:
-  - wget -O - https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz | tar xzf -
-  - docker run --rm -e PLAT=$PLAT -v `pwd`:/io $DOCKER_IMAGE $PRE_CMD /io/travis/build-wheels.sh
-  - ls wheelhouse/
-  - PYTHONPATH=`pwd`/tmp-test-install/lib/python2.7/site-packages/  make test
+  # build the wheels, put them into './wheelhouse'
+  - python -m cibuildwheel --output-dir wheelhouse
+
+after_success:
+  # if the release was tagged, upload them to PyPI
+  - if [[ $TRAVIS_TAG ]]; then python -m twine upload wheelhouse/*.whl; fi
 
