@@ -4,9 +4,17 @@ language: python
 #  global:
 #    - TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
 #    - TWINE_USER: __token__
+env:
+  global:
+    #- PKG_NAME=ncephes
+    #- CIBW_SKIP="cp27-* cp34-* cp35-* *i686*"
+  - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
+    #- CIBW_BEFORE_BUILD_MACOS=travis/before-build-macos
+    #- CIBW_TEST_COMMAND="python -c \"import $PKG_NAME; import sys; sys.exit($PKG_NAME.test())\""
 
 matrix:
   include:
+    - sudo: required
     - services: docker
     # and a mac build
     - os: osx

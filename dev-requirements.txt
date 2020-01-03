@@ -2,3 +2,4 @@ nose
 twine
 numpy
 wheel
+cibuildwheel

@@ -1,8 +1,8 @@
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1691 $'
-__date__      = '$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $'
+__author__ = 'Maximilian Bisani'
+__version__ = '$LastChangedRevision: 1691 $'
+__date__ = '$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $'
 __copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
@@ -37,8 +37,10 @@ VERSION = '1.0a1'
 with open('requirements.txt') as fp:
     required = fp.read().splitlines()
 
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
+
 
 class CustomBuild(build):
     """Custom build class to swig before handling python modules."""
@@ -118,27 +120,34 @@ lmScripts = [
 
 
 setup(
-    name             = 'sequitur-g2p',
-    version          = VERSION,
-    license          = 'gpl-2.0',
-    description      = 'sequence and joint-sequence modelling tool for g2p',
-    long_description =long_description,
+    name='sequitur-g2p',
+    version=VERSION,
+    license='gpl-2.0',
+    description='sequence and joint-sequence modelling tool for g2p',
+    long_description=long_description,
     long_description_content_type="text/markdown",
-    author           = 'Maximilian Bisani',
-    maintainer       = "Jan 'Yenda' Trmal",
-    maintainer_email = 'jtrmal@gmail.com',
-    url              = 'https://github.com/sequitur-g2p/sequitur-g2p',
-    cmdclass         = {'build': CustomBuild},
-    install_requires = required,
-    py_modules       = sequiturModules,
-    ext_modules      = [sequiturExtension],
-    scripts          = sequiturScripts,
-    classifiers      = [
+    author='Maximilian Bisani',
+    maintainer="Jan 'Yenda' Trmal",
+    maintainer_email='jtrmal@gmail.com',
+    url='https://github.com/sequitur-g2p/sequitur-g2p',
+    cmdclass={'build': CustomBuild},
+    install_requires=required,
+    py_modules=sequiturModules,
+    ext_modules=[sequiturExtension],
+    scripts=sequiturScripts,
+    classifiers=[
         "Development Status :: 6 - Mature",
         "Environment :: Console",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+        "License :: OSI Approved :: GNU General Public License v2"
+            "or later (GPLv2+)",
         "Operating System :: OS Independent",
-        "Topic :: Scientific/Engineering"
-    ]
+        "Topic :: Scientific/Engineering",
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+    ],
+    python_requires='>=2.7.0',
 )
