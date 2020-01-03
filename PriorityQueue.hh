@@ -28,7 +28,7 @@
 #ifndef _CORE_PRIORITY_QUEUE_HH
 #define _CORE_PRIORITY_QUEUE_HH
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__) || (_MSC_VER)
 #include <unordered_map>
 using std::unordered_map;
 #define stdhash std::hash

@@ -305,7 +305,11 @@ SequenceModel::History SequenceModel::initial() const {
 
 SequenceModel::History SequenceModel::advanced(const Node *old, Token w) const {
   require_(old);
+#ifdef _MSC_VER
+  Token *hist = new Token[old->depth() + 1];
+#else
   Token hist[old->depth() + 1];
+#endif
   for (const Node *n = old; n; n = n->parent())
     hist[n->depth()] = n->token();
   verify(!hist[0]);
@@ -318,6 +322,9 @@ SequenceModel::History SequenceModel::advanced(const Node *old, Token w) const {
     result = n;
   }
   ensure(result);
+#ifdef _MSC_VER
+  delete[] hist;
+#endif
   return result;
 }
 

@@ -27,7 +27,7 @@
 
 #include "Python.hh"  // Must be first to prevent some warnings
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__) || (_MSC_VER)
 #include <unordered_map>
 using std::unordered_multimap;
 using std::unordered_map;

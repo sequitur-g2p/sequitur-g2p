@@ -30,7 +30,7 @@
 #include "Python.hh"
 
 #include <vector>
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__) || (_MSC_VER)
 #include <unordered_map>
 using std::unordered_map;
 #else
@@ -146,7 +146,7 @@ class MultigramInventory {
     }
 
     /** Number of multigrams not including VOID */
-    u32 size() const {
+    size_t size() const {
       return list_.size() - 1;
     }
 
@@ -171,7 +171,7 @@ class MultigramInventory {
     }
 
     size_t memoryUsed() const {
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__)
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__) || (_MSC_VER)
       struct MapNode { Map::value_type value; bool cond;};
 #elif __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3)
       typedef std::tr1::__detail::_Hash_node<Map::value_type, false> MapNode;
