@@ -16,6 +16,8 @@ matrix:
   include:
     - sudo: required
     - services: docker
+    - before_install:
+        - wget -O - https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz | tar xzf -
     # and a mac build
     - os: osx
       language: shell
