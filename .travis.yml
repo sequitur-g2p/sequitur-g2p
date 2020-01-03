@@ -2,7 +2,7 @@ language: python
 
 env:
   global:
-    - TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
+    #- TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
     - TWINE_USER: __token__
 env:
   global:
@@ -57,5 +57,5 @@ script:
 after_success:
   # if the release was tagged, upload them to PyPI
   - if [[ $TRAVIS_TAG ]]; then python -m twine upload wheelhouse/*.whl; fi
-  - twine upload --non-interactive  -p $TWINE_PASSWORD -u $TWINE_PASSWORD  --repository-url https://test.pypi.org/legacy/  wheelhouse/*
+  - twine upload --non-interactive  -p $TWINE_PASSWORD -u $TWINE_USER  --repository-url https://test.pypi.org/legacy/  wheelhouse/*
 
