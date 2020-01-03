@@ -25,9 +25,9 @@ matrix:
     # and a windows build
     - os: windows
       language: shell
-      before_install:
-        - choco install python --version 3.8.0
-        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
+      #      before_install:
+      #        - choco install python --version 3.8.0
+      #        - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
 addons:
  apt_packages:
    - swig
