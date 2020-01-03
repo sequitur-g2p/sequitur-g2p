@@ -23,6 +23,7 @@ addons:
 
 install:
   - pip install -r requirements.txt
+  - pip install -r dev_requirements.txt
 
 script:
   # build the wheels, put them into './wheelhouse'
