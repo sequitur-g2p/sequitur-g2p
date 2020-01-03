@@ -8,6 +8,5 @@ set -e -o pipefail
 set -o nounset                              # Treat unset variables as an error
 set -x
 
-pip install -r requirements.txt
-pip install -r dev-requirements.txt
+(cd /project/swig-4.0.1; ./configure --without-pcre && make && make install) || exit 1
 
