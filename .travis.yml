@@ -57,5 +57,5 @@ script:
 after_success:
   # if the release was tagged, upload them to PyPI
   - if [[ $TRAVIS_TAG ]]; then python -m twine upload wheelhouse/*.whl; fi
-  - twine upload --non-interactive  -p $TWINE_PASSWORD -u $TWINE_USER  --repository-url https://test.pypi.org/legacy/  wheelhouse/*
+  - python -m twine upload --verbose --non-interactive  -p $PYPITEST_PASSWORD -u __token__  --repository-url https://test.pypi.org/legacy/  wheelhouse/*
 
