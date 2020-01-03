@@ -6,9 +6,9 @@ language: python
 #    - TWINE_USER: __token__
 env:
   global:
-    #- PKG_NAME=ncephes
+    - PKG_NAME=sequitur-g2p
     #- CIBW_SKIP="cp27-* cp34-* cp35-* *i686*"
-  - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
+    - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
     #- CIBW_BEFORE_BUILD_MACOS=travis/before-build-macos
     #- CIBW_TEST_COMMAND="python -c \"import $PKG_NAME; import sys; sys.exit($PKG_NAME.test())\""
 
@@ -19,6 +19,9 @@ matrix:
     # and a mac build
     - os: osx
       language: shell
+      before_install:
+        - sudo mkdir -p /usr/local/man
+        - sudo chown -R "${USER}:admin" /usr/local/man
     # and a windows build
     - os: windows
       language: shell
@@ -37,10 +40,12 @@ script:
   # build the wheels, put them into './wheelhouse'
   - |
     if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
-      sudo mkdir -p /usr/local/man
-      sudo chown -R "${USER}:admin" /usr/local/man
+      brew update
+      brew install swig
     elif [ "${TRAVIS_OS_NAME}" == "linux" ]; then
       wget -O - https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz | tar xzf -
+    elif [ "${TRAVIS_OS_NAME}" == "windows" ]; then
+      choco install swig
     fi
   - python -m cibuildwheel --output-dir wheelhouse
 
