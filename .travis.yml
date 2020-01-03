@@ -9,7 +9,7 @@ env:
     - PKG_NAME=sequitur-g2p
     #- CIBW_SKIP="cp27-* cp34-* cp35-* *i686*"
     - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
-    - CIBW_BEFORE_BUILD_WINDOWS=travis\\before-build-windows
+    - CIBW_BEFORE_BUILD_WINDOWS="dir; pwd; .\\travis\\before-build-windows"
     #- CIBW_BEFORE_BUILD_MACOS=travis/before-build-macos
     #- CIBW_TEST_COMMAND="python -c \"import $PKG_NAME; import sys; sys.exit($PKG_NAME.test())\""
 
@@ -42,7 +42,7 @@ script:
   - |
     if [ "${TRAVIS_OS_NAME}" == "osx" ]; then
       brew update
-      brew upgrade
+      #brew upgrade gcc
       brew install swig
       gcc --version
     elif [ "${TRAVIS_OS_NAME}" == "linux" ]; then
