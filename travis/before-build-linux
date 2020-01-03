@@ -12,7 +12,7 @@ ls -al
 
 ls -al /
 
-ls -al /host
+ls -al /project
 
-(cd /host/swig-4.0.1; ./configure --without-pcre && make && make install) || exit 1
+(cd /project/swig-4.0.1; ./configure --without-pcre && make && make install) || exit 1
 
