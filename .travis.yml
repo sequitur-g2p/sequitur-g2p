@@ -14,6 +14,13 @@ env:
 
 matrix:
   include:
+    - env: 
+        - TEST=TRUE
+      script:
+        - echo "TEST = $TEST"
+        - echo "PYTHONPATH = $PYTHONPATH"
+        - python setup.py install
+        - make test
     - sudo: required
       services: docker
     # and a mac build
@@ -28,13 +35,6 @@ matrix:
       before_install:
         - choco install python --version 3.8.0
         - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
-    - env: 
-        - TEST=TRUE
-      script:
-        - echo "TEST = $TEST"
-        - echo "PYTHONPATH = $PYTHONPATH"
-        - python setup.py install
-        - make test
 addons:
  apt_packages:
    - swig
