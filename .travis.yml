@@ -79,4 +79,4 @@ after_success:
       TWINE_NON_INTERACTIVE=1 python -m twine upload --skip-existing \
         --verbose -p $TWINE_PASSWORD -u __token__  wheelhouse/*tar.gz
     fi
-
+  - echo "All done"
