@@ -144,8 +144,7 @@ setup(
         "Development Status :: 6 - Mature",
         "Environment :: Console",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: GNU General Public License v2 "
-            "or later (GPLv2+)",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering",
         'Programming Language :: Python',
