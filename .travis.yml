@@ -7,7 +7,7 @@ env:
 env:
   global:
     - PKG_NAME=sequitur-g2p
-    - CIBW_BUILD="cp37-*64 cp38-*64 cp3*win* *multilinux*" 
+    - CIBW_BUILD="cp3*win* cp3*multilinux* cp38*mac*"
     - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
     - CIBW_BEFORE_BUILD_WINDOWS=".\\travis\\before-build-windows"
     - CIBW_ENVIRONMENT_MACOS="CCFLAGS=\"-std=c++11\" CXXFLAGS=\"-std=c++11\""

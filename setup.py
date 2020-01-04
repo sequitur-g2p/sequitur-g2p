@@ -32,7 +32,7 @@ from distutils.command.build import build
 from setuptools import setup, Extension
 
 
-VERSION = '1.0a1'
+VERSION = '1.0.1668.3'
 
 with open('requirements.txt') as fp:
     required = fp.read().splitlines()
@@ -124,12 +124,17 @@ setup(
     version=VERSION,
     license='gpl-2.0',
     description='sequence and joint-sequence modelling tool for g2p',
+    keywords="g2p grapheme-to-phoneme sequitur grapheme phoneme",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Maximilian Bisani',
     maintainer="Jan 'Yenda' Trmal",
     maintainer_email='jtrmal@gmail.com',
     url='https://github.com/sequitur-g2p/sequitur-g2p',
+    project_urls={
+        "Original site": "https://www-i6.informatik.rwth-aachen.de/web/Software/g2p.html",
+        "Bug Tracker": "https://github.com/sequitur-g2p/sequitur-g2p/issues",
+    },
     cmdclass={'build': CustomBuild},
     install_requires=required,
     py_modules=sequiturModules,
