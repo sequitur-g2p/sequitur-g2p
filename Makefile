@@ -10,6 +10,16 @@ build-py:
 .PHONY:	build
 
 # note the test won't probably work well for python3
+travis-test:	
+	$(PYTHON) test_mGramCounts.py		;\
+#	$(PYTHON) test_SparseVector.py		;\
+#	$(PYTHON) test_LanguageModel.py		;\
+	$(PYTHON) test_Minimization.py		;\
+	$(PYTHON) test_SequenceModel.py		;\
+# $(PYTHON) test_IntTuple.py		;\
+	$(PYTHON) test_sequitur.py
+
+#	rm -r tmp-test-install
 test:	build
 	mkdir -p tmp-test-install/lib/python2.7/site-packages/
 	sleep 3s
@@ -33,7 +43,7 @@ install: build
 clean:
 	rm -rf tmp-test-install
 	rm -f *~
-	rm -rf build dist
+	rm -rf build dist sequitur_g2p.egg-info
 	rm -f *.pyc
 	rm -f SparseVector.c
 	rm -f sequitur_.py sequitur_wrap.cpp
