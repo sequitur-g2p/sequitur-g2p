@@ -20,7 +20,7 @@ matrix:
         - echo "TEST = $TEST"
         - echo "PYTHONPATH = $PYTHONPATH"
         - python setup.py install
-        - make test
+        - make travis-test
     - sudo: required
       services: docker
     # and a mac build
