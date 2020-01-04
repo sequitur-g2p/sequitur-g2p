@@ -2,12 +2,8 @@ language: python
 
 env:
   global:
-    #- TWINE_PASSWORD: ${{ secrets.PIPY_KEY }}
-    - TWINE_USER: __token__
-env:
-  global:
     - PKG_NAME=sequitur-g2p
-    - CIBW_BUILD="cp3*win* cp3*manylinux* cp38*mac*"
+    - CIBW_BUILD="cp3*win* cp27*manylinux* cp3*manylinux* cp38*mac*"
     - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
     - CIBW_BEFORE_BUILD_WINDOWS=".\\travis\\before-build-windows"
     - CIBW_ENVIRONMENT_MACOS="CCFLAGS=\"-std=c++11\" CXXFLAGS=\"-std=c++11\""
@@ -15,12 +11,11 @@ env:
     - CIBW_MANYLINUX_I686_IMAGE=manylinux1
     #- CIBW_BEFORE_BUILD_MACOS=travis/before-build-macos
     #- CIBW_TEST_COMMAND="python -c \"import $PKG_NAME; import sys; sys.exit($PKG_NAME.test())\""
-    #- CIBW_SKIP="cp27-* cp34-* cp35-* *i686*"
 
 matrix:
   include:
     - sudo: required
-    - services: docker
+      services: docker
     # and a mac build
     - os: osx
       language: shell
@@ -58,6 +53,19 @@ script:
 
 after_success:
   # if the release was tagged, upload them to PyPI
-  - if [[ $TRAVIS_TAG ]]; then python -m twine upload wheelhouse/*.whl; fi
-  - TWINE_NON_INTERACTIVE=1 python -m twine upload --skip-existing --verbose -p $PYPITEST_PASSWORD -u __token__  --repository-url https://test.pypi.org/legacy/  wheelhouse/*
+  - |
+    python3 setup.py sdist
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ] ; then 
+      TWINE_NON_INTERACTIVE=1 python -m twine upload --skip-existing \
+        --verbose -p $PYPITEST_PASSWORD -u __token__  \
+        --repository-url https://test.pypi.org/legacy/  wheelhouse/*whl
+      TWINE_NON_INTERACTIVE=1 python -m twine upload --skip-existing \
+        --verbose -p $PYPITEST_PASSWORD -u __token__  \
+        --repository-url https://test.pypi.org/legacy/  wheelhouse/*tar.gz
+    elif [[ $TRAVIS_TAG ]]; then 
+      TWINE_NON_INTERACTIVE=1 python -m twine upload --skip-existing \
+        --verbose -p $TWINE_PASSWORD -u __token__  wheelhouse/*whl
+      TWINE_NON_INTERACTIVE=1 python -m twine upload --skip-existing \
+        --verbose -p $TWINE_PASSWORD -u __token__  wheelhouse/*tar.gz
+    fi
 

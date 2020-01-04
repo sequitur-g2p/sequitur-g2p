@@ -32,7 +32,7 @@ from distutils.command.build import build
 from setuptools import setup, Extension
 
 
-VERSION = '1.0.1668.4'
+VERSION = '1.0.1668.5'
 
 with open('requirements.txt') as fp:
     required = fp.read().splitlines()
@@ -148,7 +148,9 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering",
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
