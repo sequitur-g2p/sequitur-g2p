@@ -32,7 +32,7 @@ from distutils.command.build import build
 from setuptools import setup, Extension
 
 
-VERSION = '1.0.1668.3'
+VERSION = '1.0.1668.4'
 
 with open('requirements.txt') as fp:
     required = fp.read().splitlines()
