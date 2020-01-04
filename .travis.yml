@@ -30,10 +30,10 @@ matrix:
         - export PATH="/c/Python38:/c/Python38/Scripts:$PATH"
     - env: 
         - TEST=TRUE
-        - PYTHONPATH=`pwd`/tmp-test-install/lib/python2.7/site-packages/
       script:
         - echo "TEST = $TEST"
         - echo "PYTHONPATH = $PYTHONPATH"
+        - python setup.py install
         - make test
 addons:
  apt_packages:
