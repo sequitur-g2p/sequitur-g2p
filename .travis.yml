@@ -3,10 +3,10 @@ language: python
 env:
   global:
     - PKG_NAME=sequitur-g2p
-    - CIBW_BUILD="cp3*win* cp27*manylinux* cp3*manylinux* cp38*mac*"
+    - CIBW_BUILD="cp3*win* cp27*manylinux* cp3*manylinux* cp3*mac*"
     - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
     - CIBW_BEFORE_BUILD_WINDOWS=".\\travis\\before-build-windows"
-    - CIBW_ENVIRONMENT_MACOS="CCFLAGS=\"-std=c++11\" CXXFLAGS=\"-std=c++11\""
+    - CIBW_ENVIRONMENT_MACOS='MACOSX_DEPLOYMENT_TARGET="10.9" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"'
     - CIBW_MANYLINUX_X86_64_IMAGE=manylinux1
     - CIBW_MANYLINUX_I686_IMAGE=manylinux1
     #- CIBW_BEFORE_BUILD_MACOS=travis/before-build-macos
@@ -27,6 +27,8 @@ matrix:
     # and a mac build
     - os: osx
       language: shell
+      osx_image: xcode11
+      compiler: clang
       before_install:
         - sudo mkdir -p /usr/local/man
         - sudo chown -R "${USER}:admin" /usr/local/man
