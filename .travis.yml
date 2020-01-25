@@ -6,7 +6,7 @@ env:
     - CIBW_BUILD="cp3*win* cp27*manylinux* cp3*manylinux* cp3*mac*"
     - CIBW_BEFORE_BUILD_LINUX=travis/before-build-linux
     - CIBW_BEFORE_BUILD_WINDOWS=".\\travis\\before-build-windows"
-    - CIBW_ENVIRONMENT_MACOS='CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"'
+    - CIBW_ENVIRONMENT_MACOS='MACOSX_DEPLOYMENT_TARGET="10.7" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"'
     - CIBW_MANYLINUX_X86_64_IMAGE=manylinux1
     - CIBW_MANYLINUX_I686_IMAGE=manylinux1
     #- CIBW_BEFORE_BUILD_MACOS=travis/before-build-macos
