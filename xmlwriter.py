@@ -24,9 +24,7 @@ agreed upon which comes closest to what the parties intended
 commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
-
-import codecs, types, sys
-from functools import reduce
+import codecs
 
 
 class XmlWriter:
@@ -34,7 +32,7 @@ class XmlWriter:
         self.path = []
         self.encoding = encoding
         encoder, decoder, streamReader, streamWriter = codecs.lookup(encoding)
-        self.file = sys.stdout
+        self.file = streamWriter(file)
         self.margin = 78
 
     def write(self, data):
@@ -63,12 +61,14 @@ class XmlWriter:
 
     def open(self, element, **args):
         attr = [k_v1 for k_v1 in list(args.items()) if k_v1[1] is not None]
-        self.write(self.indent_str() + '<' + self.formTag(element, attr) + '>\n')
+        self.write(self.indent_str() +
+                   '<' + self.formTag(element, attr) + '>\n')
         self.path.append(element)
 
     def empty(self, element, **args):
         attr = [k_v2 for k_v2 in list(args.items()) if k_v2[1] is not None]
-        self.write(self.indent_str() + '<' + self.formTag(element, attr) + '/>\n')
+        self.write(self.indent_str() +
+                   '<' + self.formTag(element, attr) + '/>\n')
 
     def close(self, element):
         assert element == self.path[-1]
@@ -77,10 +77,10 @@ class XmlWriter:
 
     def openComment(self):
         self.write('<!--\n')
-        self.path.append('u<!--')
+        self.path.append('<!--')
 
     def closeComment(self):
-        assert self.path[-1] == 'u<!--'
+        assert self.path[-1] == '<!--'
         del self.path[-1]
         self.write('-->\n')
 
@@ -92,23 +92,24 @@ class XmlWriter:
     def fillParagraph(self, w):
         indent_str = self.indent_str()
         ll = []
-        l = []
+        fragment = []
         n = len(indent_str)
         for a in w.split():
             if n + len(a) < self.margin:
                 n = n + len(a) + 1
-                l.append(a)
+                fragment.append(a)
             else:
-                ll.append(indent_str + " ".join(l))
-                l = [a]
+                ll.append(indent_str + " ".join(fragment))
+                fragment = [a]
                 n = len(indent_str) + len(a)
-        if len(l) > 0:
-            ll.append(indent_str + " ".join(l))
+        if len(fragment) > 0:
+            ll.append(indent_str + " ".join(fragment))
         return ll
 
     def cdata(self, w, format=formatFill):
         if 'u<!--' in self.path:
-            w = w.replace('--', '=') # comment must not contain double-hyphens
+            # comment must not contain double-hyphens
+            w = w.replace('--', '=')
         if format == self.formatRaw:
             out = [w]
         elif format == self.formatIndent:
@@ -116,17 +117,18 @@ class XmlWriter:
             out = [indentStr + line for line in w.split('\n')]
         elif format == self.formatBreakLines:
             out = [self.fillParagraph(line) for line in w.split('\n')]
-            out = reduce(operator.add, out)
+            out = ''.join(out)
         elif format == self.formatFill:
             out = self.fillParagraph(w)
         self.write("\n".join(out) + '\n')
 
     def formatted_cdata(self, s):
-        for w in " ".split(s, '\\n'):
+        for w in s.split('\\n'):
             self.cdata(w, self.formatFill)
 
     def comment(self, comment):
-        comment = comment.replace('--', '=') # comment must not contain double-hyphens
+        # comment must not contain double-hyphens
+        comment = comment.replace('--', '=')
         self.cdata('<!-- ' + comment + ' -->')
 
     def element(self, element, cdata=None, **args):
