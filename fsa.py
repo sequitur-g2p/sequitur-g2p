@@ -30,18 +30,19 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-import pickle, sys
+import pickle
+import sys
 from xmlwriter import XmlWriter
 
 
-def writeAsFsa(model, xml, shouldMakeClosure = True):
+def writeAsFsa(model, xml, shouldMakeClosure=True):
     sq = model.sequitur
     sm = model.sequenceModel
 
     xml.open('fsa',
-             initial  = 0,
-             type     = 'transducer',
-             semiring = 'tropical')
+             initial=0,
+             type='transducer',
+             semiring='tropical')
 
     def makeAlphabet(inv):
         for index, symbol in enumerate(inv.list):
@@ -102,7 +103,8 @@ def writeAsFsa(model, xml, shouldMakeClosure = True):
         currentDesc = [''.join(ll) + ':' + '_'.join(rr)
                        for ll, rr in currentDesc]
         if left or right:
-            currentDesc += ['/', ''.join(left or ()) + ':' + '_'.join(right or ())]
+            currentDesc += ['/',
+                            ''.join(left or ()) + ':' + '_'.join(right or ())]
         currentDesc = ' '.join(currentDesc)
 
         xml.open('state', id=currentId)
@@ -135,10 +137,11 @@ def main(options, args):
 
 # ===========================================================================
 if __name__ == '__main__':
-    import optparse, tool
+    import optparse
+    import tool
     optparser = optparse.OptionParser(
-        usage   = '%prog [OPTION]... FILE...\n' + __doc__,
-        version = '%prog ' + __version__)
+        usage='%prog [OPTION]... FILE...\n' + __doc__,
+        version='%prog ' + __version__)
     tool.addOptions(optparser)
     optparser.add_option(
         '-m', '--model', dest='modelFile',
