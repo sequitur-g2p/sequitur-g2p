@@ -107,7 +107,7 @@ class XmlWriter:
         return ll
 
     def cdata(self, w, format=formatFill):
-        if 'u<!--' in self.path:
+        if '<!--' in self.path:
             # comment must not contain double-hyphens
             w = w.replace('--', '=')
         if format == self.formatRaw:

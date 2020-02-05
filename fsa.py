@@ -131,8 +131,8 @@ def writeAsFsa(model, xml, shouldMakeClosure=True):
 
 def main(options, args):
     model = pickle.load(open(options.modelFile, 'rb'))
-    out = sys.stdout
-    writeAsFsa(model, XmlWriter(out, 'UTF-8'))
+    with open(options.fsaFile, 'wb') as out:
+        writeAsFsa(model, XmlWriter(out, 'UTF-8'))
 
 
 # ===========================================================================
@@ -146,5 +146,8 @@ if __name__ == '__main__':
     optparser.add_option(
         '-m', '--model', dest='modelFile',
         help='read model from FILE', metavar='FILE')
+    optparser.add_option(
+        '-o', '--fsa', dest='fsaFile',
+        help='write fsa to FILE', metavar='FILE')
     options, args = optparser.parse_args()
     tool.run(main, options, args)
