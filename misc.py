@@ -8,7 +8,6 @@ import os
 import io
 import codecs
 import gc
-import resource
 
 
 __author__    = 'Maximilian Bisani'
@@ -70,7 +69,14 @@ else:
     object_or_InstanceType = types.InstanceType
 
 # ===========================================================================
-pageSize = resource.getpagesize()
+try:
+    # Unix system
+    import resource
+    pageSize = resource.getpagesize()
+except ImportError:
+    # Windows system
+    import mmap
+    pageSize = mmap.PAGESIZE
 megabyte = 1024 * 1024
 
 
