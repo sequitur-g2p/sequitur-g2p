@@ -52,15 +52,15 @@ class build_py(_build_py):
 sequiturExtension = Extension(
     '_sequitur_',
     language='c++',
-    define_macros=[('MULTIGRAM_SIZE', '4')],
+    define_macros=[
+        ('MULTIGRAM_SIZE', '4')],
     sources=[
         'sequitur.i',
         'Assertions.cc',
         'Types.cc',
         'Utility.cc',
         'Graph.cc',
-        'Multigram.cc',
-    ],
+        'Multigram.cc'],
     depends=[
         'Assertions.hh',
         'Graph.hh',
@@ -78,10 +78,11 @@ sequiturExtension = Extension(
         'EditDistance.cc',
         'Estimation.cc',
         'SequenceModel.cc',
-        'Translation.cc',
-    ],
-    include_dirs=[os.path.join(path, 'core/include') for path in numpy.__path__],
-    extra_compile_args=['-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION'],
+        'Translation.cc'],
+    include_dirs=[
+        os.path.join(path, 'core/include') for path in numpy.__path__],
+    extra_compile_args=[
+        '-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION'],
 )
 
 sequiturModules = [
@@ -94,10 +95,10 @@ sequiturModules = [
     'sequitur',
     'sequitur_',
     'symbols',
-    'tool',
-]
+    'tool']
 
-sequiturScripts = ['g2p.py']
+sequiturScripts = [
+    'g2p.py']
 
 
 #  os.system('pyrexc SparseVector.pyx')
@@ -112,7 +113,8 @@ lmModules = [
     'LanguageModel',
     'makeOvModel',
 ]
-lmScripts = ['makeOvModel.py']
+lmScripts = [
+    'makeOvModel.py']
 
 
 setup(
@@ -120,16 +122,16 @@ setup(
     version=VERSION,
     license='gpl-2.0',
     description='sequence and joint-sequence modelling tool for g2p',
-    keywords='g2p grapheme-to-phoneme sequitur grapheme phoneme',
+    keywords="g2p grapheme-to-phoneme sequitur grapheme phoneme",
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     author='Maximilian Bisani',
-    maintainer='Jan 'Yenda' Trmal',
+    maintainer="Jan 'Yenda' Trmal",
     maintainer_email='jtrmal@gmail.com',
     url='https://github.com/sequitur-g2p/sequitur-g2p',
     project_urls={
-        'Original site': 'https://www-i6.informatik.rwth-aachen.de/web/Software/g2p.html',
-        'Bug Tracker': 'https://github.com/sequitur-g2p/sequitur-g2p/issues',
+        "Original site": "https://www-i6.informatik.rwth-aachen.de/web/Software/g2p.html",
+        "Bug Tracker": "https://github.com/sequitur-g2p/sequitur-g2p/issues",
     },
     cmdclass={'build_py': build_py},
     install_requires=required,
@@ -137,12 +139,12 @@ setup(
     ext_modules=[sequiturExtension],
     scripts=sequiturScripts,
     classifiers=[
-        'Development Status :: 6 - Mature',
-        'Environment :: Console',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
-        'Operating System :: OS Independent',
-        'Topic :: Scientific/Engineering',
+        "Development Status :: 6 - Mature",
+        "Environment :: Console",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+        "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering",
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
