@@ -37,7 +37,7 @@ with open('requirements.txt') as fp:
     required = fp.read().splitlines()
 
 
-with open('README.md', 'r') as fh:
+with open("README.md", "r") as fh:
     long_description = fh.read()
 
 
@@ -82,7 +82,7 @@ sequiturExtension = Extension(
     include_dirs=[
         os.path.join(path, 'core/include') for path in numpy.__path__],
     extra_compile_args=[
-        '-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION'],
+        '-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION']
 )
 
 sequiturModules = [
@@ -111,8 +111,7 @@ lmModules = [
     'groupedCounts',
     'SimpleGoodTuring',
     'LanguageModel',
-    'makeOvModel',
-]
+    'makeOvModel']
 lmScripts = [
     'makeOvModel.py']
 
