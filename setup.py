@@ -28,9 +28,8 @@ negligent actions or intended actions or fraudulent concealment.
 import os
 import numpy
 
-from distutils.command.build import build
 from setuptools import setup, Extension
-
+from setuptools.command.build_py import build_py as _build_py
 
 VERSION = '1.0.1668.6'
 
@@ -42,14 +41,12 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 
-class CustomBuild(build):
-    """Custom build class to swig before handling python modules."""
-    sub_commands = [
-        ('build_ext', build.has_ext_modules),
-        ('build_py', build.has_pure_modules),
-        ('build_clib', build.has_c_libraries),
-        ('build_scripts', build.has_scripts)
-    ]
+class build_py(_build_py):
+    """Build SWIG extension before Python modules."""
+
+    def run(self):
+        self.run_command('build_ext')
+        return _build_py.run(self)
 
 
 sequiturExtension = Extension(
@@ -135,7 +132,7 @@ setup(
         "Original site": "https://www-i6.informatik.rwth-aachen.de/web/Software/g2p.html",
         "Bug Tracker": "https://github.com/sequitur-g2p/sequitur-g2p/issues",
     },
-    cmdclass={'build': CustomBuild},
+    cmdclass={'build_py': build_py},
     install_requires=required,
     py_modules=sequiturModules,
     ext_modules=[sequiturExtension],
