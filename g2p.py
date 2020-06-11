@@ -111,6 +111,21 @@ def readApplyP2P(fname, encoding = None):
         left = tuple(fields[1:])
         yield word, left
 
+def readApplyP2G(fname, encoding = None):
+    for line in gOpenIn(fname, encoding):
+        line = line.rstrip()
+        fields = line.split("\t")
+        if len(fields) == 1:
+            word = fields[0]
+            left = tuple(fields[0].split())
+        elif len(fields) == 2:
+            word = fields[0]
+            left = tuple(fields[1].split())
+        else:
+            print('unknown format in file:  %s' % (line), file = stderr)
+
+        yield word, left
+
 # ===========================================================================
 class MemoryTranslator:
     def __init__(self, sample):
@@ -152,7 +167,7 @@ def mainApply(translator, options, output_file):
     if options.phoneme_to_phoneme:
         words = readApplyP2P(options.applySample, options.encoding)
     elif options.shouldTranspose:
-        words = readApplyP2P(options.applySample, options.encoding)
+        words = readApplyP2G(options.applySample, options.encoding)
     else:
         words = readApply(options.applySample, options.encoding)
 
@@ -190,8 +205,12 @@ def mainApply(translator, options, output_file):
                 pass
 
 def mainApplyWord(translator, options, output_file):
-    word = options.applyWord.decode(options.encoding)
-    left = tuple(word)
+    word = options.applyWord
+    if options.shouldTranspose:
+        left = tuple(word.split())
+    else:
+        left = tuple(word)
+
     try:
         result = translator(left)
         print(('%s\t%s' % (word, ' '.join(result))), file = output_file)
