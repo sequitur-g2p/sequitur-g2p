@@ -44,19 +44,18 @@ jobs:
       - run: ls -alR dist/
         shell: bash {0}
         # TODO: auditwheel doesn't like our compiler; need to switch to Docker
-        # - if: ${{ matrix.os == 'ubuntu-20.04' }}
-        #   run: |
-        #     for whl in dist/sequitur*.whl; do
-        #       auditwheel repair "$whl" --plat manylinux1_x86_64 -w dist/;
-        #     done
-        # TODO: publish to PyPI
-        # - name: Publish distribution 📦 to Test PyPI
-        #   uses: pypa/gh-action-pypi-publish@master
-        #   with:
-        #     password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        #     repository_url: https://test.pypi.org/legacy/
-        # - name: Publish distribution 📦 to PyPI
-        #   if: startsWith(github.ref, 'refs/tags')
-        #   uses: pypa/gh-action-pypi-publish@master
-        #   with:
-        #     password: ${{ secrets.PYPI_API_TOKEN }}
+      - if: ${{ matrix.os == 'ubuntu-20.04' }}
+        run: |
+           for whl in dist/sequitur*.whl; do
+             auditwheel repair "$whl" --plat manylinux1_x86_64 -w dist/;
+           done
+      - name: Publish distribution 📦 to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+           repository_url: https://test.pypi.org/legacy/
+      - name: Publish distribution 📦 to PyPI
+        if: startsWith(github.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+           password: ${{ secrets.PYPI_API_TOKEN }}
