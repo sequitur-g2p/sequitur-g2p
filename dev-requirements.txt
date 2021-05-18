@@ -3,3 +3,4 @@ twine
 numpy
 wheel
 cibuildwheel
+auditwheel
