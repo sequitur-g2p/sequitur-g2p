@@ -31,7 +31,7 @@ import numpy
 from setuptools import setup, Extension
 from setuptools.command.build_py import build_py as _build_py
 
-VERSION = '1.0.1668.6'
+VERSION = '1.0.1668.7'
 
 with open('requirements.txt') as fp:
     required = fp.read().splitlines()
@@ -145,12 +145,11 @@ setup(
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering",
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
     python_requires='>=2.7.0',
 )
