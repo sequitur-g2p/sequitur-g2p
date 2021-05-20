@@ -79,6 +79,7 @@ jobs:
           path: dist
       - run: mv dist/artifact/* dist/ || true
       - run: rm -rf dist/artifact || true
+      - run: rm -rf dist/*-linux_x86_64* || true  # only want manylinux wheels
       - run: ls -alR . || true
       - if: startsWith(github.ref, 'refs/tags')
         name: Publish distribution 📦 to PyPI
