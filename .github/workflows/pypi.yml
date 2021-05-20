@@ -60,8 +60,8 @@ jobs:
         ##    with:
         ##       password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         ##       repository_url: https://test.pypi.org/legacy/
-      - name: Publish distribution 📦 to PyPI
-        if: startsWith(github.ref, 'refs/tags')
+      - if: ${{ startsWith(github.ref, 'refs/tags') && (matrix.os != 'ubuntu-20.04' || (matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.6')) }}
+        name: Publish distribution 📦 to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:
            password: ${{ secrets.PYPI_API_TOKEN }}
