@@ -1,6 +1,6 @@
 default:	build
 
-PYTHON	= python
+PYTHON	?= python
 
 build:
 	$(PYTHON) setup.py build
@@ -10,7 +10,7 @@ build-py:
 .PHONY:	build
 
 # note the test won't probably work well for python3
-travis-test:	
+travis-test:
 	$(PYTHON) test_mGramCounts.py		;\
 #	$(PYTHON) test_SparseVector.py		;\
 #	$(PYTHON) test_LanguageModel.py		;\
@@ -54,4 +54,3 @@ TARGETS	= \
 	_sequitur_.so sequitur_.py	\
 	Evaluation.py  Minimization.py SequenceModel.py sequitur.py g2p.py \
 	misc.py tool.py
-

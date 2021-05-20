@@ -4,3 +4,4 @@ numpy
 wheel
 cibuildwheel
 auditwheel
+cryptography<3.4
