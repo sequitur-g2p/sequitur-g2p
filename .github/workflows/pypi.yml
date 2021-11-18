@@ -7,12 +7,11 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9']
-        os: [ubuntu-20.04, macos-latest, windows-latest]
+        os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
     env:
       PKG_NAME: sequitur-g2p_fork
-      CIBW_BUILD: "cp3*win* cp3*manylinux* cp3*mac*"
-      CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="10.9" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"
+      CIBW_BUILD: "cp3*manylinux*"
       CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
       CIBW_MANYLINUX_I686_IMAGE: manylinux1
       TEST: true
@@ -30,29 +29,6 @@ jobs:
           wget -O - https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz | tar xzf - &&
           docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`:/io quay.io/pypa/manylinux1_x86_64 /io/travis/build-wheels.sh
 
-      - if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          choco install swig
-      - if: ${{ matrix.os == 'macos-latest' }}
-        run: |
-          brew update
-          brew install swig
-
-      # windows/mac builds
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: python -m pip install build
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: pip install -r requirements.txt
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: pip install -r dev-requirements.txt
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: pip install .
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: make travis-test
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        name: Build a binary wheel and a source tarball
-        run: python -m build --sdist --wheel --outdir dist/ .
-
       - run: ls -alR dist/ || true
         shell: bash {0}
         ##  - name: Publish distribution 📦 to Test PyPI
@@ -65,10 +41,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: dist/*.tar.gz
-      - if: ${{ startsWith(github.ref, 'refs/tags') && ((matrix.os != 'ubuntu-20.04') || (matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.6')) }}
-        uses: actions/upload-artifact@v2
-        with:
-          path: dist/*.whl
 
   publish:
     runs-on: ubuntu-20.04
