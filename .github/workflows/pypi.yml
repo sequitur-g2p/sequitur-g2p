@@ -10,7 +10,7 @@ jobs:
         os: [ubuntu-20.04, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
-      PKG_NAME: sequitur-g2p
+      PKG_NAME: sequitur-g2p_fork
       CIBW_BUILD: "cp3*win* cp3*manylinux* cp3*mac*"
       CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="10.9" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"
       CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
