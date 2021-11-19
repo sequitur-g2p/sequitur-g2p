@@ -46,6 +46,9 @@ from tool import UsageError
 import sys
 
 
+Sample = List[Tuple[Tuple[str], Tuple[str]]]
+
+
 class OnlineTester(object):
     def __init__(self, name, sample):
         self.name = name
@@ -66,16 +69,16 @@ def transposeSample(sample):
     return [(right, left) for left, right in sample]
 
 
-def partition_sample(sample: List[Tuple[Tuple[str], Tuple[str]]], portion: float = 0.1):
+def partition_sample(sample: Sample, portion: float = 0.1) -> Tuple[Sample, Sample]:
     """
     :param sample: list of pairs (source, reference) split at character level
     :param portion: portion of data to be part of the development set
-    :return :
+    :return: the train/dev split, with the same data structure as sample
     """
     trainSample = []
     develSample = []
     j = 0
-    for i, s in enumerate(group_by_orth(sample)):
+    for i, s in enumerate(sample):
         if j / (i + 1) < portion:
             develSample.append(s)
             j += 1
