@@ -27,9 +27,10 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
+from collections import defaultdict
 import os.path
 from six.moves import cPickle as pickle
-from typing import List, Tuple
+from typing import Iterator, List, Tuple
 import operator
 import numpy as num
 from sequitur import (
@@ -75,16 +76,36 @@ def partition_sample(sample: Sample, portion: float = 0.1) -> Tuple[Sample, Samp
     :param portion: portion of data to be part of the development set
     :return: the train/dev split, with the same data structure as sample
     """
-    trainSample = []
-    develSample = []
+    train_sample = []
+    devel_sample = []
     j = 0
-    for i, s in enumerate(sample):
+    for i, s in enumerate(group_by_orth(sample)):
         if j / (i + 1) < portion:
-            develSample.append(s)
+            for value in s[1]:
+                devel_sample.append((s[0], value))
             j += 1
         else:
-            trainSample.append(s)
-    return trainSample, develSample
+            for value in s[1]:
+                train_sample.append((s[0], value))
+    return train_sample, devel_sample
+
+
+def group_by_orth(sample: Sample) -> Iterator[Tuple[Tuple[str], List[Tuple[str]]]]:
+    """
+    :param sample: list of pairs (source, reference) split at character level
+    :return: An iterator over the samples with the references grouped according to the source side
+    """
+    import random
+
+    source_values = []
+    mapping = defaultdict(list)
+    for s in sample:
+        source_values.append(s[0])
+        mapping[s[0]].append(s[1])
+    random.shuffle(source_values)
+    for s in source_values:
+        yield s, mapping[s]
+
 
 class Tool:
     def __init__(self, options, loadSample, log=sys.stdout):
