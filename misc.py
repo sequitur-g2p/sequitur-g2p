@@ -8,6 +8,7 @@ import os
 import io
 import codecs
 import gc
+import gzip
 
 
 __author__    = 'Maximilian Bisani'
@@ -265,8 +266,7 @@ def gOpenIn(fname, encoding=None):
     elif os.path.splitext(fname)[1] == '.gz':
         if not os.path.isfile(fname):
             raise IOError(errno.ENOENT, 'No such file: \'%s\'' % fname)
-        inp = os.popen('gzip -dc %s' % fname, 'r')
-        # inp = gzip.open(fname, 'rb')
+        inp = gzip.open(fname, 'rb')
     else:
         inp = io.open(fname, encoding=encoding)
         return inp
