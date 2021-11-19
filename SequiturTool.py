@@ -1,10 +1,10 @@
 from __future__ import division, print_function
 
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1691 $'
-__date__      = '$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$LastChangedRevision: 1691 $"
+__date__ = "$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
@@ -27,16 +27,28 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
+from collections import defaultdict
 import os.path
-import six
 from six.moves import cPickle as pickle
+from typing import Iterator, List, Tuple
 import operator
 import numpy as num
-from sequitur import Sequitur, ModelTemplate, DefaultDiscountAdjuster, StaticDiscounts, FixedDiscounts, EagerDiscountAdjuster
+from sequitur import (
+    Sequitur,
+    ModelTemplate,
+    DefaultDiscountAdjuster,
+    StaticDiscounts,
+    FixedDiscounts,
+    EagerDiscountAdjuster,
+)
 from sequitur import Translator
 from Evaluation import Evaluator
 from tool import UsageError
 import sys
+
+
+Sample = List[Tuple[Tuple[str], Tuple[str]]]
+
 
 class OnlineTester(object):
     def __init__(self, name, sample):
@@ -47,24 +59,53 @@ class OnlineTester(object):
     def __call__(self, log, context, model):
         translator = Translator(model)
         result = self.evaluator.evaluate(translator)
-        print('ER %s: string errors %s    symbol errors %s' % (
-            self.name, result.stringError, result.symbolError), file=log)
+        print(
+            "ER %s: string errors %s    symbol errors %s"
+            % (self.name, result.stringError, result.symbolError),
+            file=log,
+        )
 
 
 def transposeSample(sample):
-    return [ (right, left) for left, right in sample ]
+    return [(right, left) for left, right in sample]
 
-def partitionSample(sample, portion = 0.1):
-    trainSample = []
-    develSample = []
+
+def partition_sample(sample: Sample, portion: float = 0.1) -> Tuple[Sample, Sample]:
+    """
+    :param sample: list of pairs (source, reference) split at character level
+    :param portion: portion of data to be part of the development set
+    :return: the train/dev split, with the same data structure as sample
+    """
+    train_sample = []
+    devel_sample = []
     j = 0
-    for i, s in enumerate(sample):
-        if j / (i+1) < portion:
-            develSample.append(s)
+    for i, s in enumerate(group_by_orth(sample)):
+        if j / (i + 1) < portion:
+            for value in s[1]:
+                devel_sample.append((s[0], value))
             j += 1
         else:
-            trainSample.append(s)
-    return trainSample, develSample
+            for value in s[1]:
+                train_sample.append((s[0], value))
+    return train_sample, devel_sample
+
+
+def group_by_orth(sample: Sample) -> Iterator[Tuple[Tuple[str], List[Tuple[str]]]]:
+    """
+    :param sample: list of pairs (source, reference) split at character level
+    :return: An iterator over the samples with the references grouped according to the source side
+    """
+    import random
+
+    source_values = []
+    mapping = defaultdict(list)
+    for s in sample:
+        source_values.append(s[0])
+        mapping[s[0]].append(s[1])
+    random.shuffle(source_values)
+    for s in source_values:
+        yield s, mapping[s]
+
 
 class Tool:
     def __init__(self, options, loadSample, log=sys.stdout):
@@ -76,12 +117,18 @@ class Tool:
         self.trainSample = self.loadSample(self.options.trainSample)
         if not self.options.develSample:
             self.develSample = []
-        elif self.options.develSample.endswith('%'):
-            portion = float(self.options.develSample.rstrip('% ')) / 100.0
-            self.trainSample, self.develSample = partitionSample(self.trainSample, portion)
+        elif self.options.develSample.endswith("%"):
+            portion = float(self.options.develSample.rstrip("% ")) / 100.0
+            self.trainSample, self.develSample = partition_sample(
+                self.trainSample, portion
+            )
         else:
             self.develSample = self.loadSample(self.options.develSample)
-        print('training sample: %d + %d devel' % (len(self.trainSample), len(self.develSample)), file=self.log)
+        print(
+            "training sample: %d + %d devel"
+            % (len(self.trainSample), len(self.develSample)),
+            file=self.log,
+        )
 
     def trainModel(self, initialModel):
         self.loadSamples()
@@ -110,42 +157,48 @@ class Tool:
 
         if self.options.lengthConstraints:
             spec = self.options.lengthConstraints.strip()
-            if spec.startswith('['):
-                assert spec.endswith(']')
-                st = spec[1:-1].split(',')
-                st = [ t.split(':') for t in st ]
-                st = [ (int(l), int(r)) for l, r in st ]
+            if spec.startswith("["):
+                assert spec.endswith("]")
+                st = spec[1:-1].split(",")
+                st = [t.split(":") for t in st]
+                st = [(int(l), int(r)) for l, r in st]
                 template.setSizeTemplates(st)
             else:
-                lc = tuple(map(int, spec.split(',')))
+                lc = tuple(map(int, spec.split(",")))
                 template.setLengthConstraints(*lc)
-        template.allowEmergenceOfNewMultigrams(not bool(self.options.shouldSuppressNewMultigrams))
+        template.allowEmergenceOfNewMultigrams(
+            not bool(self.options.shouldSuppressNewMultigrams)
+        )
         template.useMaximumApproximation(bool(self.options.viterbi))
 
         if self.options.minIterations > self.options.maxIterations:
-            print('invalid limits on number of iterations %d > %d' % \
-                  (self.options.minIterations,self.options.maxIterations), file=self.log)
+            print(
+                "invalid limits on number of iterations %d > %d"
+                % (self.options.minIterations, self.options.maxIterations),
+                file=self.log,
+            )
             return
         template.minIterations = self.options.minIterations
         template.maxIterations = self.options.maxIterations
         if self.options.checkpoint and self.options.newModelFile:
-            template.checkpointInterval = 8 * 60*60
+            template.checkpointInterval = 8 * 60 * 60
             base, ext = os.path.splitext(self.options.newModelFile)
-            template.checkpointFile = base + '-cp%d' + ext
+            template.checkpointFile = base + "-cp%d" + ext
 
         if self.options.shouldWipeModel:
             initialModel.wipeOut(template.nPossibleMultigrams())
 
         if self.options.shouldTestContinuously:
             if self.develSample:
-                template.observers.append(
-                    OnlineTester('devel', self.develSample))
+                template.observers.append(OnlineTester("devel", self.develSample))
             if self.options.testSample:
                 template.observers.append(
-                    OnlineTester('test', self.loadSample(self.options.testSample)))
+                    OnlineTester("test", self.loadSample(self.options.testSample))
+                )
 
         estimationContext = template.makeContext(
-            compiledTrainSample, compiledDevelSample, initialModel)
+            compiledTrainSample, compiledDevelSample, initialModel
+        )
         del initialModel
 
         estimationContext.log = self.log
@@ -160,12 +213,17 @@ class Tool:
             self.sequitur = model.sequitur
         elif self.options.modelFile:
             if sys.version_info[:2] >= (3, 0):
-                model = pickle.load(open(self.options.modelFile, 'rb'), encoding='latin1')
+                model = pickle.load(
+                    open(self.options.modelFile, "rb"), encoding="latin1"
+                )
             else:
                 try:
-                    model = pickle.load(open(self.options.modelFile, 'rb'))
+                    model = pickle.load(open(self.options.modelFile, "rb"))
                 except ValueError:
-                    print('This error most likely occurred because the loaded model was created in python3.\n', file=sys.stderr)
+                    print(
+                        "This error most likely occurred because the loaded model was created in python3.\n",
+                        file=sys.stderr,
+                    )
                     raise
 
             self.sequitur = model.sequitur
@@ -179,29 +237,37 @@ class Tool:
         if self.options.trainSample:
             model = self.trainModel(model)
             if not model:
-                print('failed to estimate or load model', file=self.log)
+                print("failed to estimate or load model", file=self.log)
                 return
 
         if not model:
             raise UsageError
 
-#       model.sequenceModel.showMostProbable(sys.stdout, model.sequitur.symbol, limit=250)
+        #       model.sequenceModel.showMostProbable(sys.stdout, model.sequitur.symbol, limit=250)
 
         if self.options.shouldTranspose:
             model.transpose()
 
         if self.options.newModelFile:
             oldSize, newSize = model.strip()
-            print('stripped number of multigrams from %d to %d' % (oldSize, newSize), file=self.log)
-            f = open(self.options.newModelFile, 'wb')
+            print(
+                "stripped number of multigrams from %d to %d" % (oldSize, newSize),
+                file=self.log,
+            )
+            f = open(self.options.newModelFile, "wb")
             pickle.dump(model, f, pickle.HIGHEST_PROTOCOL)
             f.close()
             del f
 
         if self.options.shouldSelfTest:
-            print('warning: --self-test does not treat pronunciation variants correctly', file=self.log)
+            print(
+                "warning: --self-test does not treat pronunciation variants correctly",
+                file=self.log,
+            )
             if not self.develSample:
-                print('error: cannot do --self-test without --devel sample', file=self.log)
+                print(
+                    "error: cannot do --self-test without --devel sample", file=self.log
+                )
             else:
                 translator = Translator(model)
                 evaluator = Evaluator()
@@ -212,6 +278,7 @@ class Tool:
 
         return model
 
+
 def procureModel(options, loadSample, log=sys.stdout):
     tool = Tool(options, loadSample, log)
     return tool.procureModel()
@@ -219,65 +286,128 @@ def procureModel(options, loadSample, log=sys.stdout):
 
 def addTrainOptions(optparser):
     optparser.add_option(
-        '-t', '--train', dest='trainSample',
-        help='read training sample from FILE', metavar='FILE')
+        "-t",
+        "--train",
+        dest="trainSample",
+        help="read training sample from FILE",
+        metavar="FILE",
+    )
     optparser.add_option(
-        '-d', '--devel', dest='develSample',
-        help='read held-out training sample from FILE or use N% of the training data',
-        metavar='FILE / N%')
+        "-d",
+        "--devel",
+        dest="develSample",
+        help="read held-out training sample from FILE or use N% of the training data",
+        metavar="FILE / N%",
+    )
     optparser.add_option(
-        '-x', '--test', dest='testSample',
-        help='read test sample from FILE', metavar='FILE')
+        "-x",
+        "--test",
+        dest="testSample",
+        help="read test sample from FILE",
+        metavar="FILE",
+    )
     optparser.add_option(
-        '--checkpoint', action='store_true',
-        help='save state of training in regular time intervals'
-        '. The name of the checkpoint file is derived from --write-model.')
+        "--checkpoint",
+        action="store_true",
+        help="save state of training in regular time intervals"
+        ". The name of the checkpoint file is derived from --write-model.",
+    )
     optparser.add_option(
-        '--resume-from-checkpoint',
-        help='load checkpoint FILE and continue training', metavar='FILE')
+        "--resume-from-checkpoint",
+        help="load checkpoint FILE and continue training",
+        metavar="FILE",
+    )
     optparser.add_option(
-        '-T', '--transpose', dest='shouldTranspose', action='store_true',
-        help='Transpose model, i.e. do phoneme-to-grapheme conversion')
+        "-T",
+        "--transpose",
+        dest="shouldTranspose",
+        action="store_true",
+        help="Transpose model, i.e. do phoneme-to-grapheme conversion",
+    )
     optparser.add_option(
-        '-m', '--model', dest='modelFile',
-        help='read model from FILE', metavar='FILE')
+        "-m", "--model", dest="modelFile", help="read model from FILE", metavar="FILE"
+    )
     optparser.add_option(
-        '-n', '--write-model', dest='newModelFile',
-        help='write model to FILE', metavar='FILE')
+        "-n",
+        "--write-model",
+        dest="newModelFile",
+        help="write model to FILE",
+        metavar="FILE",
+    )
     optparser.add_option(
-        '--continuous-test', dest='shouldTestContinuously', action='store_true',
-        help='report error rates on development and test set in each iteration')
+        "--continuous-test",
+        dest="shouldTestContinuously",
+        action="store_true",
+        help="report error rates on development and test set in each iteration",
+    )
     optparser.add_option(
-        '-S', '--self-test', dest='shouldSelfTest', action='store_true',
-        help='apply model to development set and report error rates')
+        "-S",
+        "--self-test",
+        dest="shouldSelfTest",
+        action="store_true",
+        help="apply model to development set and report error rates",
+    )
     optparser.add_option(
-        '-s', '--size-constraints', dest='lengthConstraints',
+        "-s",
+        "--size-constraints",
+        dest="lengthConstraints",
         help="""multigrams must have l1 ... l2 left-symbols and r1 ... r2 right-symbols""",
-        metavar='l1,l2,r1,r2')
+        metavar="l1,l2,r1,r2",
+    )
     optparser.add_option(
-        '-E', '--no-emergence', dest='shouldSuppressNewMultigrams', action='store_true',
-        help='do not allow new joint-multigrams to be added to the model')
+        "-E",
+        "--no-emergence",
+        dest="shouldSuppressNewMultigrams",
+        action="store_true",
+        help="do not allow new joint-multigrams to be added to the model",
+    )
     optparser.add_option(
-        '--viterbi', action='store_true',
-        help='estimate model using maximum approximation rather than true EM')
+        "--viterbi",
+        action="store_true",
+        help="estimate model using maximum approximation rather than true EM",
+    )
     optparser.add_option(
-        '-r', '--ramp-up', dest='shouldRampUp', action='store_true',
-        help='ramp up the model')
+        "-r",
+        "--ramp-up",
+        dest="shouldRampUp",
+        action="store_true",
+        help="ramp up the model",
+    )
     optparser.add_option(
-        '-W', '--wipe-out', dest='shouldWipeModel', action='store_true',
-        help='wipe out probabilities, retain only model structure')
+        "-W",
+        "--wipe-out",
+        dest="shouldWipeModel",
+        action="store_true",
+        help="wipe out probabilities, retain only model structure",
+    )
     optparser.add_option(
-        '-C', '--initialize-with-counts', dest='shouldInitializeWithCounts', action='store_true',
-        help='estimate probabilities from overlapping occurence counts in first iteration')
+        "-C",
+        "--initialize-with-counts",
+        dest="shouldInitializeWithCounts",
+        action="store_true",
+        help="estimate probabilities from overlapping occurence counts in first iteration",
+    )
     optparser.add_option(
-        '-i', '--min-iterations', dest='minIterations', type='int', default=ModelTemplate.minIterations,
-        help='minimum number of EM iterations during training')
+        "-i",
+        "--min-iterations",
+        dest="minIterations",
+        type="int",
+        default=ModelTemplate.minIterations,
+        help="minimum number of EM iterations during training",
+    )
     optparser.add_option(
-        '-I', '--max-iterations', dest='maxIterations', type='int', default=ModelTemplate.maxIterations,
-        help='maximum number of EM iterations during training')
+        "-I",
+        "--max-iterations",
+        dest="maxIterations",
+        type="int",
+        default=ModelTemplate.maxIterations,
+        help="maximum number of EM iterations during training",
+    )
     optparser.add_option(
-        '--eager-discount-adjustment', action='store_true',
-        help='re-adjust discounts in each iteration')
+        "--eager-discount-adjustment",
+        action="store_true",
+        help="re-adjust discounts in each iteration",
+    )
     optparser.add_option(
-        '--fixed-discount',
-        help='set discount to D and keep it fixed', metavar='D')
+        "--fixed-discount", help="set discount to D and keep it fixed", metavar="D"
+    )
