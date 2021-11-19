@@ -85,7 +85,7 @@ You can also install via `pip` by pointing it at this repository. You still
 need SWIG and a C++ compiler.
 ```
 pip install numpy
-pip install git+https://github.com/sequitur-g2p/sequitur-g2p@master
+pip install git+https://github.com/mattiadg/sequitur-g2p@master
 ```
 
 Note, when installing on MacOS, you might run into issues due to the default 

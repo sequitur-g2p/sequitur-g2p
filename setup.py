@@ -117,7 +117,7 @@ lmScripts = [
 
 
 setup(
-    name='sequitur-g2p',
+    name='sequitur-g2p-fork',
     version=VERSION,
     license='gpl-2.0',
     description='sequence and joint-sequence modelling tool for g2p',
@@ -125,12 +125,12 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     author='Maximilian Bisani',
-    maintainer="Jan 'Yenda' Trmal",
-    maintainer_email='jtrmal@gmail.com',
-    url='https://github.com/sequitur-g2p/sequitur-g2p',
+    maintainer="Mattia Di Gangi",
+    maintainer_email='mattiadigangi@gmail.com',
+    url='https://github.com/mattiadg/sequitur-g2p',
     project_urls={
         "Original site": "https://www-i6.informatik.rwth-aachen.de/web/Software/g2p.html",
-        "Bug Tracker": "https://github.com/sequitur-g2p/sequitur-g2p/issues",
+        "Bug Tracker": "https://github.com/mattiadg/sequitur-g2p/issues",
     },
     cmdclass={'build_py': build_py},
     install_requires=required,
@@ -151,5 +151,5 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ],
-    python_requires='>=2.7.0',
+    python_requires='>=3.6.9',
 )
