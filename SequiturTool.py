@@ -27,8 +27,8 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
+from collections import defaultdict
 import os.path
-import six
 from six.moves import cPickle as pickle
 import operator
 import numpy as num
@@ -54,17 +54,32 @@ class OnlineTester(object):
 def transposeSample(sample):
     return [ (right, left) for left, right in sample ]
 
-def partitionSample(sample, portion = 0.1):
-    trainSample = []
-    develSample = []
+def partition_sample(sample, portion = 0.1):
+    train_sample = []
+    devel_sample = []
     j = 0
-    for i, s in enumerate(sample):
-        if j / (i+1) < portion:
-            develSample.append(s)
+    for i, s in enumerate(group_by_orth(sample)):
+        if j / (i + 1) < portion:
+            for value in s[1]:
+                devel_sample.append((s[0], value))
             j += 1
         else:
-            trainSample.append(s)
-    return trainSample, develSample
+            for value in s[1]:
+                train_sample.append((s[0], value))
+    return train_sample, devel_sample
+
+
+def group_by_orth(sample):
+    import random
+
+    source_values = []
+    mapping = defaultdict(list)
+    for s in sample:
+        source_values.append(s[0])
+        mapping[s[0]].append(s[1])
+    random.shuffle(source_values)
+    for s in source_values:
+        yield s, mapping[s]
 
 class Tool:
     def __init__(self, options, loadSample, log=sys.stdout):
