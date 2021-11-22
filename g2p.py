@@ -65,7 +65,7 @@ def pronunciationsFromXmlLexicon(xml):
     return pronunciations
 
 def loadBlissLexicon(fname):
-    from elementtree.ElementTree import ElementTree
+    from xml.etree.ElementTree import ElementTree
     xml = ElementTree(file = gOpenIn(fname))
     pronunciations = pronunciationsFromXmlLexicon(xml)
     result = [ (orth, phon)

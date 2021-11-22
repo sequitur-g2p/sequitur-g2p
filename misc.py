@@ -8,6 +8,7 @@ import os
 import io
 import codecs
 import gc
+import gzip
 
 
 __author__    = 'Maximilian Bisani'
@@ -265,8 +266,7 @@ def gOpenIn(fname, encoding=None):
     elif os.path.splitext(fname)[1] == '.gz':
         if not os.path.isfile(fname):
             raise IOError(errno.ENOENT, 'No such file: \'%s\'' % fname)
-        inp = os.popen('gzip -dc %s' % fname, 'r')
-        # inp = gzip.open(fname, 'rb')
+        inp = gzip.open(fname, 'rb')
     else:
         inp = io.open(fname, encoding=encoding)
         return inp
@@ -274,34 +274,6 @@ def gOpenIn(fname, encoding=None):
     if encoding:
         inp = codecs.getreader(encoding)(inp)
     return inp
-
-# def gOpenOut(fname, encoding=None):
-#     if fname == '-':
-#         out = sys.stdout
-#     elif os.path.splitext(fname)[1] == '.gz':
-#         out = os.popen('gzip -fc >%s' % fname, 'w')
-# #       out = gzip.open(fname, 'w')
-#     else:
-#         out = open(fname, 'w')
-#     if encoding:
-#         encoder, decoder, streamReader, streamWriter = codecs.lookup(encoding)
-#         out = streamWriter(out)
-#     return out
-
-# def gOpenIn(fname, encoding=None):
-#     if fname == '-':
-#         inp = sys.stdin
-#     elif os.path.splitext(fname)[1] == '.gz':
-#         if not os.path.isfile(fname):
-#             raise IOError(errno.ENOENT, 'No such file: \'%s\'' % fname)
-#         inp = os.popen('gzip -dc %s' % fname, 'r')
-#         # inp = gzip.open(fname, 'rb')
-#     else:
-#         inp = open(fname)
-#     if encoding:
-#         encoder, decoder, streamReader, streamWriter = codecs.lookup(encoding)
-#         inp = streamReader(inp)
-#     return inp
 
 # ===========================================================================
 
