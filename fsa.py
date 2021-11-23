@@ -1,13 +1,12 @@
-
 """
 Convert sequitur model to FSA.
 """
 
-__author__    = 'Maximilian Bisani'
-__version__   = '$Revision: 1667 $'
-__date__      = '$Date: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$Revision: 1667 $"
+__date__ = "$Date: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
@@ -39,24 +38,21 @@ def writeAsFsa(model, xml, shouldMakeClosure=True):
     sq = model.sequitur
     sm = model.sequenceModel
 
-    xml.open('fsa',
-             initial=0,
-             type='transducer',
-             semiring='tropical')
+    xml.open("fsa", initial=0, type="transducer", semiring="tropical")
 
     def makeAlphabet(inv):
         for index, symbol in enumerate(inv.list):
-            xml.element('symbol', symbol, index=index)
+            xml.element("symbol", symbol, index=index)
 
-    xml.open('input-alphabet')
+    xml.open("input-alphabet")
     makeAlphabet(sq.leftInventory)
-    xml.close('input-alphabet')
+    xml.close("input-alphabet")
 
-    xml.open('output-alphabet')
+    xml.open("output-alphabet")
     for disambi in range(sq.inventory.size()):
-        sq.rightInventory.index('__%d__' % (disambi+1))
+        sq.rightInventory.index("__%d__" % (disambi + 1))
     makeAlphabet(sq.rightInventory)
-    xml.close('output-alphabet')
+    xml.close("output-alphabet")
 
     initial = (None, None, sm.initial())
     idMap = {initial: 0}
@@ -83,16 +79,16 @@ def writeAsFsa(model, xml, shouldMakeClosure=True):
             targetId = idMap[target] = len(idMap)
             open.append(target)
 
-        xml.open('arc', target=targetId)
+        xml.open("arc", target=targetId)
         if inp or out:
-            xml.comment((inp or "") + ':' + (out or ''))
+            xml.comment((inp or "") + ":" + (out or ""))
         if inp:
-            xml.element('in', sq.leftInventory.index(inp))
+            xml.element("in", sq.leftInventory.index(inp))
         if out:
-            xml.element('out', sq.rightInventory.index(out))
+            xml.element("out", sq.rightInventory.index(out))
         if weight:
-            xml.element('weight', weight)
-        xml.close('arc')
+            xml.element("weight", weight)
+        xml.close("arc")
 
     while open:
         current = open.pop()
@@ -100,22 +96,20 @@ def writeAsFsa(model, xml, shouldMakeClosure=True):
         left, right, current = current
 
         currentDesc = map(sq.symbol, sm.historyAsTuple(current))
-        currentDesc = [''.join(ll) + ':' + '_'.join(rr)
-                       for ll, rr in currentDesc]
+        currentDesc = ["".join(ll) + ":" + "_".join(rr) for ll, rr in currentDesc]
         if left or right:
-            currentDesc += ['/',
-                            ''.join(left or ()) + ':' + '_'.join(right or ())]
-        currentDesc = ' '.join(currentDesc)
+            currentDesc += ["/", "".join(left or ()) + ":" + "_".join(right or ())]
+        currentDesc = " ".join(currentDesc)
 
-        xml.open('state', id=currentId)
+        xml.open("state", id=currentId)
         xml.comment(currentDesc)
         if left or right:
             makeArc(left, right, current)
         else:
             for predicted, score in sm.getNode(current):
                 if predicted == sq.term:
-                    xml.element('final')
-                    xml.element('weight', score)
+                    xml.element("final")
+                    xml.element("weight", score)
                 if predicted is None:
                     target = sm.shortened(current)
                     if target:
@@ -123,31 +117,32 @@ def writeAsFsa(model, xml, shouldMakeClosure=True):
                 elif predicted != sq.term or shouldMakeClosure:
                     target = sm.advanced(current, predicted)
                     left, right = sq.symbol(predicted)
-                    right = right + ('__%d__' % predicted,)
+                    right = right + ("__%d__" % predicted,)
                     makeArc(left, right, target, score)
-        xml.close('state')
-    xml.close('fsa')
+        xml.close("state")
+    xml.close("fsa")
 
 
 def main(options, args):
-    model = pickle.load(open(options.modelFile, 'rb'))
-    with open(options.fsaFile, 'wb') as out:
-        writeAsFsa(model, XmlWriter(out, 'UTF-8'))
+    model = pickle.load(open(options.modelFile, "rb"))
+    with open(options.fsaFile, "wb") as out:
+        writeAsFsa(model, XmlWriter(out, "UTF-8"))
 
 
 # ===========================================================================
-if __name__ == '__main__':
+if __name__ == "__main__":
     import optparse
     import tool
+
     optparser = optparse.OptionParser(
-        usage='%prog [OPTION]... FILE...\n' + __doc__,
-        version='%prog ' + __version__)
+        usage="%prog [OPTION]... FILE...\n" + __doc__, version="%prog " + __version__
+    )
     tool.addOptions(optparser)
     optparser.add_option(
-        '-m', '--model', dest='modelFile',
-        help='read model from FILE', metavar='FILE')
+        "-m", "--model", dest="modelFile", help="read model from FILE", metavar="FILE"
+    )
     optparser.add_option(
-        '-o', '--fsa', dest='fsaFile',
-        help='write fsa to FILE', metavar='FILE')
+        "-o", "--fsa", dest="fsaFile", help="write fsa to FILE", metavar="FILE"
+    )
     options, args = optparser.parse_args()
     tool.run(main, options, args)
