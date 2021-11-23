@@ -1,15 +1,15 @@
 from __future__ import division
 from __future__ import print_function
 
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1668 $'
-__date__      = '$LastChangedDate: 2007-06-02 18:14:47 +0200 (Sat, 02 Jun 2007) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$LastChangedRevision: 1668 $"
+__date__ = "$LastChangedDate: 2007-06-02 18:14:47 +0200 (Sat, 02 Jun 2007) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +20,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -39,7 +39,7 @@ class AccuDict(dict):
 
 
 class EvidenceList:
-    def __init__(self, evidence = None):
+    def __init__(self, evidence=None):
         if evidence is None:
             self.evidence = []
         else:
@@ -72,11 +72,11 @@ class EvidenceList:
             else:
                 out += 1
                 self.evidence[out] = self.evidence[i]
-        del self.evidence[out+1:]
+        del self.evidence[out + 1 :]
 
     def discount(self, discount):
         discounted = EvidenceList()
-        backOff    = EvidenceList()
+        backOff = EvidenceList()
         for history, predicted, value in self.evidence:
             if history:
                 shorterHistory = history[1:]
@@ -148,25 +148,30 @@ class BackOffModel:
         for history, predicted, value in evidence:
             total += value * math.log(self(history, predicted))
             totalEvidence += value
-        return math.exp( - total / totalEvidence)
+        return math.exp(-total / totalEvidence)
 
-    def compile(self, term, inventory = None):
+    def compile(self, term, inventory=None):
         if not self.compiled:
             self.inventory = inventory
             data = []
             if inventory is None:
                 for (history, predicted), probability in self.prob.iteritems():
                     try:
-                        data.append((history, predicted, - math.log(probability)))
+                        data.append((history, predicted, -math.log(probability)))
                     except (ValueError, OverflowError):
                         if (history, predicted) != ((), None):
-                            print('SequenceModel.py:116: cannot take logarithm of zero probability', \
-                                  history, predicted, probability)
+                            print(
+                                "SequenceModel.py:116: cannot take logarithm of zero probability",
+                                history,
+                                predicted,
+                                probability,
+                            )
             else:
                 for (history, predicted), probability in self.prob.iteritems():
                     history = tuple(map(inventory.index, history))
-                    if predicted is not None: predicted = inventory.index(predicted)
-                    data.append((history, predicted, - math.log(probability)))
+                    if predicted is not None:
+                        predicted = inventory.index(predicted)
+                    data.append((history, predicted, -math.log(probability)))
             self.compiled = SequenceModel()
             self.compiled.setInitAndTerm(term, term)
             self.compiled.set(data)
@@ -174,28 +179,41 @@ class BackOffModel:
             assert self.inventory == inventory
         return self.compiled
 
-    def showMostProbable(self, f, inventory, limit = None):
-        sample = [ (probability, inventory(predicted), map(inventory, history))
-                   for (history, predicted), probability in self.prob.iteritems()
-                   if predicted is not None ]
+    def showMostProbable(self, f, inventory, limit=None):
+        sample = [
+            (probability, inventory(predicted), map(inventory, history))
+            for (history, predicted), probability in self.prob.iteritems()
+            if predicted is not None
+        ]
         sample.sort()
         sample.reverse()
-        if limit and 1.5*limit < len(sample):
+        if limit and 1.5 * limit < len(sample):
             for probability, predicted, history in sample[:limit]:
                 print(predicted, history, probability, file=f)
-            print('...', file=f)
-            for probability, predicted, history in sample[-int(limit/2):]:
+            print("...", file=f)
+            for probability, predicted, history in sample[-int(limit / 2) :]:
                 print(predicted, history, probability, file=f)
         else:
             for probability, predicted, history in sample:
                 print(predicted, history, probability, file=f)
-        print('n-grams', len(sample), file=f)
-        print('uni-gram total', sum([ probability for probability, predicted, history in sample if len(history) == 0 ]), file=f)
+        print("n-grams", len(sample), file=f)
+        print(
+            "uni-gram total",
+            sum(
+                [
+                    probability
+                    for probability, predicted, history in sample
+                    if len(history) == 0
+                ]
+            ),
+            file=f,
+        )
 
     def rampUp(self):
         newHistories = set()
         for (history, predicted), probability in self.prob.iteritems():
-            if predicted is None: continue
+            if predicted is None:
+                continue
             newHistory = history + (predicted,)
             if (newHistory, None) not in self.prob:
                 newHistories.add(newHistory)
@@ -213,8 +231,9 @@ class SequenceModelEstimator:
                 grouped[g] = []
             grouped[g].append((history, predicted, value))
         if grouped:
-            return [ EvidenceList(grouped.get(g))
-                     for g in range(max(grouped.keys()) + 1) ]
+            return [
+                EvidenceList(grouped.get(g)) for g in range(max(grouped.keys()) + 1)
+            ]
         else:
             return []
 
@@ -240,7 +259,9 @@ class SequenceModelEstimator:
             evidence = evidence.grouped()
             for history in evidence:
                 denominator = totals[history]
-                backOffWeight = 1.0 - sum([ v for w, v in evidence[history] ]) / denominator
+                backOffWeight = (
+                    1.0 - sum([v for w, v in evidence[history]]) / denominator
+                )
                 backOffWeight = max(0.0, backOffWeight)
                 if history:
                     shorterHistory = history[1:]
@@ -258,12 +279,12 @@ class SequenceModelEstimator:
                         result[(history, predicted)] = p
         return result
 
-    def make(self, vocabularySize, evidence, discount = None):
+    def make(self, vocabularySize, evidence, discount=None):
         evidences = self.groupEvidences(evidence)
         if discount is not None:
             evidences = self.makeKneserNeyDiscounting(evidences, discount)
         else:
-            evidences = [(ev, ev.groupedSums()) for ev in evidences ]
+            evidences = [(ev, ev.groupedSums()) for ev in evidences]
         result = self.makeProbabilities(vocabularySize, evidences)
         return result
 
@@ -271,7 +292,7 @@ class SequenceModelEstimator:
 class SequenceModel(sequitur_.SequenceModel):
     def __getstate__(self):
         dct = copy.copy(self.__dict__)
-        del dct['this']
+        del dct["this"]
         return (self.init(), self.term(), self.get(), dct)
 
     def __setstate__(self, data):
@@ -284,30 +305,43 @@ class SequenceModel(sequitur_.SequenceModel):
     def size(self):
         return len(self.get())
 
-    def showMostProbable(self, f, inventory, limit = None):
-        sample = [ (math.exp(-score), inventory(predicted), map(inventory, history))
-                   for history, predicted, score in self.get()
-                   if predicted is not None ]
+    def showMostProbable(self, f, inventory, limit=None):
+        sample = [
+            (math.exp(-score), inventory(predicted), map(inventory, history))
+            for history, predicted, score in self.get()
+            if predicted is not None
+        ]
         sample.sort()
         sample.reverse()
-        if limit and 1.5*limit < len(sample):
+        if limit and 1.5 * limit < len(sample):
             for probability, predicted, history in sample[:limit]:
                 print(predicted, history, probability, file=f)
-            print('...', file=f)
-            for probability, predicted, history in sample[-int(limit/2):]:
+            print("...", file=f)
+            for probability, predicted, history in sample[-int(limit / 2) :]:
                 print(predicted, history, probability, file=f)
         else:
             for probability, predicted, history in sample:
                 print(predicted, history, probability, file=f)
-        print('n-grams', len(sample), file=f)
-        print('uni-gram total', sum([ probability for probability, predicted, history in sample if len(history) == 0 ]), file=f)
+        print("n-grams", len(sample), file=f)
+        print(
+            "uni-gram total",
+            sum(
+                [
+                    probability
+                    for probability, predicted, history in sample
+                    if len(history) == 0
+                ]
+            ),
+            file=f,
+        )
 
     def rampUp(self):
         data = self.get()
-        histories = set([ history for history, predicted, score in data ])
+        histories = set([history for history, predicted, score in data])
         newHistories = set()
         for history, predicted, score in data:
-            if predicted is None: continue
+            if predicted is None:
+                continue
             newHistory = history + (predicted,)
             if newHistory not in histories:
                 newHistories.add(newHistory)
@@ -333,9 +367,10 @@ class SequenceModel(sequitur_.SequenceModel):
 def evidenceFromSequence(sequence, order):
     result = []
     for j, predicted in enumerate(sequence):
-        history = tuple(sequence[max(0, j-order) : j])
+        history = tuple(sequence[max(0, j - order) : j])
         result.append((history, predicted, 1))
     return result
+
 
 def evidenceFromSequences(sequences, order):
     result = []

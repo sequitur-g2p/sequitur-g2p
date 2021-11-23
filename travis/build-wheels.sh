@@ -15,12 +15,16 @@ cd /io
 
 # Compile wheels
 for PYBIN in /opt/python/cp3*/bin; do
-    $PYBIN/pip install --upgrade pip
-    $PYBIN/pip install -r requirements.txt
-    $PYBIN/pip install -r /io/dev-requirements.txt
-    $PYBIN/pip install .
-    PYTHON=$PYBIN/python make travis-test
-    $PYBIN/python -m build --sdist --wheel --outdir dist/ .
+    echo $PYBIN
+    tmp=$(basename $(dirname $PYBIN) )
+    $PYBIN/python -m venv wheel-$tmp
+    source wheel-$tmp/bin/activate
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install -r /io/dev-requirements.txt
+    pip install .
+    PYTHON=python make travis-test
+    python -m build --sdist --wheel --outdir dist/ .
 done
 
 # Bundle external shared libraries into the wheels

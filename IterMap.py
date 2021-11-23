@@ -1,12 +1,12 @@
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1667 $'
-__date__      = '$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$LastChangedRevision: 1667 $"
+__date__ = "$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -17,7 +17,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -30,41 +30,48 @@ from misc import restartable
 
 # ===========================================================================
 if __debug__:
+
     class assertIsSorted:
         def __init__(self, seq):
             self.seq = seq
+
         def __iter__(self):
             it = iter(self.seq)
             previous = it.next()
             yield previous
             for item in it:
                 if previous[0] > item[0]:
-                    raise ValueError('sequence must be sorted', previous, item)
+                    raise ValueError("sequence must be sorted", previous, item)
                 yield item
                 previous = item
 
     class assertIsSortedAndConsolidated:
         def __init__(self, seq):
             self.seq = seq
+
         def __iter__(self):
             it = iter(self.seq)
             previous = it.next()
             yield previous
             for item in it:
                 if previous[0] >= item[0]:
-                    raise ValueError('sequence must be sorted and consolidated')
+                    raise ValueError("sequence must be sorted and consolidated")
                 yield item
                 previous = item
 
     assertIsConsolidated = assertIsSortedAndConsolidated
 
 else:
+
     def assertIsSorted(seq):
         return seq
+
     def assertIsSortedAndConsolidated(seq):
         return seq
+
     def assertIsConsolidated(seq):
         return seq
+
 
 # ===========================================================================
 def mergeSort(seqs):
@@ -88,6 +95,7 @@ def mergeSort(seqs):
         except StopIteration:
             heapq.heappop(queue)
 
+
 # ---------------------------------------------------------------------------
 def consolidateInPlaceAdd(seq):
     """
@@ -109,7 +117,9 @@ def consolidateInPlaceAdd(seq):
             ownsValue = False
     yield key, value
 
+
 consolidate = consolidateInPlaceAdd
+
 
 def aggregate(seq):
     """
@@ -128,6 +138,8 @@ def aggregate(seq):
             key = k
             current = [value]
     yield key, current
+
+
 aggregate = restartable(aggregate)
 
 # ===========================================================================
@@ -195,7 +207,7 @@ def outerJoin(seqA, seqB):
             yield aKey, aValue, bValue
             aNext = bNext = True
         else:
-            raise ValueError('tertium non datur')
+            raise ValueError("tertium non datur")
 
         if aNext:
             try:
@@ -225,12 +237,12 @@ def outerJoinMany(*seqs):
         it = iter(s)
         try:
             key, value = it.next()
-            front.append([ii+1, key, value, it])
+            front.append([ii + 1, key, value, it])
         except StopIteration:
             pass
     row = [None] + len(seqs) * [None]
     while front:
-        minKey = min([ key  for ii, key, value, it in front ])
+        minKey = min([key for ii, key, value, it in front])
         row[0] = minKey
 
         remove = []
@@ -249,7 +261,8 @@ def outerJoinMany(*seqs):
         if remove:
             for ii in remove:
                 row[ii] = None
-            front = [ f for f in front if f[0] not in remove ]
+            front = [f for f in front if f[0] not in remove]
+
 
 # ===========================================================================
 class monodict(object):
@@ -265,7 +278,7 @@ class monodict(object):
     def __getitem__(self, key):
         if key != self.key:
             if key < self.recentKey:
-                raise ValueError('access not monotonous', self.recentKey, key)
+                raise ValueError("access not monotonous", self.recentKey, key)
             self.recentKey = key
             while key > self.key:
                 try:

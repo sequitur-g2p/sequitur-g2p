@@ -2,6 +2,7 @@ nose
 twine
 numpy
 wheel
+build
 cibuildwheel
 auditwheel
 cryptography<3.4

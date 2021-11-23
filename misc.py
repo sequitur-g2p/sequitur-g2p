@@ -11,11 +11,11 @@ import gc
 import gzip
 
 
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1691 $'
-__date__      = '$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$LastChangedRevision: 1691 $"
+__date__ = "$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
@@ -41,6 +41,7 @@ negligent actions or intended actions or fraudulent concealment.
 # ===========================================================================
 
 if sys.version_info[:2] < (2, 4):
+
     def sorted(l):
         lx = list(l)
         lx.sort()
@@ -52,6 +53,7 @@ if sys.version_info[:2] < (2, 4):
         return lx
 
     from sets import Set
+
     set = Set
 
 else:
@@ -65,18 +67,23 @@ if sys.version_info[:2] >= (3, 0):
 
     def cmp(a, b):
         return (a > b) - (b > a)
+
+
 else:
     import types
+
     object_or_InstanceType = types.InstanceType
 
 # ===========================================================================
 try:
     # Unix system
     import resource
+
     pageSize = resource.getpagesize()
 except ImportError:
     # Windows system
     import mmap
+
     pageSize = mmap.PAGESIZE
 megabyte = 1024 * 1024
 
@@ -84,7 +91,8 @@ megabyte = 1024 * 1024
 def meminfo():
     pid = os.getpid()
     try:
-        data = open('/proc/%d/statm' % pid).read()
+        with open("/proc/%d/statm" % pid) as f:
+            data = f.read()
     except:
         raise NotImplementedError
     data = map(int, data.split())
@@ -97,8 +105,10 @@ def reportMemoryUsage():
         size, resident = meminfo()
     except NotImplementedError:
         return
-    print('memory usage:  virtual %1.1f MB   resident %1.1f MB' %
-          (size / megabyte, resident / megabyte))
+    print(
+        "memory usage:  virtual %1.1f MB   resident %1.1f MB"
+        % (size / megabyte, resident / megabyte)
+    )
 
 
 def cputime():
@@ -108,7 +118,7 @@ def cputime():
 
 class MemoryProfiler:
     class Record(object):
-        __slots__ = ['id', 'object', 'type', 'path', 'usage']
+        __slots__ = ["id", "object", "type", "path", "usage"]
 
         def __init__(self, object, path):
             self.id = id(object)
@@ -124,7 +134,7 @@ class MemoryProfiler:
             memory consumption for this object alone
             (not including children)
             """
-            if hasattr(object, 'memoryUsed'):
+            if hasattr(object, "memoryUsed"):
                 try:
                     return object.memoryUsed()
                 except:
@@ -136,14 +146,14 @@ class MemoryProfiler:
         # Machine dependent: Trying to emulate AMD64 here.
         pythonObjectHead = 4 + 8
         valuators = {
-            str:     lambda s: len(s),
+            str: lambda s: len(s),
             unicode: lambda u: 2 * len(u),
-            list:    lambda l: 4+8 + 8 * len(l),
-            tuple:   lambda t: 4   + 8 * len(t),
-            dict:    lambda d:      16 * len(d),
-            int:     lambda i: 8,
-            float:   lambda f: 8
-            }
+            list: lambda l: 4 + 8 + 8 * len(l),
+            tuple: lambda t: 4 + 8 * len(t),
+            dict: lambda d: 16 * len(d),
+            int: lambda i: 8,
+            float: lambda f: 8,
+        }
 
     def __init__(self):
         self.queue = list()
@@ -155,13 +165,13 @@ class MemoryProfiler:
             self.records[record.id] = record
 
     def search(self, root):
-        self.add(self.Record(root, '/'))
+        self.add(self.Record(root, "/"))
         while self.queue:
             current = self.queue.pop(0)
             inspector = self.inspectors.get(type(current.object))
             if inspector:
                 children = inspector(self, current)
-            elif hasattr(current.object, '__dict__'):
+            elif hasattr(current.object, "__dict__"):
                 children = self.inspectInstance(current)
             else:
                 self.inspectGeneral(current)
@@ -170,30 +180,30 @@ class MemoryProfiler:
 
     def inspectList(self, current):
         for index, item in enumerate(current.object):
-            yield self.Record(item, '%s[%d]' % (current.path, index))
+            yield self.Record(item, "%s[%d]" % (current.path, index))
 
     def inspectDict(self, current):
         for key, value in current.object.iteritems():
-            yield self.Record(value, '%s[%s]' % (current.path, repr(key)))
+            yield self.Record(value, "%s[%s]" % (current.path, repr(key)))
 
     def inspectInstance(self, current):
         for key, value in current.object.__dict__.iteritems():
             if type(key) is not str:
                 continue
-            yield self.Record(value, '%s.%s' % (current.path, key))
+            yield self.Record(value, "%s.%s" % (current.path, key))
 
     def inspectGeneral(self, current):
         for ii, object in enumerate(gc.get_referents(current.object)):
             if type(object) is type:
                 continue
-            yield self.Record(object, '%s/%d' % (current.path, ii))
+            yield self.Record(object, "%s/%d" % (current.path, ii))
 
     inspectors = {
-        list:  inspectList,
+        list: inspectList,
         tuple: inspectList,
-        dict:  inspectDict,
-        object_or_InstanceType: inspectInstance  # old-style class
-        }
+        dict: inspectDict,
+        object_or_InstanceType: inspectInstance,  # old-style class
+    }
 
     def report(self, out):
         records = self.records.values()
@@ -202,11 +212,11 @@ class MemoryProfiler:
         for record in records:
             what = repr(record.object)
             if len(what) > 50:
-                what = what[:46] + ' ...'
+                what = what[:46] + " ..."
             fields = [record.path, str(record.usage), what]
-            print('\t'.join(fields), file=out)
+            print("\t".join(fields), file=out)
             sum += record.usage
-        print('total:', sum, file=out)
+        print("total:", sum, file=out)
 
     def reportByType(self, out):
         recordsByType = {}
@@ -222,33 +232,34 @@ class MemoryProfiler:
             records.sort(lambda a, b: cmp(b.usage, a.usage))
             count = len(records)
             memoryUsed = sum([rec.usage for rec in records])
-            print('%5d\t%-40s\t%d' % (count, typeOrClass, memoryUsed), file=out)
+            print("%5d\t%-40s\t%d" % (count, typeOrClass, memoryUsed), file=out)
             for record in records[:5]:
-                print('\t%-40s\t%d' % (record.path, record.usage), file=out)
+                print("\t%-40s\t%d" % (record.path, record.usage), file=out)
             if len(records) > 5:
-                print('\t...', file=out)
+                print("\t...", file=out)
 
 
 def reportMemoryProfile(root):
     profiler = MemoryProfiler()
     profiler.search(root)
-#   profiler.report(sys.stdout)
+    #   profiler.report(sys.stdout)
     profiler.reportByType(sys.stdout)
+
 
 # ===========================================================================
 
 
 def gOpenOut(fname, encoding=None):
-    if fname == '-':
-        if hasattr(sys.stdout, 'buffer'):
+    if fname == "-":
+        if hasattr(sys.stdout, "buffer"):
             out = sys.stdout.buffer
         else:
             out = sys.stdout
-    elif os.path.splitext(fname)[1] == '.gz':
-        out = os.popen('gzip -fc >%s' % fname, 'w')
-#       out = gzip.open(fname, 'w')
+    elif os.path.splitext(fname)[1] == ".gz":
+        out = os.popen("gzip -fc >%s" % fname, "w")
+    #       out = gzip.open(fname, 'w')
     else:
-        out = io.open(fname, 'w', encoding=encoding)
+        out = io.open(fname, "w", encoding=encoding)
         return out
 
     if encoding:
@@ -258,15 +269,15 @@ def gOpenOut(fname, encoding=None):
 
 
 def gOpenIn(fname, encoding=None):
-    if fname == '-':
-        if hasattr(sys.stdin, 'buffer'):
+    if fname == "-":
+        if hasattr(sys.stdin, "buffer"):
             inp = sys.stdin.buffer
         else:
             inp = sys.stdin
-    elif os.path.splitext(fname)[1] == '.gz':
+    elif os.path.splitext(fname)[1] == ".gz":
         if not os.path.isfile(fname):
-            raise IOError(errno.ENOENT, 'No such file: \'%s\'' % fname)
-        inp = gzip.open(fname, 'rb')
+            raise IOError(errno.ENOENT, "No such file: '%s'" % fname)
+        inp = gzip.open(fname, "rb")
     else:
         inp = io.open(fname, encoding=encoding)
         return inp
@@ -274,6 +285,7 @@ def gOpenIn(fname, encoding=None):
     if encoding:
         inp = codecs.getreader(encoding)(inp)
     return inp
+
 
 # ===========================================================================
 
@@ -290,6 +302,7 @@ class RestartStub:
 def restartable(fun):
     def restartableFun(*args):
         return RestartStub(fun, args)
+
     return restartableFun
 
 

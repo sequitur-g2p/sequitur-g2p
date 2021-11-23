@@ -12,15 +12,15 @@ example usage:
 
 from __future__ import division
 
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1668 $'
-__date__      = '$LastChangedDate: 2007-06-02 18:14:47 +0200 (Sat, 02 Jun 2007) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$LastChangedRevision: 1668 $"
+__date__ = "$LastChangedDate: 2007-06-02 18:14:47 +0200 (Sat, 02 Jun 2007) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -31,7 +31,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -40,15 +40,27 @@ negligent actions or intended actions or fraudulent concealment.
 """
 
 import itertools
+import misc
 import sys
-from misc import set, sorted
+from misc import sorted
+import marshal
+import os
+import tempfile
+from heapq import heappush, heappop, heapreplace
+from misc import gOpenIn, gOpenOut
 
 if sys.version_info[:2] >= (3, 0):
     xrange = range
 
 # ===========================================================================
-from IterMap import mergeSort, aggregate, consolidate, assertIsConsolidated, \
-                    assertIsSortedAndConsolidated
+from IterMap import (
+    mergeSort,
+    # aggregate,
+    consolidate,
+    assertIsConsolidated,
+    # assertIsSortedAndConsolidated,
+)
+
 
 class Storage(object):
     """
@@ -84,8 +96,8 @@ class Storage(object):
 
 class DictStorage(Storage):
     hasRandomAccess = True
-    isMutable       = True
-    isConsolidated  = True
+    isMutable = True
+    isConsolidated = True
 
     def __init__(self):
         self.items = {}
@@ -113,7 +125,7 @@ class DictStorage(Storage):
 
 class ListStorage(Storage):
     hasRandomAccess = False
-    isMutable       = True
+    isMutable = True
 
     def __init__(self):
         self.items = []
@@ -148,17 +160,20 @@ class ListStorage(Storage):
         self.isConsolidated = True
 
     def iter(self, sorted=False, consolidated=False):
-        if sorted: self.sort()
-        if consolidated: self.consolidate()
+        if sorted:
+            self.sort()
+        if consolidated:
+            self.consolidate()
         return iter(self.items)
 
+
 # ===========================================================================
-import marshal, os, tempfile
+
 
 class FileWriter(object):
     def __init__(self, fname):
         self.fname = fname
-        self.f = os.popen('gzip -fc >%s' % self.fname, 'wb')
+        self.f = os.popen("gzip -fc >%s" % self.fname, "wb")
         self.n = 0
 
     def write(self, item):
@@ -171,6 +186,7 @@ class FileWriter(object):
 
     def __del__(self):
         assert self.f is None
+
 
 def writeToFile(fname, items):
     w = FileWriter(fname)
@@ -185,7 +201,7 @@ class FileReader(object):
         self.fname = fname
 
     def __iter__(self):
-        f = os.popen('gzip -dc %s' % self.fname, 'rb')
+        f = os.popen("gzip -dc %s" % self.fname, "rb")
         while True:
             try:
                 yield marshal.load(f)
@@ -195,10 +211,10 @@ class FileReader(object):
 
 
 class AbstractFileStorage(object):
-    def __init__(self, fname = None):
+    def __init__(self, fname=None):
         self.isTemporary = fname is None
         if self.isTemporary:
-            self.fname = tempfile.mkstemp('counts')[1]
+            self.fname = tempfile.mkstemp("counts")[1]
         else:
             self.fname = fname
 
@@ -206,11 +222,12 @@ class AbstractFileStorage(object):
         if self.isTemporary:
             os.unlink(self.fname)
 
+
 # ===========================================================================
 class FileStorage(Storage, AbstractFileStorage):
     hasRandomAccess = False
-    isMutable       = False
-    isConsolidated  = True
+    isMutable = False
+    isConsolidated = True
 
     def set(self, other):
         writeToFile(self.fname, other.iter(sorted=True, consolidated=True))
@@ -221,8 +238,8 @@ class FileStorage(Storage, AbstractFileStorage):
 
 class AbstractMultifileStorage(Storage):
     hasRandomAccess = False
-    isMutable       = True
-    isConsolidated  = False
+    isMutable = True
+    isConsolidated = False
 
     inMemoryLimit = 10 ** 6
 
@@ -255,7 +272,7 @@ class AbstractMultifileStorage(Storage):
 
     def iter(self, sorted=False, consolidated=False):
         self.flush()
-        iters = [ FileReader(fname) for fname in self.files ]
+        iters = [FileReader(fname) for fname in self.files]
         if sorted or consolidated:
             return consolidate(mergeSort(iters))
         else:
@@ -283,7 +300,8 @@ class SimpleMultifileStorage(AbstractMultifileStorage):
         self.store(other.iter(sorted=True, consolidated=True))
 
     def flush(self):
-        if len(self.current) == 0: return
+        if len(self.current) == 0:
+            return
         self.current.sort()
         self.store(consolidate(self.current))
         self.current = []
@@ -294,12 +312,10 @@ class SimpleMultifileStorage(AbstractMultifileStorage):
             self.flush()
 
 
-from heapq import heappush, heappop, heapreplace
-
 class BiHeapMultifileStorage(AbstractMultifileStorage):
     def __init__(self, dir=None):
         super(BiHeapMultifileStorage, self).__init__(dir)
-        self.primary   = []
+        self.primary = []
         self.secondary = []
         self.currentFile = None
         self.isUnderfull = True
@@ -313,7 +329,7 @@ class BiHeapMultifileStorage(AbstractMultifileStorage):
 
     def clear(self):
         self.clearFiles()
-        self.primary   = []
+        self.primary = []
         self.secondary = []
         self.currentFile = None
         self.isUnderfull = True
@@ -364,13 +380,16 @@ class BiHeapMultifileStorage(AbstractMultifileStorage):
 
         if self.secondary:
             self.secondary.sort()
-            self.nStoredItems += writeToFile(self.newFile(), consolidate(self.secondary))
+            self.nStoredItems += writeToFile(
+                self.newFile(), consolidate(self.secondary)
+            )
         self.secondary = []
 
         self.isUnderfull = True
 
+
 # ---------------------------------------------------------------------------
-from misc import gOpenIn, gOpenOut
+
 
 class TextStorage(Storage, AbstractFileStorage):
     """
@@ -383,26 +402,27 @@ class TextStorage(Storage, AbstractFileStorage):
     """
 
     hasRandomAccess = False
-    isMutable       = False
-    isConsolidated  = True
+    isMutable = False
+    isConsolidated = True
 
-    def __init__(self, fname = None, inputConversion = None, outputConversion = None):
+    def __init__(self, fname=None, inputConversion=None, outputConversion=None):
         super(TextStorage, self).__init__(fname)
         self.inputConversion = inputConversion
         self.outputConversion = outputConversion
         self.value = int
 
     def write(cls, file, counts, conv=None):
-        it = counts.iter(consolidated = True, sorted = True)
+        it = counts.iter(consolidated=True, sorted=True)
         for (history, predicted), value in it:
             mGram = map(conv, (predicted,) + history)
             mGram.reverse()
-            print >> file, '%s\t%s' % (' '.join(mGram), value)
+            print("%s\t%s" % (" ".join(mGram), value), file=file)
+
     write = classmethod(write)
 
     def set(self, other):
         file = gOpenOut(self.fname)
-        self.write(file, othe, self.outputConversion)
+        self.write(file, other, self.outputConversion)
         file.close()
 
     def iter(self, sorted=True, consolidated=True):
@@ -413,6 +433,7 @@ class TextStorage(Storage, AbstractFileStorage):
             item = (tuple(mGram[1:]), mGram[0])
             value = self.value(fields[-1])
             yield item, value
+
 
 # ===========================================================================
 def mGramsFromIter(sequence, order):
@@ -428,12 +449,14 @@ def mGramsFromIter(sequence, order):
     * The first element  of the pair (history) is a tuple of length <order> (or less)
     * The second element of the pair (predicted) is the "recent-most" item of sequence.
     * The history tuple is in "recent-most first" order
-    * When order is None, history contains all previous events (potentially infinite order)
+    * When order is None, history contains all previous events
+      (potentially infinite order)
     """
     history = ()
     for predicted in sequence:
         yield history, predicted
         history = ((predicted,) + history)[:order]
+
 
 def mGramsFromSequence(sequence, order):
     if order is None:
@@ -444,31 +467,37 @@ def mGramsFromSequence(sequence, order):
         history = tuple(history)
         yield history, sequence[i]
 
+
 def countsFromSequence(sequence, order, value=1):
     counts = DictStorage()
     for gv in mGramsFromSequence(sequence, order):
         counts.add(gv, value)
     return counts
 
+
 def mGramsChainCount(sequences, order, value=1):
     for sequence in sequences:
         for gv in mGramsFromIter(sequence, order):
             yield gv, value
 
-def countsFromSequences(sequences, order, storageClass = DictStorage):
+
+def countsFromSequences(sequences, order, storageClass=DictStorage):
     grams = mGramsChainCount(sequences, order)
     counts = storageClass()
     counts.addIter(grams)
     return counts
 
-def countsFromSequencesWithCounts(sequences, order, storageClass = DictStorage):
+
+def countsFromSequencesWithCounts(sequences, order, storageClass=DictStorage):
     def grams():
         for sequence, count in sequences:
             for gv in mGramsFromIter(sequence, order):
                 yield gv, count
+
     counts = storageClass()
     counts.addIter(grams())
     return counts
+
 
 # ---------------------------------------------------------------------------
 class MapUnknownsFilter(object):
@@ -490,8 +519,10 @@ class MapUnknownsFilter(object):
             self.store.addIter(self.rawIter())
         return self.store.iter(sorted=True, consolidated=True)
 
-def mapUnknowns(counts, knowns, unknown='[UNKNOWN]'):
+
+def mapUnknowns(counts, knowns, unknown="[UNKNOWN]"):
     return MapUnknownsFilter(counts, knowns, unknown)
+
 
 # ---------------------------------------------------------------------------
 class MGramReduceToOrderFilter(object):
@@ -502,12 +533,12 @@ class MGramReduceToOrderFilter(object):
     def rawIter(self):
         for (history, predicted), value in self.counts:
             if len(history) >= self.order:
-                yield (history[:self.order], predicted), value
+                yield (history[: self.order], predicted), value
 
     def __iter__(self):
         it = iter(self.rawIter())
         (history, predicted), value = it.next()
-        values = { predicted: value }
+        values = {predicted: value}
         for (h, p), v in it:
             if h == history:
                 values[p] = values.get(p, 0) + v
@@ -515,17 +546,19 @@ class MGramReduceToOrderFilter(object):
                 for predicted, value in sorted(values.iteritems()):
                     yield (history, predicted), value
                 history = h
-                values = { p: v }
+                values = {p: v}
             else:
-                raise ValueError('sequence not ordered', history, h)
+                raise ValueError("sequence not ordered", history, h)
         for predicted, value in sorted(values.iteritems()):
             yield (history, predicted), value
+
 
 def mGramReduceToOrder(counts, order):
     return MGramReduceToOrderFilter(counts, order)
 
+
 # ---------------------------------------------------------------------------
-def countsOfCounts(counts, group = None):
+def countsOfCounts(counts, group=None):
     histogram = {}
     counts = assertIsConsolidated(counts)
     for gram, count in counts:
@@ -536,6 +569,7 @@ def countsOfCounts(counts, group = None):
             histogram[cat] = 1
     result = sorted(histogram.items())
     return result
+
 
 # ===========================================================================
 class Vocabulary(object):
@@ -560,7 +594,7 @@ class Vocabulary(object):
 class OpenVocabulary(Vocabulary):
     def __init__(self):
         self.list = [None]
-        self.dir  = {None: self.noneIndex}
+        self.dir = {None: self.noneIndex}
 
     def index(self, sym):
         try:
@@ -570,15 +604,15 @@ class OpenVocabulary(Vocabulary):
             self.list.append(sym)
             return result
 
+
 class ClosedVocablary(Vocabulary):
     noneIndex = 0
     unknownIndex = 1
-    unknownSymbol = '[UNKNOWN]'
+    unknownSymbol = "[UNKNOWN]"
 
     def __init__(self):
         self.list = [None, self.unknownSymbol]
-        self.dir  = {None:               self.noneIndex,
-                     self.unknownSymbol: self.unknownIndex}
+        self.dir = {None: self.noneIndex, self.unknownSymbol: self.unknownIndex}
 
     def index(self, sym):
         try:
@@ -587,13 +621,15 @@ class ClosedVocablary(Vocabulary):
             return self.unknownIndex
 
     def addSym(self, sym, soft=False):
-        if soft and sym in self.dir: return
+        if soft and sym in self.dir:
+            return
         assert sym not in self.dir
         self.dir[sym] = len(self.list)
         self.list.append(sym)
 
     def add(self, syms, soft=False):
-        for s in syms: self.addSym(s, soft)
+        for s in syms:
+            self.addSym(s, soft)
 
     def sort(self):
         self.list.sort()
@@ -604,24 +640,27 @@ class ClosedVocablary(Vocabulary):
 
 def loadVocabulary(fname):
     vocabulary = ClosedVocablary()
-    vocabulary.add(['<s>', '</s>'])
-    vocabulary.add([ line.strip() for line in gOpenIn(fname) ], soft=True)
+    vocabulary.add(["<s>", "</s>"])
+    vocabulary.add([line.strip() for line in gOpenIn(fname)], soft=True)
     vocabulary.sort()
     return vocabulary
 
+
 # ===========================================================================
-import sys, misc
+
 
 def createStorage(options):
     storageClass = {
-        'list': ListStorage,
-        'dict': DictStorage,
-        'smf' : SimpleMultifileStorage,
-        'bhmf': BiHeapMultifileStorage }[options.storage_class]
+        "list": ListStorage,
+        "dict": DictStorage,
+        "smf": SimpleMultifileStorage,
+        "bhmf": BiHeapMultifileStorage,
+    }[options.storage_class]
     counts = storageClass()
     if options.memory_limit:
         counts.setMemoryLimit(options.memory_limit)
     return counts
+
 
 def main(options, args):
     if options.vocabulary:
@@ -639,17 +678,18 @@ def main(options, args):
     elif options.read:
         if len(options.read) > 1:
             counts = createStorage(options)
-            counts.addIter(consolidate(mergeSort(
-                [ TextStorage(fname) for fname in options.read ])))
+            counts.addIter(
+                consolidate(mergeSort([TextStorage(fname) for fname in options.read]))
+            )
         else:
             counts = TextStorage(options.read[0])
     else:
-        print >> sys.stderr, 'no counts'
+        print("no counts", file=sys.stderr)
         return
 
     if options.map_oov:
         if not options.vocabulary:
-            print >> sys.stderr, 'you need to specify a vocabulary'
+            print("you need to specify a vocabulary", file=sys.stderr)
         filt = MapUnknownsFilter(counts, vocabulary.list, vocabulary.unknownSymbol)
         mappedCounts = createStorage(options)
         mappedCounts.addIter(filt.rawIter())
@@ -660,26 +700,31 @@ def main(options, args):
         TextStorage.write(countFile, counts)
 
     if options.counts_of_counts:
-        coc = [ countsOfCounts(mGramReduceToOrder(counts, order))
-                for order in range(options.order) ]
+        coc = [
+            countsOfCounts(mGramReduceToOrder(counts, order))
+            for order in range(options.order)
+        ]
         import pprint
+
         pprint.pprint(coc, misc.gOpenOut(options.counts_of_counts))
 
 
-if __name__ == '__main__':
-    import optparse, tool
+if __name__ == "__main__":
+    import optparse
+    import tool
+
     options = optparse.OptionParser()
     tool.addOptions(options)
-    options.add_option('-t', '--text')
-    options.add_option('-r', '--read', action='append')
-    options.add_option('-v', '--vocabulary')
-    options.add_option('-M', '--order', type='int', default=3)
-    options.add_option('-w', '--write')
-    options.add_option('--map-oov', action='store_true')
-    options.add_option('-C', '--counts-of-counts')
+    options.add_option("-t", "--text")
+    options.add_option("-r", "--read", action="append")
+    options.add_option("-v", "--vocabulary")
+    options.add_option("-M", "--order", type="int", default=3)
+    options.add_option("-w", "--write")
+    options.add_option("--map-oov", action="store_true")
+    options.add_option("-C", "--counts-of-counts")
 
-    options.add_option('--storage-class', default='smf')
-    options.add_option('--memory-limit', type='int')
+    options.add_option("--storage-class", default="smf")
+    options.add_option("--memory-limit", type="int")
 
     options, args = options.parse_args()
     tool.run(main, options, args)
