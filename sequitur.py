@@ -1,11 +1,11 @@
 from __future__ import division
 from __future__ import print_function
 
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1691 $'
-__date__      = '$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$LastChangedRevision: 1691 $"
+__date__ = "$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
@@ -34,15 +34,16 @@ import sequitur_, SequenceModel, Minimization, misc
 from symbols import SymbolInventory
 from misc import reversed, sorted, set
 
+
 class MultigramInventory(sequitur_.MultigramInventory):
     def __getstate__(self):
-        return [ self.symbol(i) for i in range(1, self.size() + 1) ]
+        return [self.symbol(i) for i in range(1, self.size() + 1)]
 
     def __setstate__(self, data):
         super(MultigramInventory, self).__init__()
         for i, lr in enumerate(data):
             j = self.index(lr)
-            assert j == i+1
+            assert j == i + 1
 
     def sizeTemplates(self):
         result = set()
@@ -50,6 +51,7 @@ class MultigramInventory(sequitur_.MultigramInventory):
             left, right = self.symbol(i)
             result.add((len(left), len(right)))
         return sorted(result)
+
 
 class Sequitur:
     """
@@ -59,7 +61,7 @@ class Sequitur:
     (Also used as begin-of-string token.)
     """
 
-    def __init__(self, leftInventory = None, rightInventory = None):
+    def __init__(self, leftInventory=None, rightInventory=None):
         self.leftInventory = leftInventory
         self.rightInventory = rightInventory
         if not self.leftInventory:
@@ -68,13 +70,14 @@ class Sequitur:
             self.rightInventory = SymbolInventory()
         self.inventory = MultigramInventory()
         self.term = self.inventory.index(
-            ((self.leftInventory.term,), (self.rightInventory.term,)))
+            ((self.leftInventory.term,), (self.rightInventory.term,))
+        )
 
     def compileSample(self, sample):
         return [
-            (self.leftInventory.parse(left),
-             self.rightInventory.parse(right))
-            for left, right in sample ]
+            (self.leftInventory.parse(left), self.rightInventory.parse(right))
+            for left, right in sample
+        ]
 
     def symbol(self, i):
         "multigramFromTokenIndex"
@@ -84,7 +87,7 @@ class Sequitur:
         return (l, r)
 
     def symbols(self):
-        return [ self.symbol(i) for i in range(1, self.inventory.size() + 1) ]
+        return [self.symbol(i) for i in range(1, self.inventory.size() + 1)]
 
     def index(self, left, right):
         "tokenIndexFromMultigram"
@@ -95,7 +98,7 @@ class Sequitur:
     def makeStringInventory(self):
         result = []
         for i in range(1, self.inventory.size() + 1):
-            result.append('%s:%s' % self.symbol(i))
+            result.append("%s:%s" % self.symbol(i))
         return sequitur_.StringInventory(result)
 
 
@@ -108,8 +111,9 @@ class Model(object):
 
     def strip(self):
         oldSequitur = self.sequitur
-        self.sequitur = Sequitur(self.sequitur.leftInventory,
-                                 self.sequitur.rightInventory)
+        self.sequitur = Sequitur(
+            self.sequitur.leftInventory, self.sequitur.rightInventory
+        )
         data = []
         for history, predicted, score in self.sequenceModel.get():
             history = map(oldSequitur.inventory.symbol, history)
@@ -126,12 +130,13 @@ class Model(object):
 
     def transpose(self):
         oldInventory = self.sequitur.inventory
-        self.sequitur = Sequitur(self.sequitur.rightInventory,
-                                 self.sequitur.leftInventory)
+        self.sequitur = Sequitur(
+            self.sequitur.rightInventory, self.sequitur.leftInventory
+        )
         for i in range(1, oldInventory.size() + 1):
             left, right = oldInventory.symbol(i)
             j = self.sequitur.inventory.index((right, left))
-            assert i == j # hope
+            assert i == j  # hope
 
     def rampUp(self):
         self.sequenceModel.rampUp()
@@ -142,13 +147,15 @@ class Model(object):
 
 class MixtureModel(Model):
     "for side-ways compatibility with branch mixture-model"
+
     def __setstate__(self, data):
-        Model.__init__(self, data['sequitur'])
-        if len(data['components']) > 1:
-            raise NotImplementedError('mixture models not supported')
-        component = data['components'][0]
+        Model.__init__(self, data["sequitur"])
+        if len(data["components"]) > 1:
+            raise NotImplementedError("mixture models not supported")
+        component = data["components"][0]
         self.sequenceModel = component.sequenceModel
         self.discount = component.discount
+
 
 class MixtureModelComponent(object):
     "for side-ways compatibility with branch micture-model"
@@ -178,11 +185,12 @@ class Sample(object):
 
     def __getstate__(self):
         state = {
-            'sequitur'      : self.sequitur,
-            'sizeTemplates' : self.sizeTemplates,
-            'emergenceMode' : self.emergenceMode,
-            'sample'        : self.sample,
-            'masterModel'   : self.masterModel }
+            "sequitur": self.sequitur,
+            "sizeTemplates": self.sizeTemplates,
+            "emergenceMode": self.emergenceMode,
+            "sample": self.sample,
+            "masterModel": self.masterModel,
+        }
         return state
 
     def __setstate__(self, state):
@@ -203,13 +211,18 @@ class Sample(object):
                 eg = self.builder.create(left, right)
             except RuntimeError:
                 error = sys.exc_info()[1]
-                if str(error) != 'final node not reachable':
+                if str(error) != "final node not reachable":
                     raise
-                print('warning: dropping one sample that has no segmentation', repr((left, right)))
+                print(
+                    "warning: dropping one sample that has no segmentation",
+                    repr((left, right)),
+                )
                 continue
             eg.thisown = True
             if self.currentModel is not self.masterModel:
-                self.builder.setSequenceModel(self.sequitur.inventory, self.currentModel)
+                self.builder.setSequenceModel(
+                    self.sequitur.inventory, self.currentModel
+                )
                 self.builder.update(eg)
             yield eg
 
@@ -217,6 +230,7 @@ class Sample(object):
         def __init__(self, master, model):
             self.master = master
             self.model = model
+
         def __iter__(self):
             assert self.model is self.master.currentModel
             return self.master.makeGraphs()
@@ -236,9 +250,12 @@ class Sample(object):
                         eg = self.builder.create(left, right)
                     except RuntimeError:
                         error = sys.exc_info()[1]
-                        if str(error) != 'final node not reachable':
+                        if str(error) != "final node not reachable":
                             raise
-                        print('warning: dropping one sample that has no segmentation', repr((left, right)))
+                        print(
+                            "warning: dropping one sample that has no segmentation",
+                            repr((left, right)),
+                        )
                         continue
                     eg.thisown = True
                     graphs.append(eg)
@@ -287,17 +304,17 @@ class Sample(object):
 
 class TrainingContext:
     def __init__(self):
-        self.iteration   = 0
-        self.order       = None
+        self.iteration = 0
+        self.order = None
         self.logLikTrain = []
         self.logLikDevel = []
-        self.bestModel   = None
-        self.bestLogLik  = None
+        self.bestModel = None
+        self.bestLogLik = None
         self.log = sys.stdout
 
     def registerNewModel(self, newModel, logLik):
         if self.bestModel is None or logLik >= self.bestLogLik:
-            print('new best model found', file=self.log)
+            print("new best model found", file=self.log)
             self.bestModel = newModel
             self.bestLogLik = logLik
 
@@ -306,6 +323,7 @@ class StaticDiscounts:
     """
     Dummy discount adjuster, that just keeps the current discounts.
     """
+
     def __init__(self, modelFactory, develSample, discount, useMaximumApproximation):
         self.discount = discount
         if self.discount is None:
@@ -313,12 +331,12 @@ class StaticDiscounts:
         self.discount = num.array(self.discount, dtype=num.float64)
 
     def adjust(self, context, evidence, order):
-        if len(self.discount) < order+1:
+        if len(self.discount) < order + 1:
             oldSize = len(self.discount)
             highestOrderDiscount = self.discount[-1]
-            self.discount.resize(order+1)
+            self.discount.resize(order + 1)
             self.discount[oldSize:] = highestOrderDiscount
-        print('keep discount: %s' % self.discount, file=context.log)
+        print("keep discount: %s" % self.discount, file=context.log)
         return self.discount
 
 
@@ -326,6 +344,7 @@ class FixedDiscounts:
     """
     Dummy discount adjuster, that just returns a fixed value.
     """
+
     def __init__(self, discount):
         self.discount = num.array(discount, dtype=num.float64)
 
@@ -333,12 +352,12 @@ class FixedDiscounts:
         return self
 
     def adjust(self, context, evidence, order):
-        if len(self.discount) < order+1:
+        if len(self.discount) < order + 1:
             oldSize = len(self.discount)
             highestOrderDiscount = self.discount[-1]
-            self.discount.resize(order+1)
+            self.discount.resize(order + 1)
             self.discount[oldSize:] = highestOrderDiscount
-        print('fixed discount: %s' % self.discount, file=context.log)
+        print("fixed discount: %s" % self.discount, file=context.log)
         return self.discount
 
 
@@ -362,8 +381,8 @@ class DefaultDiscountAdjuster:
         def criterion(discount):
             sm = self.modelFactory.sequenceModel(evidence, [max(0.0, discount)])
             ll = self.develSample.logLik(sm, self.shallUseMaximumApproximation)
-            crit = - ll - min(discount, 0) + max(discount - maximumDiscount, 0)
-            print(discount, ll, crit) # TESTING
+            crit = -ll - min(discount, 0) + max(discount - maximumDiscount, 0)
+            print(discount, ll, crit)  # TESTING
             return crit
 
         initialGuess = self.discounts[-1]
@@ -374,7 +393,8 @@ class DefaultDiscountAdjuster:
             initialGuess = initialGuess[0]
 
         discount, ll = Minimization.linearMinimization(
-            criterion, initialGuess, tolerance=1e-4)
+            criterion, initialGuess, tolerance=1e-4
+        )
         discount = max(0.0, discount)
         discount = num.array([discount])
         return discount, -ll
@@ -384,68 +404,75 @@ class DefaultDiscountAdjuster:
             disc = tuple(num.maximum(0.0, discount))
             sm = self.modelFactory.sequenceModel(evidence, disc)
             ll = self.develSample.logLik(sm, self.shallUseMaximumApproximation)
-            crit = - ll \
-                   - sum(num.minimum(discount, 0)) \
-                   + sum(num.maximum(discount - maximumDiscount, 0))
-            print(discount, ll, crit) # TESTING
+            crit = (
+                -ll
+                - sum(num.minimum(discount, 0))
+                + sum(num.maximum(discount - maximumDiscount, 0))
+            )
+            print(discount, ll, crit)  # TESTING
             return crit
 
         initialGuess = self.discounts[-1]
         firstDirection = None
         if initialGuess is None:
-            initialGuess = 0.1 * num.arange(1, order+2, dtype=num.float64)
-        elif len(initialGuess) < order+1:
+            initialGuess = 0.1 * num.arange(1, order + 2, dtype=num.float64)
+        elif len(initialGuess) < order + 1:
             oldGuess = initialGuess
             oldSize = len(initialGuess)
-            initialGuess = num.zeros(order+1, dtype=num.float64)
+            initialGuess = num.zeros(order + 1, dtype=num.float64)
             initialGuess[:oldSize] = oldGuess
             initialGuess[oldSize:] = oldGuess[-1]
-        elif len(initialGuess) > order+1:
-            initialGuess = initialGuess[:order+1]
+        elif len(initialGuess) > order + 1:
+            initialGuess = initialGuess[: order + 1]
         else:
             previous = self.discounts[-2]
-            if previous is not None and len(previous) == order+1:
+            if previous is not None and len(previous) == order + 1:
                 firstDirection = initialGuess - previous
                 if not num.sometrue(num.abs(firstDirection) > 1e-4):
                     firstDirection = None
 
-        directions = num.identity(order+1, dtype=num.float64)
+        directions = num.identity(order + 1, dtype=num.float64)
         directions = directions[::-1]
         if firstDirection is not None:
-            directions = num.concatenate((firstDirection[num.newaxis,:], directions))
+            directions = num.concatenate((firstDirection[num.newaxis, :], directions))
         directions *= 0.1
-        print(directions) # TESTING
+        print(directions)  # TESTING
 
         discount, ll = Minimization.directionSetMinimization(
-            criterion, initialGuess, directions, tolerance=1e-4)
+            criterion, initialGuess, directions, tolerance=1e-4
+        )
 
         discount = num.maximum(0.0, discount)
         return discount, -ll
 
     def adjust(self, context, evidence, order):
         if self.shouldAdjustDiscount(context, evidence):
-            print('adjusting discount ...', file=context.log)
+            print("adjusting discount ...", file=context.log)
             maximumDiscount = min(evidence.maximum(), self.maximumReasonableDiscount)
             evidence = evidence.makeSequenceModelEstimator()
             evidence.thisown = True
             if order == 0:
                 discount, logLik = self.adjustOrderZero(evidence, maximumDiscount)
             else:
-                discount, logLik = self.adjustHigherOrder(evidence, order, maximumDiscount)
+                discount, logLik = self.adjustHigherOrder(
+                    evidence, order, maximumDiscount
+                )
             self.discounts.append(discount)
-            print('optimal discount: %s' % discount, file=context.log)
-            print('max. rel. change: %s' % self.maxRelChange(), file=context.log)
+            print("optimal discount: %s" % discount, file=context.log)
+            print("max. rel. change: %s" % self.maxRelChange(), file=context.log)
         else:
             discount = self.discounts[-1]
-            print('keep discount: %s' % discount, file=context.log)
+            print("keep discount: %s" % discount, file=context.log)
         return discount
 
     def shouldAdjustDiscount(self, context, evidence):
         if len(context.logLikDevel) < 1:
             return True
         tentativeModel = self.modelFactory.sequenceModel(evidence, self.discounts[-1])
-        logLikDevel = context.develSample.logLik(tentativeModel, self.shallUseMaximumApproximation)
-        return (logLikDevel <= context.logLikDevel[-1])
+        logLikDevel = context.develSample.logLik(
+            tentativeModel, self.shallUseMaximumApproximation
+        )
+        return logLikDevel <= context.logLikDevel[-1]
 
     def maxRelChange(self):
         if self.discounts[-2] is None:
@@ -453,8 +480,12 @@ class DefaultDiscountAdjuster:
         elif len(self.discounts[-1]) != len(self.discounts[-2]):
             maxRelChange = 1.0
         else:
-            maxRelChange = max(abs((self.discounts[-1] - self.discounts[-2]) /
-                                   (self.discounts[-2] + 1e-10)))
+            maxRelChange = max(
+                abs(
+                    (self.discounts[-1] - self.discounts[-2])
+                    / (self.discounts[-2] + 1e-10)
+                )
+            )
         return maxRelChange
 
 
@@ -464,11 +495,11 @@ class EagerDiscountAdjuster(DefaultDiscountAdjuster):
 
 
 class ModelTemplate:
-    sizeTemplates = [(1,1), (1,0), (0,1)]
+    sizeTemplates = [(1, 1), (1, 0), (0, 1)]
 
     def __init__(self, sequitur):
         self.sequitur = sequitur
-        self.observers   = []
+        self.observers = []
         self.shallUseMaximumApproximation = False
         self.emergenceMode = EstimationGraphBuilder.emergeNewMultigrams
 
@@ -477,24 +508,27 @@ class ModelTemplate:
 
     def allowEmergenceOfNewMultigrams(self, allow):
         self.emergenceMode = {
-            True:  EstimationGraphBuilder.emergeNewMultigrams,
-            False: EstimationGraphBuilder.suppressNewMultigrams
-            }[allow]
+            True: EstimationGraphBuilder.emergeNewMultigrams,
+            False: EstimationGraphBuilder.suppressNewMultigrams,
+        }[allow]
 
-    def setLengthConstraints(self, minLeftLength,  maxLeftLength, minRightLength, maxRightLength):
-        assert 0 <= minLeftLength  and minLeftLength  <= maxLeftLength
+    def setLengthConstraints(
+        self, minLeftLength, maxLeftLength, minRightLength, maxRightLength
+    ):
+        assert 0 <= minLeftLength and minLeftLength <= maxLeftLength
         assert 0 <= minRightLength and minRightLength <= maxRightLength
         self.sizeTemplates = [
             (left, right)
-            for left  in range(minLeftLength,  maxLeftLength  + 1)
+            for left in range(minLeftLength, maxLeftLength + 1)
             for right in range(minRightLength, maxRightLength + 1)
-            if left > 0 or right > 0 ]
+            if left > 0 or right > 0
+        ]
 
     def setSizeTemplates(self, templates):
         self.sizeTemplates = templates
 
     def nPossibleMultigrams(self):
-        nLeftSymbols  = self.sequitur.leftInventory.size()  - 1  # for __term__
+        nLeftSymbols = self.sequitur.leftInventory.size() - 1  # for __term__
         nRightSymbols = self.sequitur.rightInventory.size() - 1  # for __term__
         result = 0
         for left, right in self.sizeTemplates:
@@ -520,28 +554,36 @@ class ModelTemplate:
     # =======================================================================
     def showMostEvident(self, f, evidence, limit):
         sample = evidence.asList()
-        sample = [ (value, predicted, history)
-                   for history, predicted, value in sample ]
+        sample = [(value, predicted, history) for history, predicted, value in sample]
         sample.sort()
         sample.reverse()
+
         def asString(index):
             left, right = self.sequitur.symbol(index)
-            return ''.join(left) + ':' + '_'.join(right)
+            return "".join(left) + ":" + "_".join(right)
+
         def show(value, predicted, history):
-            print('    ', value, \
-                  '      ', asString(predicted), \
-                  '      ', ' '.join(map(asString, history)), file=f)
-        if limit and 1.5*limit < len(sample):
+            print(
+                "    ",
+                value,
+                "      ",
+                asString(predicted),
+                "      ",
+                " ".join(map(asString, history)),
+                file=f,
+            )
+
+        if limit and 1.5 * limit < len(sample):
             for vph in sample[:limit]:
                 show(*vph)
-            print('    ...', file=f)
-            for vph in sample[-limit//2:]:
+            print("    ...", file=f)
+            for vph in sample[-limit // 2 :]:
                 show(*vph)
         else:
             for vph in sample:
                 show(*vph)
-        print(len(sample), 'evidences total', file=f)
-        print(self.sequitur.inventory.size(), 'multigrams ever seen', file=f)
+        print(len(sample), "evidences total", file=f)
+        print(self.sequitur.inventory.size(), "multigrams ever seen", file=f)
 
     # =======================================================================
     def masterSequenceModel(self, model):
@@ -550,7 +592,7 @@ class ModelTemplate:
             allHistories.add(history)
         result = SequenceModel.SequenceModel()
         result.setInitAndTerm(self.sequitur.term, self.sequitur.term)
-        result.set([ (history, None, 0.0) for history in allHistories ])
+        result.set([(history, None, 0.0) for history in allHistories])
         return result
 
     def obliviousModel(self):
@@ -561,51 +603,64 @@ class ModelTemplate:
 
     def initializeWithOverlappingCounts(self, context):
         counts = context.trainSample.overlappingOccurenceCounts(
-            context.model.sequenceModel)
+            context.model.sequenceModel
+        )
 
-        print('  count types: %s' % counts.size(), file=context.log)
-        print('  count total / max: %s / %s' % (counts.total(), counts.maximum()), file=context.log)
+        print("  count types: %s" % counts.size(), file=context.log)
+        print(
+            "  count total / max: %s / %s" % (counts.total(), counts.maximum()),
+            file=context.log,
+        )
 
-        self.showMostEvident(context.log, counts, 10) ### TESTING
+        self.showMostEvident(context.log, counts, 10)  ### TESTING
 
         context.model = Model(self.sequitur)
         context.model.discount = num.zeros(counts.maximumHistoryLength() + 1)
         context.model.sequenceModel = self.sequenceModel(counts, context.model.discount)
 
-        print('  model size: %s' % context.model.sequenceModel.size(), file=context.log)
-        print('', file=context.log)
+        print("  model size: %s" % context.model.sequenceModel.size(), file=context.log)
+        print("", file=context.log)
 
         context.log.flush()
 
     def iterate(self, context):
         evidence, logLikTrain = context.trainSample.evidence(
-            context.model.sequenceModel,
-            self.shallUseMaximumApproximation)
+            context.model.sequenceModel, self.shallUseMaximumApproximation
+        )
 
-        print(('LL train: %s (before)' % logLikTrain), file=context.log)
+        print(("LL train: %s (before)" % logLikTrain), file=context.log)
         context.logLikTrain.append(logLikTrain)
 
         if (not context.develSample) and (context.iteration > self.minIterations):
             context.registerNewModel(context.model, logLikTrain)
 
         order = evidence.maximumHistoryLength()
-        print('  evidence order: %s' % order, file=context.log)
+        print("  evidence order: %s" % order, file=context.log)
         if context.order is not None and order != context.order:
-            print('  warning: evidence order changed from %d to %d!' % (context.order, order), file=context.log)
+            print(
+                "  warning: evidence order changed from %d to %d!"
+                % (context.order, order),
+                file=context.log,
+            )
         context.order = order
 
-        print('  evidence types: %s' % evidence.size(), file=context.log)
-        print('  evidence total / max: %s / %s' % (evidence.total(), evidence.maximum()), file=context.log)
-        self.showMostEvident(context.log, evidence, 10) ### TESTING
+        print("  evidence types: %s" % evidence.size(), file=context.log)
+        print(
+            "  evidence total / max: %s / %s" % (evidence.total(), evidence.maximum()),
+            file=context.log,
+        )
+        self.showMostEvident(context.log, evidence, 10)  ### TESTING
 
         newModel = Model(self.sequitur)
         newModel.discount = context.discountAdjuster.adjust(context, evidence, order)
         newModel.sequenceModel = self.sequenceModel(evidence, newModel.discount)
-        print('  model size: %s' % newModel.sequenceModel.size(), file=context.log)
+        print("  model size: %s" % newModel.sequenceModel.size(), file=context.log)
 
         if context.develSample:
-            logLikDevel = context.develSample.logLik(newModel.sequenceModel, self.shallUseMaximumApproximation)
-            print('LL devel: %s' % logLikDevel, file=context.log)
+            logLikDevel = context.develSample.logLik(
+                newModel.sequenceModel, self.shallUseMaximumApproximation
+            )
+            print("LL devel: %s" % logLikDevel, file=context.log)
             context.logLikDevel.append(logLikDevel)
 
         for observer in self.observers:
@@ -620,9 +675,9 @@ class ModelTemplate:
                 crit = context.logLikDevel
             else:
                 crit = context.logLikTrain
-            crit = [ -ll for ll in crit[-self.convergenceWindow:] ]
+            crit = [-ll for ll in crit[-self.convergenceWindow :]]
             if not Minimization.hasSignificantDecrease(crit):
-                print('iteration converged.', file=context.log)
+                print("iteration converged.", file=context.log)
                 shouldStop = True
 
         context.model = newModel
@@ -632,10 +687,10 @@ class ModelTemplate:
     minIterations = 20
     convergenceWindow = 10
     DiscountAdjustmentStrategy = DefaultDiscountAdjuster
-    checkpointInterval = None # or CPU time in seconds
-    checkpointFile = None     # filename template must contain '%d'
+    checkpointInterval = None  # or CPU time in seconds
+    checkpointFile = None  # filename template must contain '%d'
 
-    def makeContext(self, trainSample, develSample, initialModel = None):
+    def makeContext(self, trainSample, develSample, initialModel=None):
         context = TrainingContext()
         if initialModel:
             context.model = initialModel
@@ -643,18 +698,28 @@ class ModelTemplate:
             context.model = self.obliviousModel()
         masterModel = self.masterSequenceModel(context.model)
         context.trainSample = Sample(
-            self.sequitur, self.sizeTemplates,
+            self.sequitur,
+            self.sizeTemplates,
             self.emergenceMode,
-            trainSample, masterModel)
+            trainSample,
+            masterModel,
+        )
         if develSample:
             context.develSample = Sample(
-                self.sequitur, self.sizeTemplates,
+                self.sequitur,
+                self.sizeTemplates,
                 EstimationGraphBuilder.anonymizeNewMultigrams,
-                develSample, masterModel)
+                develSample,
+                masterModel,
+            )
         else:
             context.develSample = None
         context.discountAdjuster = self.DiscountAdjustmentStrategy(
-            self, context.develSample, context.model.discount, self.shallUseMaximumApproximation)
+            self,
+            context.develSample,
+            context.model.discount,
+            self.shallUseMaximumApproximation,
+        )
         context.iteration = 0
         return context
 
@@ -663,44 +728,52 @@ class ModelTemplate:
         shouldStop = False
         while not shouldStop:
             if context.iteration >= self.maxIterations:
-                print('maximum number of iterations reached.', file=context.log)
+                print("maximum number of iterations reached.", file=context.log)
                 break
-            print('iteration: %s' % context.iteration, file=context.log)
+            print("iteration: %s" % context.iteration, file=context.log)
             try:
                 shouldStop = self.iterate(context)
             except:
                 import traceback
+
                 traceback.print_exc()
-                print('iteration failed.', file=context.log)
+                print("iteration failed.", file=context.log)
                 break
-            if ((self.checkpointInterval) and
-                (misc.cputime() > lastCheckpoint + self.checkpointInterval)):
+            if (self.checkpointInterval) and (
+                misc.cputime() > lastCheckpoint + self.checkpointInterval
+            ):
                 self.checkpoint(context)
                 lastCheckpoint = misc.cputime()
             context.iteration += 1
             misc.reportMemoryUsage()
-            print('', file=context.log)
+            print("", file=context.log)
             context.log.flush()
 
     def resume(cls, filename):
         from six.moves import cPickle as pickle
+
         if sys.version_info[:2] >= (3, 0):
-            self, context = pickle.load(open(filename), encoding='latin1')
+            self, context = pickle.load(open(filename), encoding="latin1")
         else:
             try:
                 self, context = pickle.load(open(filename))
             except ValueError:
-                print('This error most likely occurred because the loaded model was created in python3.\n', file=sys.stderr)
+                print(
+                    "This error most likely occurred because the loaded model was created in python3.\n",
+                    file=sys.stderr,
+                )
                 raise
         self.run(context)
         return context.bestModel
+
     resume = classmethod(resume)
 
     def checkpoint(self, context):
-        print('checkpointing', file=context.log)
+        print("checkpointing", file=context.log)
         import cPickle as pickle
+
         fname = self.checkpointFile % context.iteration
-        f = open(fname, 'wb')
+        f = open(fname, "wb")
         pickle.dump((self, context), f, pickle.HIGHEST_PROTOCOL)
         f.close()
 
@@ -726,7 +799,7 @@ class Translator:
     def unpackJoint(self, joint):
         assert joint[0] == self.sequitur.term
         assert joint[-1] == self.sequitur.term
-        return [ self.sequitur.inventory.symbol(q) for q in joint[1:-1] ]
+        return [self.sequitur.inventory.symbol(q) for q in joint[1:-1]]
 
     def translateFirstBest(self, left):
         left = self.sequitur.leftInventory.parse(left)
@@ -739,15 +812,19 @@ class Translator:
 
     def firstBestJoint(self, left):
         logLik, joint = self.translateFirstBest(left)
-        joint = [ (self.sequitur.leftInventory.format(left),
-                   self.sequitur.rightInventory.format(right))
-                  for left, right in joint ]
+        joint = [
+            (
+                self.sequitur.leftInventory.format(left),
+                self.sequitur.rightInventory.format(right),
+            )
+            for left, right in joint
+        ]
         return logLik, joint
 
     def jointToLeftRight(self, joint):
-        left  = [ l for ll, rr in joint for l in ll ]
+        left = [l for ll, rr in joint for l in ll]
         left = self.sequitur.leftInventory.format(left)
-        right = [ r for ll, rr in joint for r in rr ]
+        right = [r for ll, rr in joint for r in rr]
         right = self.sequitur.rightInventory.format(right)
         return left, right
 
@@ -778,7 +855,7 @@ class Translator:
             logLik, joint = self.translator.nBestNext(nBestContext)
         except RuntimeError:
             exc = sys.exc_info()[1]
-            if exc.args[0] == 'no further translations':
+            if exc.args[0] == "no further translations":
                 raise StopIteration
             else:
                 raise self.TranslationFailure(*exc.args)
@@ -787,7 +864,7 @@ class Translator:
         return logLik, right
 
     def reportStats(self, f):
-        print('stack usage: ', self.translator.stackUsage(), file=f)
+        print("stack usage: ", self.translator.stackUsage(), file=f)
 
 
 class Segmenter:
@@ -796,7 +873,7 @@ class Segmenter:
         self.sequitur = model.sequitur
         self.builder = EstimationGraphBuilder()
         self.builder.setSizeTemplates(self.sequitur.inventory.sizeTemplates())
-#       self.builder.setEmergenceMode(EstimationGraphBuilder.anonymizeNewMultigrams)
+        #       self.builder.setEmergenceMode(EstimationGraphBuilder.anonymizeNewMultigrams)
         self.builder.setEmergenceMode(EstimationGraphBuilder.suppressNewMultigrams)
         self.builder.setSequenceModel(self.sequitur.inventory, self.model.sequenceModel)
         self.viterbi = sequitur_.ViterbiAccumulator()
@@ -807,15 +884,20 @@ class Segmenter:
     def firstBestJoint(self, left, right):
         try:
             eg = self.builder.create(
-                self.sequitur.leftInventory .parse(left),
-                self.sequitur.rightInventory.parse(right))
+                self.sequitur.leftInventory.parse(left),
+                self.sequitur.rightInventory.parse(right),
+            )
             logLik, joint = self.viterbi.segment(eg)
         except RuntimeError:
             exc = sys.exc_info()[1]
             raise self.SegmentationFailure(*exc.args)
         assert joint[-1] == self.sequitur.term
         joint = map(self.sequitur.inventory.symbol, joint[:-1])
-        joint = [ (self.sequitur.leftInventory.format(left),
-                   self.sequitur.rightInventory.format(right))
-                  for left, right in joint ]
+        joint = [
+            (
+                self.sequitur.leftInventory.format(left),
+                self.sequitur.rightInventory.format(right),
+            )
+            for left, right in joint
+        ]
         return logLik, joint
