@@ -6,7 +6,7 @@
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
  * 1991) as published by the Free Software Foundation.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -40,19 +40,19 @@ namespace AssertionsPrivate {
 
 %exception {
     try {
-	$function
+        $function
     } catch (ExistingPythonException) {
-	return NULL;
+        return NULL;
     } catch (PythonException &e) {
-	PyErr_SetString(e.type_, e.message_);
-	return NULL;
+        PyErr_SetString(e.type_, e.message_);
+        return NULL;
     } catch (const std::exception &e) {
-	AssertionsPrivate::stackTrace(std::cerr, 0);
-	PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(e.what()));
-	return NULL;
+        AssertionsPrivate::stackTrace(std::cerr, 0);
+        PyErr_SetString(PyExc_RuntimeError, const_cast<char*>(e.what()));
+        return NULL;
     } catch (...) {
-	PyErr_SetString(PyExc_RuntimeError, "unspecified exception");
-	return NULL;
+        PyErr_SetString(PyExc_RuntimeError, "unspecified exception");
+        return NULL;
     }
 }
 
@@ -110,19 +110,19 @@ namespace AssertionsPrivate {
     int length = PySequence_Fast_GET_SIZE(seq);
     $1.reserve(length);
     for (int i = 0; i < length; ++i) {
-	PyObject *sym = PySequence_Fast_GET_ITEM(seq, i);
-	if (!PyInt_Check(sym)) {
-	    Py_DECREF(seq);
-	    PyErr_Format(PyExc_TypeError, "element %d not an integer", i);
-	    SWIG_fail;
-	}
-	long ind = PyInt_AsLong(sym);
-	if (ind < 0 || ind > Core::Type<Symbol>::max) {
-	    Py_DECREF(seq);
-	    PyErr_Format(PyExc_ValueError, "symbol out of range: %ld", ind);
-	    SWIG_fail;
-	}
-	$1.push_back(ind);
+        PyObject *sym = PySequence_Fast_GET_ITEM(seq, i);
+        if (!PyInt_Check(sym)) {
+            Py_DECREF(seq);
+            PyErr_Format(PyExc_TypeError, "element %d not an integer", i);
+            SWIG_fail;
+        }
+        long ind = PyInt_AsLong(sym);
+        if (ind < 0 || ind > Core::Type<Symbol>::max) {
+            Py_DECREF(seq);
+            PyErr_Format(PyExc_ValueError, "symbol out of range: %ld", ind);
+            SWIG_fail;
+        }
+        $1.push_back(ind);
     }
     Py_DECREF(seq);
 }
@@ -135,15 +135,15 @@ namespace AssertionsPrivate {
     PyObject *left, *right;
     if (!PyArg_ParseTuple($input, "OO", &left, &right)) {
         PyErr_SetString(PyExc_TypeError,"not a tuple of size 2");
-	SWIG_fail;
+        SWIG_fail;
     }
     $1.left  = Multigram(left);
     $1.right = Multigram(right);
 }
 %typemap(out) JointMultigram {
     $result = Py_BuildValue(
-	"(NN)", 
-	$1.left.asPyObject(), $1.right.asPyObject());
+        "(NN)",
+        $1.left.asPyObject(), $1.right.asPyObject());
 }
 #endif  // SWIGPYTHON
 
@@ -235,9 +235,9 @@ public:
     void clearSizeTemplates();
     void addSizeTemplate(int left, int right);
     enum MultigramEmergenceMode {
-	emergeNewMultigrams,
-	suppressNewMultigrams,
-	anonymizeNewMultigrams
+        emergeNewMultigrams,
+        suppressNewMultigrams,
+        anonymizeNewMultigrams
     };
     void setEmergenceMode(MultigramEmergenceMode);
     EstimationGraph *create(Sequence left, Sequence right);
@@ -263,14 +263,14 @@ public:
 };
 %extend SequenceModelEstimator {
     void makeSequenceModel(
-	SequenceModel *target,
-	double vocabularySize,
-	DoubleVector discountArray) 
+        SequenceModel *target,
+        double vocabularySize,
+        DoubleVector discountArray)
     {
-	std::vector<double> discounts(
-	    (double*) PyArray_DATA(discountArray), 
-	    (double*) PyArray_DATA(discountArray) + PyArray_DIMS(discountArray)[0]);
-	self->makeSequenceModel(target, vocabularySize, discounts);
+        std::vector<double> discounts(
+            (double*) PyArray_DATA(discountArray),
+            (double*) PyArray_DATA(discountArray) + PyArray_DIMS(discountArray)[0]);
+        self->makeSequenceModel(target, vocabularySize, discounts);
     }
 };
 
@@ -292,13 +292,13 @@ public:
 };
 %extend ViterbiAccumulator {
     PyObject *segment(EstimationGraph *eg) {
-	std::vector<MultigramIndex> mgs;
-	LogProbability p = self->segment(eg, mgs);
-	u32 len = mgs.size();
-	PyObject *result = PyList_New(len);
-	for (u32 i = 0; i < len; ++i)
-	    PyList_SET_ITEM(result, i, PyInt_FromLong(mgs[i]));
-	return Py_BuildValue("(fN)", -p.score(), result);
+        std::vector<MultigramIndex> mgs;
+        LogProbability p = self->segment(eg, mgs);
+        u32 len = mgs.size();
+        PyObject *result = PyList_New(len);
+        for (u32 i = 0; i < len; ++i)
+            PyList_SET_ITEM(result, i, PyInt_FromLong(mgs[i]));
+        return Py_BuildValue("(fN)", -p.score(), result);
     }
 }
 
@@ -331,28 +331,28 @@ public:
     void setSequenceModel(SequenceModel*);
     int stackUsage();
     void setStackLimit(int);
-    
+
     Translator_NBestContext *nBestInit(Sequence left);
     LogProbability nBestBestLogLik(Translator_NBestContext*);
     LogProbability nBestTotalLogLik(Translator_NBestContext*);
 };
 %extend Translator {
     PyObject *__call__(Sequence left) {
-	std::vector<MultigramIndex> mgs;
-	LogProbability p = self->translate(left, mgs);
-	u32 len = mgs.size();
-	PyObject *result = PyList_New(len);
-	for (u32 i = 0; i < len; ++i)
-	    PyList_SET_ITEM(result, i, PyInt_FromLong(mgs[i]));
-	return Py_BuildValue("(fN)", -p.score(), result);
+        std::vector<MultigramIndex> mgs;
+        LogProbability p = self->translate(left, mgs);
+        u32 len = mgs.size();
+        PyObject *result = PyList_New(len);
+        for (u32 i = 0; i < len; ++i)
+            PyList_SET_ITEM(result, i, PyInt_FromLong(mgs[i]));
+        return Py_BuildValue("(fN)", -p.score(), result);
     }
     PyObject *nBestNext(Translator_NBestContext *nbc) {
-	std::vector<MultigramIndex> mgs;
-	LogProbability p = self->nBestNext(nbc, mgs);
-	u32 len = mgs.size();
-	PyObject *result = PyList_New(len);
-	for (u32 i = 0; i < len; ++i)
-	    PyList_SET_ITEM(result, i, PyInt_FromLong(mgs[i]));
-	return Py_BuildValue("(fN)", -p.score(), result);
+        std::vector<MultigramIndex> mgs;
+        LogProbability p = self->nBestNext(nbc, mgs);
+        u32 len = mgs.size();
+        PyObject *result = PyList_New(len);
+        for (u32 i = 0; i < len; ++i)
+            PyList_SET_ITEM(result, i, PyInt_FromLong(mgs[i]));
+        return Py_BuildValue("(fN)", -p.score(), result);
     }
 };

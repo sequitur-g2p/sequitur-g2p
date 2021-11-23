@@ -6,7 +6,7 @@ __license__   = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -17,7 +17,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -68,7 +68,7 @@ cdef class SparseVector:
             self.data = <Item*> PyMem_Malloc(size * sizeof(Item))
         else:
             self.data = NULL
- 
+
     def __dealloc__(self):
         PyMem_Free(self.data)
 
@@ -99,7 +99,7 @@ cdef class SparseVector:
         if l == NULL:
             return 0.0
         return l.value
-        
+
     cdef Item *find(self, int key):
         cdef Item *l, *r, *m
         l = self.data
@@ -107,7 +107,7 @@ cdef class SparseVector:
         while l < r:
             if l.key == key:
                 return l
-            if (r - l) < 8: # TUNE ME 
+            if (r - l) < 8: # TUNE ME
                 l = l + 1
             else:
                 m = l + (r - l) / 2
@@ -159,7 +159,7 @@ cdef class SparseVector:
         while ai - self.data < self.size:
             pi[0] = ai[0]
             ai = ai + 1
-            pi = pi + 1            
+            pi = pi + 1
         while bi - othr.data < othr.size:
             pi[0] = bi[0]
             bi = bi + 1
@@ -213,7 +213,7 @@ cdef class SparseVector:
 cdef class SparseVectorIter:
     cdef SparseVector sv
     cdef int current
-    
+
     def __init__(self, SparseVector sv):
         self.sv = sv
         self.current = -1
@@ -276,7 +276,7 @@ def leftJoinInterpolateAndAddOneSparse(SparseVector aa, double scale, SparseVect
     cdef SparseVector result
     cdef Item *i, *l, *r, *m
     cdef int key
-    
+
     result = SparseVector(aa.size + 1)
     result.data[0].key = extraKey
     result.data[0].value = extraValue
@@ -314,17 +314,17 @@ def dump(SparseVector sv not None, file):
     assert PyFile_Check(file)
     cdef FILE *f
     f = PyFile_AsFile(file)
-    
+
     if fwrite(&sv.size, sizeof(int), 1, f) != 1:
-        PyErr_SetFromErrno(IOError)        
+        PyErr_SetFromErrno(IOError)
     if fwrite(sv.data, sizeof(Item), sv.size, f) != sv.size:
-        PyErr_SetFromErrno(IOError)        
+        PyErr_SetFromErrno(IOError)
 
 def load(file):
     assert PyFile_Check(file)
     cdef FILE *f
     f = PyFile_AsFile(file)
-    
+
     cdef int size
     if fread(&size, sizeof(int), 1, f) != 1:
         PyErr_SetFromErrno(IOError)

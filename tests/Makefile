@@ -12,7 +12,7 @@ PYTHON_PATH := $(shell find ../build/ -name "_sequitur*.so"| head -n 1| sed 's/_
 		-@rm 001/log  001/model-1
 
 002:
-	  -[ ! -f 002/cmudict-0.7b ] && wget -O 002/cmudict-0.7b http://svn.code.sf.net/p/cmusphinx/code/trunk/cmudict/cmudict-0.7b 
+	  -[ ! -f 002/cmudict-0.7b ] && wget -O 002/cmudict-0.7b http://svn.code.sf.net/p/cmusphinx/code/trunk/cmudict/cmudict-0.7b
 		PYTHONPATH=$(PYTHON_PATH) $(PYTHON) $(G2P) --encoding=iso-8859-1 --devel 5% --train  002/cmudict-0.7b --write-model 002/model-1 > 002/log
 		-@echo "Test 002 passed"
 		-@rm 002/log  002/model-1

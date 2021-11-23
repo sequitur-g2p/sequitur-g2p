@@ -88,7 +88,7 @@ pip install numpy
 pip install git+https://github.com/sequitur-g2p/sequitur-g2p@master
 ```
 
-Note, when installing on MacOS, you might run into issues due to the default 
+Note, when installing on MacOS, you might run into issues due to the default
 libc being clang's one. If that is the case, try installing it with:
 ```
 CPPFLAGS="-stdlib=libstdc++" pip install git+https://github.com/sequitur-g2p/sequitur-g2p@master

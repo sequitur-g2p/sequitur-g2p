@@ -1,15 +1,15 @@
 from __future__ import division
 from __future__ import print_function
 
-__author__    = 'Maximilian Bisani'
-__version__   = '$LastChangedRevision: 1691 $'
-__date__      = '$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $'
-__copyright__ = 'Copyright (c) 2004-2005  RWTH Aachen University'
-__license__   = """
+__author__ = "Maximilian Bisani"
+__version__ = "$LastChangedRevision: 1691 $"
+__date__ = "$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $"
+__copyright__ = "Copyright (c) 2004-2005  RWTH Aachen University"
+__license__ = """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License Version 2 (June
 1991) as published by the Free Software Foundation.
- 
+
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -20,7 +20,7 @@ along with this program; if not, you will find it at
 http://www.gnu.org/licenses/gpl.html, or write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110,
 USA.
- 
+
 Should a provision of no. 9 and 10 of the GNU General Public License
 be invalid or become invalid, a valid provision is deemed to have been
 agreed upon which comes closest to what the parties intended
@@ -32,7 +32,7 @@ from math import *
 from numpy import *
 
 
-gold  = (1 + sqrt(5)) / 2
+gold = (1 + sqrt(5)) / 2
 cGold = (3 - sqrt(5)) / 2
 
 
@@ -48,7 +48,7 @@ def bracketMinimum(f, xa, xb):
     if fb > fa:
         xa, xb = xb, xa
         fa, fb = fb, fa
-    xc = xb + gold * (xb-xa)
+    xc = xb + gold * (xb - xa)
     fc = f(xc)
     while fb >= fc:
         xuLimit = xb + 100.0 * (xc - xb)
@@ -97,7 +97,9 @@ maxIterations = 100
 zEpsilon = 1.0e-18
 
 
-def linearMinimization(f, x=None, lower=None, upper=None, tolerance = 1.0e-10, maxIterations = maxIterations):
+def linearMinimization(
+    f, x=None, lower=None, upper=None, tolerance=1.0e-10, maxIterations=maxIterations
+):
     """
     Given a function f and staring point x, this function determines
     the minimum of x using Brent's method of parabolic interpolation.
@@ -117,7 +119,7 @@ def linearMinimization(f, x=None, lower=None, upper=None, tolerance = 1.0e-10, m
         x = a + cGold * (b - a)
         fx = f(x)
     else:
-        raise ValueError('Either x or lower and upper must be given.')
+        raise ValueError("Either x or lower and upper must be given.")
 
     d = 0.0
     e = 0.0
@@ -127,17 +129,18 @@ def linearMinimization(f, x=None, lower=None, upper=None, tolerance = 1.0e-10, m
     for iteration in range(maxIterations):
         xm = (a + b) / 2
         tol = tolerance * fabs(x) + zEpsilon
-        if fabs(x - xm) <= (2.0*tol - (b - a) / 2):
+        if fabs(x - xm) <= (2.0 * tol - (b - a) / 2):
             break
         if fabs(e) > tol:
             r = (x - w) * (fx - fv)
             q = (x - v) * (fx - fw)
             p = (x - v) * q - (x - w) * r
             q = 2.0 * (q - r)
-            if q > 0.0: p = -p
+            if q > 0.0:
+                p = -p
             q = fabs(q)
             etemp, e = e, d
-            if fabs(p) >= fabs(0.5*q*etemp) or p <= q*(a-x) or p >= q*(b-x):
+            if fabs(p) >= fabs(0.5 * q * etemp) or p <= q * (a - x) or p >= q * (b - x):
                 if x >= xm:
                     e = a - x
                 else:
@@ -146,11 +149,11 @@ def linearMinimization(f, x=None, lower=None, upper=None, tolerance = 1.0e-10, m
             else:
                 d = p / q
                 u = x + d
-                if u - a < 2.0*tol or b - u < 2.0*tol:
+                if u - a < 2.0 * tol or b - u < 2.0 * tol:
                     if xm >= x:
                         d = tol
                     else:
-                        d = - tol
+                        d = -tol
         else:
             if x >= xm:
                 e = a - x
@@ -185,7 +188,7 @@ def linearMinimization(f, x=None, lower=None, upper=None, tolerance = 1.0e-10, m
                 v = u
                 fv = fu
     else:
-        raise 'failed to converge'
+        raise "failed to converge"
     return x, fx
 
 
@@ -193,7 +196,9 @@ def hasConverged(fCurrent, fOld, tolerance):
     return 2 * (fOld - fCurrent) <= tolerance * (fabs(fOld) + fabs(fCurrent) + zEpsilon)
 
 
-def directionSetMinimization(f, initialPoint, directions = None, tolerance = 1.0e-10, maxIterations = maxIterations):
+def directionSetMinimization(
+    f, initialPoint, directions=None, tolerance=1.0e-10, maxIterations=maxIterations
+):
     """
     Powell's method of multi-dimension minimization.
     inspired from: W. H. Press et. al., "Numerical Recipes", section 10.5
@@ -208,7 +213,9 @@ def directionSetMinimization(f, initialPoint, directions = None, tolerance = 1.0
         largestDecrease = 0.0
         directionOfLargestDecrease = None
         for dir, dirVector in enumerate(directions):
-            xMin, fMin = linearMinimization(lambda x: f(current + x * dirVector), 0, tolerance=tolerance)
+            xMin, fMin = linearMinimization(
+                lambda x: f(current + x * dirVector), 0, tolerance=tolerance
+            )
             decrease = fCurrent - fMin
             if decrease > largestDecrease:
                 largestDecrease = decrease
@@ -218,19 +225,24 @@ def directionSetMinimization(f, initialPoint, directions = None, tolerance = 1.0
             if fabs(xMin) > zEpsilon:
                 dirVector *= xMin
 
-        if hasConverged(fCurrent, fOld, tolerance): break
+        if hasConverged(fCurrent, fOld, tolerance):
+            break
 
         averageDirection = current - old
         extrapolated = current + averageDirection
         fExtrapolated = f(extrapolated)
         if fExtrapolated < fCurrent:
-            if 2 * (fOld - 2*fCurrent + fExtrapolated) * (fOld - fCurrent- largestDecrease)**2 < (fOld - fExtrapolated)**2 * largestDecrease:
+            if (
+                2
+                * (fOld - 2 * fCurrent + fExtrapolated)
+                * (fOld - fCurrent - largestDecrease) ** 2
+                < (fOld - fExtrapolated) ** 2 * largestDecrease
+            ):
                 directions[directionOfLargestDecrease] = directions[0]
                 directions[0] = averageDirection
     else:
-        raise 'failed to converge'
+        raise "failed to converge"
     return current, fCurrent
-
 
 
 def hasSignificantDecrease(series):
@@ -241,11 +253,11 @@ def hasSignificantDecrease(series):
     """
 
     N = len(series)
-    x = arange((1-N)/2, N/2)
+    x = arange((1 - N) / 2, N / 2)
     y = array(series)
     assert len(x) == N
     assert sum(x) == 0
-    xx = (N-1) * N * (N+1) / 12
+    xx = (N - 1) * N * (N + 1) / 12
     assert xx == sum(x * x)
 
     mean = sum(y) / N
@@ -253,10 +265,10 @@ def hasSignificantDecrease(series):
 
     delta = y - mean - slope * x
     if not fabs(sum(delta)) < fabs(mean) * 1e-14:
-        print('Minimization.py:223:', sum(delta), mean)
+        print("Minimization.py:223:", sum(delta), mean)
 
-    sigma = sqrt(sum(delta ** 2) / (N * (N-1)))
+    sigma = sqrt(sum(delta ** 2) / (N * (N - 1)))
     sigmaSlope = sigma / sqrt(xx)
 
-    print('b=%f   sigma=%f   sigma_b=%f' % (slope, sigma, sigmaSlope))
-    return slope < - 2.326348 * sigmaSlope
+    print("b=%f   sigma=%f   sigma_b=%f" % (slope, sigma, sigmaSlope))
+    return slope < -2.326348 * sigmaSlope

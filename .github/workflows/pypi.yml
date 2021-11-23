@@ -6,15 +6,15 @@ jobs:
     name: Build Python 🐍 distributions 📦 to PyPI and TestPyPI
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9']
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
         os: [ubuntu-20.04, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
       PKG_NAME: sequitur-g2p
       CIBW_BUILD: "cp3*win* cp3*manylinux* cp3*mac*"
       CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="10.9" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"
-      CIBW_MANYLINUX_X86_64_IMAGE: manylinux1
-      CIBW_MANYLINUX_I686_IMAGE: manylinux1
+      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2010
+      CIBW_MANYLINUX_I686_IMAGE: manylinux2010
       TEST: true
     steps:
       - uses: actions/checkout@master
@@ -28,7 +28,7 @@ jobs:
       - if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.python-version == '3.6') }}
         run: |
           wget -O - https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz | tar xzf - &&
-          docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`:/io quay.io/pypa/manylinux1_x86_64 /io/travis/build-wheels.sh
+          docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2010_x86_64 /io/travis/build-wheels.sh
 
       - if: ${{ matrix.os == 'windows-latest' }}
         run: |
@@ -40,15 +40,12 @@ jobs:
 
       # windows/mac builds
       - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: python -m pip install build
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: pip install -r requirements.txt
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: pip install -r dev-requirements.txt
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: pip install .
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        run: make travis-test
+        run: |
+          pip install -r requirements.txt
+          pip install -r dev-requirements.txt
+          pip install .
+          make travis-test
+
       - if: ${{ matrix.os != 'ubuntu-20.04' }}
         name: Build a binary wheel and a source tarball
         run: python -m build --sdist --wheel --outdir dist/ .
