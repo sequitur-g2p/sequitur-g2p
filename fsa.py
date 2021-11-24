@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Convert sequitur model to FSA.
 """
@@ -30,7 +31,6 @@ negligent actions or intended actions or fraudulent concealment.
 """
 
 import pickle
-import sys
 from xmlwriter import XmlWriter
 
 

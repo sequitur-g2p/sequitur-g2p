@@ -1,5 +1,5 @@
 /*
- * $Id: Probability.hh 1667 2007-06-02 14:32:35Z max $
+ * $Id: Probability.h 1667 2007-06-02 14:32:35Z max $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -28,7 +28,7 @@
 #ifndef _PROBABILITY_HH
 #define _PROBABILITY_HH
 
-#include "Assertions.hh"
+#include "Assertions.h"
 #include <cmath>
 #include <float.h>
 #include <stdint.h>

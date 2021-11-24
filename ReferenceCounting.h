@@ -1,5 +1,5 @@
 /*
- * $Id: ReferenceCounting.hh 1667 2007-06-02 14:32:35Z max $
+ * $Id: ReferenceCounting.h 1667 2007-06-02 14:32:35Z max $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -28,8 +28,8 @@
 #ifndef _CORE_REFERENCE_COUNTING
 #define _CORE_REFERENCE_COUNTING
 
-#include "Assertions.hh"
-#include "Types.hh"
+#include "Assertions.h"
+#include "Types.h"
 
 namespace Core {
 

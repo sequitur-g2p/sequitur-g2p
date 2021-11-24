@@ -1,5 +1,5 @@
 /*
- * $Id: PriorityQueue.hh 1691 2011-08-03 13:38:08Z hahn $
+ * $Id: PriorityQueue.h 1691 2011-08-03 13:38:08Z hahn $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -41,8 +41,8 @@ using std::tr1::unordered_map;
 //#include <ext/functional>
 
 
-#include "Assertions.hh"
-#include "Types.hh"
+#include "Assertions.h"
+#include "Types.h"
 
 
 namespace Core {

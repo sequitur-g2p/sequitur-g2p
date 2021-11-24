@@ -1,5 +1,5 @@
 /*
- * $Id: Utility.hh 1691 2011-08-03 13:38:08Z hahn $
+ * $Id: Utility.h 1691 2011-08-03 13:38:08Z hahn $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -33,8 +33,8 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "Types.hh"
-#include "Assertions.hh"
+#include "Types.h"
+#include "Assertions.h"
 
 namespace Core {
 

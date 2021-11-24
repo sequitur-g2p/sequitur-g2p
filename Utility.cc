@@ -25,7 +25,7 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include "Utility.hh"
+#include "Utility.h"
 #include <algorithm>
 #include <cstdlib>
 #include <cstdio>

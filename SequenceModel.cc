@@ -28,9 +28,9 @@
 #include <memory>
 #include <stdexcept>
 
-#include "SequenceModel.hh"
-#include "Types.hh"
-#include "Utility.hh"
+#include "SequenceModel.h"
+#include "Types.h"
+#include "Utility.h"
 
 
 #if defined(INSTRUMENTATION)

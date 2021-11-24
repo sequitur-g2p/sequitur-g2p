@@ -1,5 +1,4 @@
-from __future__ import print_function
-
+#!/usr/bin/env python3
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1667 $"
 __date__ = "$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $"
@@ -28,7 +27,9 @@ negligent actions or intended actions or fraudulent concealment.
 """
 
 import unittest
-from SequenceModel import *
+from SequenceModel import SequenceModelEstimator
+
+verbose = False
 
 
 class SequenceModelEstimatorTestCase(unittest.TestCase):
@@ -49,23 +50,24 @@ class SequenceModelEstimatorTestCase(unittest.TestCase):
     def testEmpty(self):
         evidence = []
         model = self.estimator.make(3, evidence, [0.0])
-
-    #       self.show(model)
-    #       self.failUnlessEqual(model, [])
+        if verbose:
+            self.show(model)
+            self.failUnlessEqual(model, [])
 
     def testOne(self):
         evidence = [((), "X", 1.0)]
         model = self.estimator.make(3, evidence, [0.1, 0.0])
-
-    #       self.show(model)
+        if verbose:
+            self.show(model)
 
     def testTwo(self):
         evidence = [(("A", "B"), "X", 3.0), (("C", "B"), "Y", 3.0)]
         model = self.estimator.make(3, evidence, [0.8, 1.0, 0.0])
-        #       self.show(model)
+        if verbose:
+            self.show(model)
         self.assertNormalized(model)
-
-    #       print model.perplexity(evidence)
+        if verbose:
+            print(model.perplexity(evidence))
 
     def show(sslf, model):
         for (history, predicted), probability in model:

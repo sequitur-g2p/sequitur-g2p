@@ -25,7 +25,7 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include "Python.hh"  // Must be first to prevent some warnings
+#include "Python.h"  // Must be first to prevent some warnings
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__) || (_MSC_VER)
 #include <unordered_map>
@@ -39,11 +39,11 @@ using std::tr1::unordered_map;
 #include <stdexcept>
 #include <memory>
 
-#include "Multigram.hh"
-#include "MultigramGraph.hh"
-#include "Probability.hh"
-#include "SequenceModel.hh"
-#include "Utility.hh"
+#include "Multigram.h"
+#include "MultigramGraph.h"
+#include "Probability.h"
+#include "SequenceModel.h"
+#include "Utility.h"
 
 class SequenceModelEstimator;
 

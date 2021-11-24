@@ -1,5 +1,4 @@
-from __future__ import print_function
-
+#!/usr/bin/env python3
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1668 $"
 __date__ = "$LastChangedDate: 2007-06-02 18:14:47 +0200 (Sat, 02 Jun 2007) $"
@@ -57,7 +56,8 @@ def run(main, options, args):
     import sys
 
     if options.tempdir:
-        import tempfile, os
+        import tempfile
+        import os
 
         if os.path.isdir(options.tempdir):
             tempfile.tempdir = options.tempdir
@@ -65,7 +65,8 @@ def run(main, options, args):
             raise ValueError("path does not exist", options.tempdir)
 
     if options.resource_usage:
-        import datetime, time
+        import datetime
+        import time
 
         startTime = datetime.datetime.now()
         startClock = time.clock()

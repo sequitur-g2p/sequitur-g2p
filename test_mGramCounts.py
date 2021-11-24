@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 11 $"
 __date__ = "$LastChangedDate: 2005-04-06 11:15:33 +0200 (Wed, 06 Apr 2005) $"
@@ -26,7 +27,7 @@ negligent actions or intended actions or fraudulent concealment.
 """
 import sys
 import unittest
-from mGramCounts import *
+from mGramCounts import mGramsFromIter, mGramsFromSequence
 
 TestCase = unittest.TestCase
 

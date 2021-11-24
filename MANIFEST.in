@@ -1,0 +1,6 @@
+include README
+include README.md
+include setup.py
+include requirements.txt
+recursive-include .  *.py
+recursive-include . *.cc *.h

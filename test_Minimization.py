@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1667 $"
 __date__ = "$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $"
@@ -26,18 +27,22 @@ negligent actions or intended actions or fraudulent concealment.
 """
 
 import unittest
-from Minimization import *
+from Minimization import linearMinimization
 
 
 class LinearMinimizationTestCase(unittest.TestCase):
     def testPolynomial(self):
-        f = lambda x: x ** 2 - 84 * x + 1700
+        def f(x):
+            return x ** 2 - 84 * x + 1700
+
         xMin, fMin = linearMinimization(f, 0)
         self.assertAlmostEqual(xMin, 42, 6)
         self.assertAlmostEqual(fMin, -64, 6)
 
     def testPolynomial2(self):
-        f = lambda x: x ** 2 + 84 * x + 1700
+        def f(x):
+            return x ** 2 + 84 * x + 1700
+
         xMin, fMin = linearMinimization(f, 0)
         self.assertAlmostEqual(xMin, -42, 6)
         self.assertAlmostEqual(fMin, -64, 6)

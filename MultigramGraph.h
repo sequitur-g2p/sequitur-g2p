@@ -1,5 +1,5 @@
 /*
- * $Id: MultigramGraph.hh 1667 2007-06-02 14:32:35Z max $
+ * $Id: MultigramGraph.h 1667 2007-06-02 14:32:35Z max $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -28,8 +28,8 @@
 #ifndef _MULTIGRAM_GRAPH_HH
 #define _MULTIGRAM_GRAPH_HH
 
-#include "Graph.hh"
-#include "Probability.hh"
+#include "Graph.h"
+#include "Probability.h"
 
 class MultigramGraph {
 protected:

@@ -28,7 +28,7 @@
 %module sequitur_
 
 %{
-#include "Python.hh"
+#include "Python.h"
 %}
 
 %{
@@ -100,7 +100,7 @@ namespace AssertionsPrivate {
 
 // ===========================================================================
 %{
-#include "Multigram.hh"
+#include "Multigram.h"
 %}
 
 #ifdef SWIGPYTHON

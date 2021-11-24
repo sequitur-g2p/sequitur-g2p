@@ -25,7 +25,7 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include "Assertions.hh"
+#include "Assertions.h"
 #include <vector>
 #include <iostream>
 

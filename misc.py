@@ -1,6 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from __future__ import division
-from __future__ import print_function
 
 import sys
 import errno
@@ -42,13 +41,13 @@ negligent actions or intended actions or fraudulent concealment.
 
 if sys.version_info[:2] < (2, 4):
 
-    def sorted(l):
-        lx = list(l)
+    def sorted(list_like):
+        lx = list(list_like)
         lx.sort()
         return lx
 
-    def reversed(l):
-        lx = list(l)
+    def reversed(list_like):
+        lx = list(list_like)
         lx.reverse()
         return lx
 
@@ -93,7 +92,7 @@ def meminfo():
     try:
         with open("/proc/%d/statm" % pid) as f:
             data = f.read()
-    except:
+    except Exception:
         raise NotImplementedError
     data = map(int, data.split())
     size, resident, shared, trs, drs, lrs, dt = tuple(data)
@@ -137,7 +136,7 @@ class MemoryProfiler:
             if hasattr(object, "memoryUsed"):
                 try:
                     return object.memoryUsed()
-                except:
+                except Exception:
                     return -1
             if type(object) in self.valuators:
                 return self.pythonObjectHead + self.valuators[type(object)](object)

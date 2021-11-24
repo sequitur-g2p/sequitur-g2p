@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Monotonous Machine Translation
@@ -54,7 +54,7 @@ def addUnknowns(model, words):
     knownWords = Set(model.sequitur.leftInventory.list)
     unknownWords = words - knownWords
     for word in unknownWords:
-        i = model.sequitur.index((word,), (word,))
+        model.sequitur.index((word,), (word,))
     print("%d unknown words added to model" % len(unknownWords), file=sys.stderr)
 
 

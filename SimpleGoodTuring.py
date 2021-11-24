@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Simple Good-Turing Frequency Estimator
@@ -91,7 +91,9 @@ def zipfFit(data):
 
     slope, intercept = findBestFit(loglog)
 
-    nSmoothed = lambda r: math.exp(intercept + slope * math.log(r))
+    def nSmoothed(r):
+        return math.exp(intercept + slope * math.log(r))
+
     setattr(nSmoothed, "alpha", slope)
     return nSmoothed
 

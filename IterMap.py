@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1667 $"
 __date__ = "$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $"
@@ -25,8 +27,10 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-import copy, itertools, heapq
+import copy
+import heapq
 from misc import restartable
+
 
 # ===========================================================================
 if __debug__:
@@ -141,6 +145,7 @@ def aggregate(seq):
 
 
 aggregate = restartable(aggregate)
+
 
 # ===========================================================================
 def leftJoin(seqA, seqB):

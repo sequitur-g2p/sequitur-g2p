@@ -1,5 +1,5 @@
+#!/usr/bin/env python3
 from __future__ import division
-from __future__ import print_function
 
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1691 $"
@@ -28,8 +28,8 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-from math import *
-from numpy import *
+from math import fabs, sqrt
+from numpy import identity, arange, array, Float64
 
 
 gold = (1 + sqrt(5)) / 2

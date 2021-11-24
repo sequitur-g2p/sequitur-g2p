@@ -25,7 +25,7 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include "Assertions.hh"
+#include "Assertions.h"
 
 #include <errno.h>
 #ifdef _HAS_TRACEBACK_

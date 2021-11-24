@@ -1,5 +1,5 @@
 /*
- * $Id: Assertions.hh 1691 2011-08-03 13:38:08Z hahn $
+ * $Id: Assertions.h 1691 2011-08-03 13:38:08Z hahn $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -39,7 +39,7 @@
 
 /**
  * @page DesignByContract Design by Contract
- * @see Assertions.hh
+ * @see Assertions.h
  *
  * @subsection faq Two FAQs for the extremely impatient:
  *
@@ -143,7 +143,7 @@
  **/
 
 /**
- * @file Assertions.hh
+ * @file Assertions.h
  * Design by Contract support functions.
  * @see @ref DesignByContract
  */

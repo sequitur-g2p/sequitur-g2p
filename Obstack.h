@@ -1,5 +1,5 @@
 /*
- * $Id: Obstack.hh 1667 2007-06-02 14:32:35Z max $
+ * $Id: Obstack.h 1667 2007-06-02 14:32:35Z max $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -30,7 +30,7 @@
 
 #include <new>
 #include <algorithm>
-#include "Assertions.hh"
+#include "Assertions.h"
 
 namespace Core {
 

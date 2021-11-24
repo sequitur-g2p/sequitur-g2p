@@ -25,7 +25,7 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include "Types.hh"
+#include "Types.h"
 #include <float.h>
 
 namespace Core {

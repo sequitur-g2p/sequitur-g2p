@@ -1,5 +1,4 @@
-from __future__ import print_function
-
+#!/usr/bin/env python3
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1691 $"
 __date__ = "$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $"
@@ -29,7 +28,7 @@ negligent actions or intended actions or fraudulent concealment.
 
 import unittest
 import math
-from sequitur import *
+from sequitur import SequenceModel, Sequitur, Sample, EstimationGraphBuilder, cmp
 
 
 class SequenceModelTestCase(unittest.TestCase):
@@ -125,12 +124,12 @@ class EstimatorTestCase(unittest.TestCase):
         evidence, logLik = sample.evidence(model, useMaximumApproximation=False)
         evidence = evidence.asList()
         for hist, seg, p in evidence:
-            l, r = self.sequitur.symbol(seg)
-            self.assertTrue(len(l) in range(2))
-            self.assertTrue(len(r) in range(2))
-            if l == ("__term__",) and r == ("__term__",):
+            left, right = self.sequitur.symbol(seg)
+            self.assertTrue(len(left) in range(2))
+            self.assertTrue(len(right) in range(2))
+            if left == ("__term__",) and right == ("__term__",):
                 self.assertAlmostEqual(p, 3.0)
-            elif len(l) == 1 and len(r) == 1:
+            elif len(left) == 1 and len(right) == 1:
                 self.assertAlmostEqual(p, 0.6)
             else:
                 self.assertAlmostEqual(p, 0.4)

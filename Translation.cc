@@ -25,7 +25,7 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include "Python.hh"  // Must be first to prevent some warnings
+#include "Python.h"  // Must be first to prevent some warnings
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__) || (_MSC_VER)
 #include <unordered_map>
@@ -39,15 +39,15 @@ using std::tr1::unordered_map;
 
 #include <stdexcept>
 
-#include "Assertions.hh"
-#include "Graph.hh"
-#include "Multigram.hh"
-#include "MultigramGraph.hh"
-#include "PriorityQueue.hh"
-#include "Probability.hh"
-#include "ReferenceCounting.hh"
-#include "SequenceModel.hh"
-#include "Utility.hh"
+#include "Assertions.h"
+#include "Graph.h"
+#include "Multigram.h"
+#include "MultigramGraph.h"
+#include "PriorityQueue.h"
+#include "Probability.h"
+#include "ReferenceCounting.h"
+#include "SequenceModel.h"
+#include "Utility.h"
 
 class Translator {
   private:

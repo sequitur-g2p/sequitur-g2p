@@ -1,5 +1,5 @@
 /*
- * $Id: Graph.hh 1667 2007-06-02 14:32:35Z max $
+ * $Id: Graph.h 1667 2007-06-02 14:32:35Z max $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -28,8 +28,8 @@
 #ifndef _GRAPH_HH
 #define _GRAPH_HH
 
-#include "Assertions.hh"
-#include "Types.hh"
+#include "Assertions.h"
+#include "Types.h"
 
 /**
  * Simple abstract graph.

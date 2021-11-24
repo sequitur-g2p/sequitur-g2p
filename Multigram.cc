@@ -25,10 +25,10 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include "Python.hh"
+#include "Python.h"
 
-#include "Assertions.hh"
-#include "Multigram.hh"
+#include "Assertions.h"
+#include "Multigram.h"
 
 #if PY_MAJOR_VERSION >= 3
   #define PyInt_Check(x) PyLong_Check(x)

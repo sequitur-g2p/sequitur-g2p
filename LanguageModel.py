@@ -48,7 +48,7 @@ from groupedCounts import (
 )
 from IterMap import assertIsSorted, leftJoin
 from IterMap import outerJoin
-from mGramCounts import FileStorage, TextStorage, loadVocabulary
+from mGramCounts import TextStorage, loadVocabulary
 from groupedCounts import StoredCounts, NonMonotonousHistoriesError
 from misc import gOpenIn, gOpenOut
 

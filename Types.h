@@ -1,5 +1,5 @@
 /*
- * $Id: Types.hh 1667 2007-06-02 14:32:35Z max $
+ * $Id: Types.h 1667 2007-06-02 14:32:35Z max $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -164,7 +164,7 @@ namespace Core {
   /**
    *  Use this class for naming your basic classes.
    *  Creating new names: by specialization.
-   *  @see example Matrix.hh
+   *  @see example Matrix.h
    */
   template <typename T>
   class NameHelper : public std::string {

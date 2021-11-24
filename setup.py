@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1691 $"
 __date__ = "$LastChangedDate: 2011-08-03 15:38:08 +0200 (Wed, 03 Aug 2011) $"
@@ -29,7 +30,8 @@ import os
 import numpy
 
 from setuptools import setup, Extension
-from setuptools.command.build_py import build_py as _build_py
+
+# from setuptools.command.build_py import build_py as _build_py
 
 VERSION = "1.0.1668.21"
 
@@ -41,12 +43,12 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 
-class build_py(_build_py):
-    """Build SWIG extension before Python modules."""
-
-    def run(self):
-        self.run_command("build_ext")
-        return _build_py.run(self)
+# class build_py(_build_py):
+#    """Build SWIG extension before Python modules."""
+#
+#    def run(self):
+#        self.run_command("build_ext")
+#        return _build_py.run(self)
 
 
 sequiturExtension = Extension(
@@ -62,19 +64,19 @@ sequiturExtension = Extension(
         "Multigram.cc",
     ],
     depends=[
-        "Assertions.hh",
-        "Graph.hh",
-        "Multigram.hh",
-        "MultigramGraph.hh",
-        "Multigram.hh",
-        "Obstack.hh",
-        "PriorityQueue.hh",
-        "Probability.hh",
-        "Python.hh",
-        "ReferenceCounting.hh",
-        "SequenceModel.hh",
-        "Types.hh",
-        "Utility.hh",
+        "Assertions.h",
+        "Graph.h",
+        "Multigram.h",
+        "MultigramGraph.h",
+        "Multigram.h",
+        "Obstack.h",
+        "PriorityQueue.h",
+        "Probability.h",
+        "Python.h",
+        "ReferenceCounting.h",
+        "SequenceModel.h",
+        "Types.h",
+        "Utility.h",
         "EditDistance.cc",
         "Estimation.cc",
         "SequenceModel.cc",
@@ -132,7 +134,7 @@ setup(
         "Original site": "https://www-i6.informatik.rwth-aachen.de/web/Software/g2p.html",
         "Bug Tracker": "https://github.com/sequitur-g2p/sequitur-g2p/issues",
     },
-    cmdclass={"build_py": build_py},
+    # cmdclass={"build_py": build_py},
     install_requires=required,
     py_modules=sequiturModules,
     ext_modules=[sequiturExtension],

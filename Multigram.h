@@ -1,5 +1,5 @@
 /*
- * $Id: Multigram.hh 1691 2011-08-03 13:38:08Z hahn $
+ * $Id: Multigram.h 1691 2011-08-03 13:38:08Z hahn $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -27,7 +27,7 @@
 
 #ifndef _MULTIGRAM_HH
 #define _MULTIGRAM_HH
-#include "Python.hh"
+#include "Python.h"
 
 #include <vector>
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) || (__cplusplus >= 201103L) || (__APPLE__) || (_MSC_VER)
@@ -37,7 +37,7 @@ using std::unordered_map;
 #include <tr1/unordered_map>
 using std::tr1::unordered_map;
 #endif
-#include "SequenceModel.hh"
+#include "SequenceModel.h"
 
 
 #if !defined(MULTIGRAM_SIZE)

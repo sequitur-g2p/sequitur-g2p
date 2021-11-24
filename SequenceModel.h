@@ -1,5 +1,5 @@
 /*
- * $Id: SequenceModel.hh 1691 2011-08-03 13:38:08Z hahn $
+ * $Id: SequenceModel.h 1691 2011-08-03 13:38:08Z hahn $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
  *
@@ -28,11 +28,11 @@
 #ifndef _SEQUENCEMODEL_HH
 #define _SEQUENCEMODEL_HH
 
-#include "Python.hh"
+#include "Python.h"
 
-#include "Obstack.hh"
-#include "Probability.hh"
-#include "Types.hh"
+#include "Obstack.h"
+#include "Probability.h"
+#include "Types.h"
 #include <string>
 #include <vector>
 

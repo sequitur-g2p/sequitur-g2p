@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 example usage:
-  python -O mGramCounts.py
+  python3 -O mGramCounts.py
   --text /u/corpora/language/wsj/NAB-training-corpus.gz
   --order 4 --sort
   --write /work/bisani/NAB-4gram.counts.gz

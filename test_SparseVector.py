@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import division
 
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1668 $"
@@ -27,7 +28,6 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-from __future__ import division
 import unittest
 from SparseVector import sparse, sumSparse
 from misc import sorted

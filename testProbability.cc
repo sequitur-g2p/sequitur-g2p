@@ -25,8 +25,8 @@
  * negligent actions or intended actions or fraudulent concealment.
  */
 
-#include <Core/Assertions.hh>
-#include "probability.hh"
+#include <Core/Assertions.h>
+#include "probability.h"
 
 int main(int argc, char *argv[]) {
     Probability  p, p1, p2;

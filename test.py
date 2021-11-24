@@ -34,7 +34,7 @@ negligent actions or intended actions or fraudulent concealment.
 import glob
 import sys
 
-from unittest import *
+from unittest import TestSuite, TextTestRunner, defaultTestLoader
 
 
 def suite():

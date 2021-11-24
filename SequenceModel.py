@@ -1,5 +1,5 @@
+#!/usr/bin/env python3
 from __future__ import division
-from __future__ import print_function
 
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1668 $"
@@ -28,7 +28,8 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-import copy, math
+import copy
+import math
 from misc import set
 import sequitur_
 

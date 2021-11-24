@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+#!/usr/bin/env python3
 """
 Grapheme-to-Phoneme Conversion
 
@@ -228,7 +227,7 @@ def mainApply(translator, options, output_file):
             exc = sys.exc_info()[1]
             try:
                 print('failed to convert "%s": %s' % (word, exc), file=stderr)
-            except:
+            except Exception:
                 pass
 
 
@@ -246,7 +245,7 @@ def mainApplyWord(translator, options, output_file):
         exc = sys.exc_info()[1]
         try:
             print('failed to convert "%s": %s' % (word, exc), file=stderr)
-        except:
+        except Exception:
             pass
 
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1667 $"
 __date__ = "$LastChangedDate: 2007-06-02 16:32:35 +0200 (Sat, 02 Jun 2007) $"
@@ -31,8 +32,18 @@ import misc
 import StringIO
 import unittest
 import sys
-from LanguageModel import *
-from mGramCounts import *
+from misc import gOpenIn
+from LanguageModel import loadVocabulary, loadCounts, LanguageModelBuilder, LmArpaWriter
+from mGramCounts import (
+    mGramsChainCount,
+    mGramCounts,
+    mGramReduceToOrder,
+    TextStorage,
+    DictStorage,
+    ListStorage,
+    SimpleMultifileStorage,
+    BiHeapMultifileStorage,
+)
 
 TestCase = unittest.TestCase
 

@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
 from __future__ import division
-from __future__ import print_function
+
 
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1691 $"
@@ -28,11 +29,14 @@ commercially. In any case guarantee/warranty shall be limited to gross
 negligent actions or intended actions or fraudulent concealment.
 """
 
-import itertools, math, sys
+import sys
 import numpy as num
-import sequitur_, SequenceModel, Minimization, misc
+import sequitur_
+import SequenceModel
+import Minimization
+import misc
 from symbols import SymbolInventory
-from misc import reversed, sorted, set
+from misc import sorted, set
 
 
 class MultigramInventory(sequitur_.MultigramInventory):
@@ -81,10 +85,10 @@ class Sequitur:
 
     def symbol(self, i):
         "multigramFromTokenIndex"
-        l, r = self.inventory.symbol(i)
-        l = self.leftInventory.format(l)
-        r = self.rightInventory.format(r)
-        return (l, r)
+        left, right = self.inventory.symbol(i)
+        left = self.leftInventory.format(left)
+        right = self.rightInventory.format(right)
+        return (left, right)
 
     def symbols(self):
         return [self.symbol(i) for i in range(1, self.inventory.size() + 1)]
@@ -386,7 +390,7 @@ class DefaultDiscountAdjuster:
             return crit
 
         initialGuess = self.discounts[-1]
-        previous = self.discounts[-2]
+        # previous = self.discounts[-2]
         if initialGuess is None:
             initialGuess = 0.1
         else:
@@ -612,7 +616,7 @@ class ModelTemplate:
             file=context.log,
         )
 
-        self.showMostEvident(context.log, counts, 10)  ### TESTING
+        self.showMostEvident(context.log, counts, 10)  # TESTING
 
         context.model = Model(self.sequitur)
         context.model.discount = num.zeros(counts.maximumHistoryLength() + 1)
@@ -649,7 +653,7 @@ class ModelTemplate:
             "  evidence total / max: %s / %s" % (evidence.total(), evidence.maximum()),
             file=context.log,
         )
-        self.showMostEvident(context.log, evidence, 10)  ### TESTING
+        self.showMostEvident(context.log, evidence, 10)  # TESTING
 
         newModel = Model(self.sequitur)
         newModel.discount = context.discountAdjuster.adjust(context, evidence, order)
@@ -733,7 +737,7 @@ class ModelTemplate:
             print("iteration: %s" % context.iteration, file=context.log)
             try:
                 shouldStop = self.iterate(context)
-            except:
+            except Exception:
                 import traceback
 
                 traceback.print_exc()
@@ -822,7 +826,7 @@ class Translator:
         return logLik, joint
 
     def jointToLeftRight(self, joint):
-        left = [l for ll, rr in joint for l in ll]
+        left = [s for ll, rr in joint for s in ll]
         left = self.sequitur.leftInventory.format(left)
         right = [r for ll, rr in joint for r in rr]
         right = self.sequitur.rightInventory.format(right)

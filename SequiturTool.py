@@ -1,4 +1,5 @@
-from __future__ import division, print_function
+#!/usr/bin/env python3
+from __future__ import division
 
 __author__ = "Maximilian Bisani"
 __version__ = "$LastChangedRevision: 1691 $"
@@ -149,7 +150,7 @@ class Tool:
                 assert spec.endswith("]")
                 st = spec[1:-1].split(",")
                 st = [t.split(":") for t in st]
-                st = [(int(l), int(r)) for l, r in st]
+                st = [(int(left), int(right)) for left, right in st]
                 template.setSizeTemplates(st)
             else:
                 lc = tuple(map(int, spec.split(",")))
