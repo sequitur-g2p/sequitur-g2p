@@ -2,7 +2,7 @@
 Sequitur G2P
 ============
 
-A trainable Grapheme-to-Phoneme converter. This fork should be compatible with Python2.7
+A trainable Grapheme-to-Phoneme converter.
 
 Introduction
 ------------
