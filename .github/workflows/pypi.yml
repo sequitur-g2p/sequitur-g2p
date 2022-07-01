@@ -6,7 +6,7 @@ jobs:
     name: Build Python 🐍 distributions 📦 to PyPI and TestPyPI
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        python-version: ['2.7','3.6', '3.7', '3.8', '3.9', '3.10']
         os: [ubuntu-20.04, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     env:
