@@ -139,7 +139,7 @@ if __name__ == "__main__":
     )
     tool.addOptions(optparser)
     optparser.add_option(
-        "-e", "--encoding", default="ISO-8859-15",help="read model in given ENCODING", metavar="ENC"
+        "-e", "--encoding", default="UTF-8",help="read model in given ENCODING", metavar="ENC"
     )
     optparser.add_option(
         "-m", "--model", dest="modelFile", help="read model from FILE", metavar="FILE"
