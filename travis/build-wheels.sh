@@ -19,6 +19,9 @@ for PYBIN in /opt/python/cp3*/bin; do
     tmp=$(basename $(dirname $PYBIN) )
     $PYBIN/python -m venv wheel-$tmp
     source wheel-$tmp/bin/activate
+    if [ "$PYBIN" == opt/python/cp36/bin] ; then
+      pip install cffi==1.12.3
+    fi
     pip install --upgrade pip
     pip install -r requirements.txt
     pip install -r /io/dev-requirements.txt
