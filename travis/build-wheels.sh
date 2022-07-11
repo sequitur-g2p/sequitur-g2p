@@ -22,7 +22,6 @@ for PYBIN in /opt/python/cp3*/bin; do
     source wheel-$tmp/bin/activate
     if [ "$PYBIN" == "/opt/python/cp310-cp310/bin" ] ; then
       yum -y install libffi-devel
-      pip install cffi==1.12.3
     fi
     pip install --upgrade pip
     pip install -r requirements.txt
