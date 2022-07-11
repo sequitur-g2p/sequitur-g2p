@@ -15,8 +15,7 @@ cd /io/swig-4.0.1
 
 cd /io
 
-# Compile wheels
-ls -al /opt/python/
+# Compile all wheels
 for PYBIN in /opt/python/cp3*/bin; do
     echo $PYBIN
     tmp=$(basename $(dirname $PYBIN) )
