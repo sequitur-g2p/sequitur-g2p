@@ -27,6 +27,7 @@ jobs:
       # TODO: support non-x86_64 platforms
       - if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.python-version == '3.6') }}
         run: |
+          apt update && install libffi-dev
           wget -O - https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz | tar xzf - &&
           docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2010_x86_64 /io/travis/build-wheels.sh
 
