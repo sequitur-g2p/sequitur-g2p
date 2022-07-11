@@ -17,11 +17,10 @@ cd /io
 ls -al /opt/python/
 for PYBIN in /opt/python/cp3*/bin; do
     echo $PYBIN
-    apt update && apt install libffi-dev
     tmp=$(basename $(dirname $PYBIN) )
     $PYBIN/python -m venv wheel-$tmp
     source wheel-$tmp/bin/activate
-    if [ "$PYBIN" == "opt/python/cp310-cp310/bin" ] ; then
+    if [ "$PYBIN" == "/opt/python/cp310-cp310/bin" ] ; then
       pip install cffi==1.12.3
     fi
     pip install --upgrade pip
