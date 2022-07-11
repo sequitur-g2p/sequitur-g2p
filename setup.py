@@ -31,7 +31,7 @@ import numpy
 from setuptools import setup, Extension
 from setuptools.command.build_py import build_py as _build_py
 
-VERSION = "1.0.1668.21"
+VERSION = "1.0.1668.22"
 
 with open("requirements.txt") as fp:
     required = fp.read().splitlines()
