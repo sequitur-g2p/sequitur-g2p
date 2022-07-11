@@ -8,12 +8,14 @@ set -e -o pipefail
 set -o nounset                              # Treat unset variables as an error
 set -x
 
+yum -y install libffi-devel
+
 cd /io/swig-4.0.1
 ./configure --without-pcre && make && make install
 
 cd /io
 
-# Compile wheels
+# Compile all wheels
 for PYBIN in /opt/python/cp3*/bin; do
     echo $PYBIN
     tmp=$(basename $(dirname $PYBIN) )
