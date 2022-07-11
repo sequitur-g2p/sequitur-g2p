@@ -8,6 +8,8 @@ set -e -o pipefail
 set -o nounset                              # Treat unset variables as an error
 set -x
 
+yum -y install libffi-devel
+
 cd /io/swig-4.0.1
 ./configure --without-pcre && make && make install
 
@@ -20,9 +22,6 @@ for PYBIN in /opt/python/cp3*/bin; do
     tmp=$(basename $(dirname $PYBIN) )
     $PYBIN/python -m venv wheel-$tmp
     source wheel-$tmp/bin/activate
-    if [ "$PYBIN" == "/opt/python/cp310-cp310/bin" ] ; then
-      yum -y install libffi-devel
-    fi
     pip install --upgrade pip
     pip install -r requirements.txt
     pip install -r /io/dev-requirements.txt
