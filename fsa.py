@@ -124,7 +124,7 @@ def writeAsFsa(model, xml, shouldMakeClosure=True):
 
 
 def main(options, args):
-    model = pickle.load(open(options.modelFile, "rb"))
+    model = pickle.load(open(options.modelFile, "rb"),encoding=options.encoding)
     with open(options.fsaFile, "wb") as out:
         writeAsFsa(model, XmlWriter(out, "UTF-8"))
 
@@ -138,6 +138,9 @@ if __name__ == "__main__":
         usage="%prog [OPTION]... FILE...\n" + __doc__, version="%prog " + __version__
     )
     tool.addOptions(optparser)
+    optparser.add_option(
+        "-e", "--encoding", default="UTF-8",help="read model in given ENCODING", metavar="ENC"
+    )
     optparser.add_option(
         "-m", "--model", dest="modelFile", help="read model from FILE", metavar="FILE"
     )
