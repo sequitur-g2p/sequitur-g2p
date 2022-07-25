@@ -28,12 +28,10 @@
 #ifndef _ASSERTIONS_H
 #define _ASSERTIONS_H
 
-#ifndef _MSC_VER
-#include <sys/cdefs.h>
-#else
-#define __attribute__(x)
 #define STR(x) #x
 #define __STRING(x) STR(x)
+#ifdef _MSC_VER
+#define __attribute__(x)
 #endif
 #include <iostream>
 
