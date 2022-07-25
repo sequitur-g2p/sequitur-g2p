@@ -1,5 +1,8 @@
 include dev-requirements.txt
 include requirements.txt
+include README.md
+include *.hh
+include *.cc
 recursive-exclude .github *
 recursive-exclude .gitignore *
 recursive-exclude appveyor *
