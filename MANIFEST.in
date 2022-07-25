@@ -1,0 +1,7 @@
+include dev-requirements.txt
+include requirements.txt
+recursive-exclude .github *
+recursive-exclude .gitignore *
+recursive-exclude appveyor *
+recursive-exclude travis *
+exclude MANIFEST.in
