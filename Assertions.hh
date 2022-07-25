@@ -28,8 +28,11 @@
 #ifndef _ASSERTIONS_H
 #define _ASSERTIONS_H
 
+#ifndef __STRING
 #define STR(x) #x
 #define __STRING(x) STR(x)
+#endif
+
 #ifdef _MSC_VER
 #define __attribute__(x)
 #endif
