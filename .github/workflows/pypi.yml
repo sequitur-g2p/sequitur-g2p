@@ -36,7 +36,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       # TODO: support non-x86_64 platforms
-      - if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.python-version == '3.6') }}
+      - if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.python-version == '3.12') }}
         run: |
           wget -O - https://downloads.sourceforge.net/swig/swig-4.2.1.tar.gz | tar xzf - &&
           docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2010_x86_64 /io/travis/build-wheels.sh
@@ -69,11 +69,11 @@ jobs:
         ##       password: ${{ secrets.TEST_PYPI_API_TOKEN }}
         ##       repository_url: https://test.pypi.org/legacy/
 
-      - if: ${{ startsWith(github.ref, 'refs/tags') && matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.6' }}
+      - if: ${{ startsWith(github.ref, 'refs/tags') && matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.12' }}
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
-      - if: ${{ startsWith(github.ref, 'refs/tags') && ((matrix.os != 'ubuntu-20.04') || (matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.6')) }}
+      - if: ${{ startsWith(github.ref, 'refs/tags') && ((matrix.os != 'ubuntu-20.04') || (matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.12')) }}
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.whl
