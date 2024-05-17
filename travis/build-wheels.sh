@@ -10,7 +10,7 @@ set -x
 
 yum -y install libffi-devel
 
-cd /io/swig-4.0.1
+cd /io/swig-4.2.1
 ./configure --without-pcre && make && make install
 
 cd /io
