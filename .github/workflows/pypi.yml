@@ -20,6 +20,9 @@ jobs:
       PKG_NAME: sequitur-g2p
       CIBW_SKIP: "cp36-macosx_arm64 cp37-macosx_arm64"
       CIBW_BUILD: "cp3*win* cp3*manylinux* cp3*mac*"
+      CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
+      CIBW_ARCHS_WINDOWS: "AMD64"
+      CIBW_ARCHS_LINUX: "x86_64 aarch64"
       CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="10.9" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"
       CIBW_MANYLINUX_X86_64_IMAGE: manylinux2010
       CIBW_MANYLINUX_I686_IMAGE: manylinux2010
