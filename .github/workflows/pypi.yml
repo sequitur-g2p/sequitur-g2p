@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10', '3.11', '3.12']
-        os: [ubuntu-20.04, macos-latest, windows-latest]
+        os: [ubuntu-20.04, macos-latest, windows-2019]
     runs-on: ${{ matrix.os }}
     env:
       PKG_NAME: sequitur-g2p
@@ -30,7 +30,7 @@ jobs:
           wget -O - https://downloads.sourceforge.net/swig/swig-4.0.1.tar.gz | tar xzf - &&
           docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2010_x86_64 /io/travis/build-wheels.sh
 
-      - if: ${{ matrix.os == 'windows-latest' }}
+      - if: ${{ matrix.os == 'windows-2019' }}
         run: |
           choco install swig
       - if: ${{ matrix.os == 'macos-latest' }}
