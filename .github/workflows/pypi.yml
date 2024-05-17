@@ -8,6 +8,11 @@ jobs:
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
         os: [ubuntu-20.04, macos-latest, windows-2019]
+        exclude: 
+          - os: macos-latest
+            python-version: '3.6'
+          - os: macos-latest
+            python-version: '3.7'
     runs-on: ${{ matrix.os }}
     env:
       PKG_NAME: sequitur-g2p
@@ -18,10 +23,9 @@ jobs:
       CIBW_MANYLINUX_I686_IMAGE: manylinux2010
       TEST: true
     steps:
-      - uses: actions/checkout@master
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
