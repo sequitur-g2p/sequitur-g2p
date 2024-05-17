@@ -14,7 +14,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       PKG_NAME: sequitur-g2p
-      CIBW_SKIP: "cp36-macosx_arm64 cp37-macosx_arm64"
+      CIBW_SKIP: "cp36-macosx_arm64 cp37-macosx_arm64 cp313*"
       CIBW_BUILD: "cp3*win* cp3*manylinux* cp3*mac*"
       CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
       CIBW_ARCHS_WINDOWS: "AMD64"
