@@ -10,13 +10,13 @@ set -x
 
 yum -y install libffi-devel
 
-cd /io/swig-4.0.1
+cd /io/swig-4.2.1
 ./configure --without-pcre && make && make install
 
 cd /io
 
 # Compile all wheels
-for PYBIN in /opt/python/cp3*/bin; do
+for PYBIN in /opt/python/cp3{7,8,9,10,11,12}*/bin; do
     echo $PYBIN
     tmp=$(basename $(dirname $PYBIN) )
     $PYBIN/python -m venv wheel-$tmp
