@@ -20,8 +20,8 @@ jobs:
       CIBW_ARCHS_WINDOWS: "AMD64"
       CIBW_ARCHS_LINUX: "x86_64 aarch64"
       CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="10.9" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"
-      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2010
-      CIBW_MANYLINUX_I686_IMAGE: manylinux2010
+      CIBW_MANYLINUX_X86_64_IMAGE: manylinux2014
+      CIBW_MANYLINUX_I686_IMAGE: manylinux2014
       TEST: true
     steps:
       - uses: actions/checkout@master
@@ -35,7 +35,7 @@ jobs:
       - if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.python-version == '3.12') }}
         run: |
           wget -O - https://downloads.sourceforge.net/swig/swig-4.2.1.tar.gz | tar xzf - &&
-          docker run --rm -e PLAT=manylinux2010_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2010_x86_64 /io/travis/build-wheels.sh
+          docker run --rm -e PLAT=manylinux2014_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /io/travis/build-wheels.sh
 
       - if: ${{ matrix.os == 'windows-2019' }}
         run: |
