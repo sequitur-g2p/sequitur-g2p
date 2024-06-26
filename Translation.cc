@@ -37,6 +37,7 @@ using std::tr1::unordered_multimap;
 using std::tr1::unordered_map;
 #endif
 
+#include <memory>
 #include <stdexcept>
 
 #include "Assertions.hh"
@@ -105,11 +106,10 @@ class Translator {
     };
 
     struct Trace :
-      public Core::ReferenceCounted,
       public TracebackItem
   {
-    Core::Ref<Trace> back;
-    Trace(const Core::Ref<Trace> &_b, const MultigramIndex &_q, LogProbability _p) :
+    std::shared_ptr<Trace> back;
+    Trace(const std::shared_ptr<Trace> &_b, const MultigramIndex &_q, LogProbability _p) :
       TracebackItem(_q, _p), back(_b) {}
   };
 
@@ -145,7 +145,7 @@ class Translator {
 
     struct Hyp : public HypBase {
       MultigramIndex q;
-      Core::Ref<Trace> trace;
+      std::shared_ptr<Trace>  trace;
     };
 
     typedef Core::TracedPriorityQueue<
@@ -209,7 +209,7 @@ class Translator {
           closed_[current.state] = current.p;
         }
 
-        next.trace = Core::ref(new Trace(current.trace, current.q, current.p));
+        next.trace = std::make_shared<Trace>(current.trace, current.q, current.p);
 
         if (current.state.history == sequenceModel_->culDeSac() &&
             current.q == sequenceModel_->term()) {
@@ -257,7 +257,7 @@ goalStateReached:
       open_.clear(); closed_.clear();
 
       result.clear();
-      for (Core::Ref<Trace> trace = next.trace; trace; trace = trace->back)
+      for (std::shared_ptr<Trace> trace = next.trace; trace; trace = trace->back)
         result.push_back(trace->q);
       std::reverse(result.begin(), result.end());
       return next.trace->p;
@@ -276,7 +276,7 @@ goalStateReached:
       typedef Translator::Trace Trace;
       struct Hyp {
         Graph::NodeId n;
-        Core::Ref<Trace> trace;
+        std::shared_ptr<Trace>  trace;
         LogProbability p, Q;
 
         struct PriorityFunction {
@@ -304,7 +304,7 @@ goalStateReached:
         open_.insert(init);
       }
 
-      Core::Ref<Trace> next() {
+      std::shared_ptr<Trace>  next() {
         Hyp current, next;
         while (!open_.empty()) {
           current = open_.top(); open_.pop();
@@ -315,7 +315,7 @@ goalStateReached:
           for (Graph::IncomingEdgeIterator e = graph_.incomingEdges(current.n); e; ++e) {
             next.n = graph_.source(*e);
             next.p = current.p * probability_[*e];
-            next.trace = Core::ref(new Trace(current.trace, token_[*e], next.p));
+            next.trace = std::make_shared<Trace>(current.trace, token_[*e], next.p);
             next.Q = next.p * forwardProbability_[next.n];
             open_.insert(next);
           }
@@ -325,7 +325,7 @@ goalStateReached:
             throw std::runtime_error("stack size limit exceeded");
           }
         }
-        return Core::Ref<Trace>();
+        return std::shared_ptr<Trace>();
       }
 #if defined(INSTRUMENTATION)
       public:
@@ -457,11 +457,11 @@ goalStateReached:
         NBestContext *context,
         std::vector<MultigramIndex> &result)
     {
-      Core::Ref<Trace> next = context->next();
+      std::shared_ptr<Trace> next = context->next();
       result.clear();
       if (!next) throw std::runtime_error("no further translations");
       result.push_back(sequenceModel_->init());
-      for (Core::Ref<Trace> trace = next; trace; trace = trace->back)
+      for (std::shared_ptr<Trace> trace = next; trace; trace = trace->back)
         result.push_back(trace->q);
       return next->p;
     }
