@@ -2,6 +2,7 @@
  * $Id: Translation.cc 1691 2011-08-03 13:38:08Z hahn $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
+ * Copyright (c) 2024 Uniphore (Author: Kadri Hacioglu, Vishay Raina, Manickavela)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License Version 2 (June
