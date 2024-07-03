@@ -95,7 +95,7 @@ jobs:
         merge-multiple: true
         delete-merged: true
         compression-level: 0
-    - run: ls -R dist/
+    - run: ls -alR *
 
   publish:
     runs-on: ubuntu-20.04
