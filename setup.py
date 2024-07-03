@@ -80,8 +80,12 @@ sequiturExtension = Extension(
         "SequenceModel.cc",
         "Translation.cc",
     ],
-    include_dirs=[os.path.join(path, "core/include") for path in numpy.__path__],
-    extra_compile_args=["-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION"],
+    include_dirs=[numpy.get_include()],
+    extra_compile_args=[
+        "-std=c++11",
+        "-DNPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION",
+        "-pedantic",
+    ],
 )
 
 sequiturModules = [
@@ -100,10 +104,11 @@ sequiturModules = [
 sequiturScripts = ["g2p.py"]
 
 
-#  os.system('pyrexc SparseVector.pyx')
-#  sparseExtension = Extension('SparseVector', ['SparseVector.c'])
-#  os.system('pyrexc IntTuple.pyx')
-#  intTupleExtension = Extension('IntTuple', ['IntTuple.c'])
+# os.system("cython -3  SparseVector.pyx")
+# sparseExtension = Extension("SparseVector", language="c", sources=["SparseVector.c"])
+# os.system('pyrexc IntTuple.pyx')
+# intTupleExtension = Extension('IntTuple', ['IntTuple.c'])
+
 lmModules = [
     "IterMap",
     "mGramCounts",
