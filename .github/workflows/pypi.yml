@@ -82,7 +82,7 @@ jobs:
       uses: actions/upload-artifact/merge@v4
       with:
         name: dist
-        #delete-merged: true
+        delete-merged: true
         compression-level: 0
 
   publish:
