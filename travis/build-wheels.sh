@@ -16,7 +16,7 @@ cd /io/swig-4.2.1
 cd /io
 
 # Compile all wheels
-for PYBIN in /opt/python/cp3{7,8,9,10,11,12}*/bin; do
+for PYBIN in /opt/python/cp3{9,10,11,12}*/bin; do
     echo $PYBIN
     tmp=$(basename $(dirname $PYBIN) )
     $PYBIN/python -m venv wheel-$tmp

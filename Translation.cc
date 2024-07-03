@@ -47,7 +47,6 @@ using std::tr1::unordered_map;
 #include "MultigramGraph.hh"
 #include "PriorityQueue.hh"
 #include "Probability.hh"
-#include "ReferenceCounting.hh"
 #include "SequenceModel.hh"
 #include "Utility.hh"
 
@@ -146,7 +145,7 @@ class Translator {
 
     struct Hyp : public HypBase {
       MultigramIndex q;
-      std::shared_ptr<Trace>  trace;
+      std::shared_ptr<Trace> trace;
     };
 
     typedef Core::TracedPriorityQueue<
@@ -277,7 +276,7 @@ goalStateReached:
       typedef Translator::Trace Trace;
       struct Hyp {
         Graph::NodeId n;
-        std::shared_ptr<Trace>  trace;
+        std::shared_ptr<Trace> trace;
         LogProbability p, Q;
 
         struct PriorityFunction {
@@ -305,7 +304,7 @@ goalStateReached:
         open_.insert(init);
       }
 
-      std::shared_ptr<Trace>  next() {
+      std::shared_ptr<Trace> next() {
         Hyp current, next;
         while (!open_.empty()) {
           current = open_.top(); open_.pop();

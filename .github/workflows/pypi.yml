@@ -6,17 +6,17 @@ jobs:
     name: Build Python 🐍 distributions 📦 to PyPI and TestPyPI
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11', '3.12']
-        os: [ubuntu-20.04, macos-latest, windows-2019]
-        exclude: 
-          - os: macos-latest
-            python-version: '3.7'
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+        os: [macos-13, windows-2019]
+        include: 
+          - os: ubuntu-20.04
+            python-version: '3.12'
     runs-on: ${{ matrix.os }}
     env:
       PKG_NAME: sequitur-g2p
-      CIBW_SKIP: "cp36-macosx_arm64 cp37-macosx_arm64 cp313*"
+      CIBW_SKIP: "cp313*"
       CIBW_BUILD: "cp3*win* cp3*manylinux* cp3*mac*"
-      CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
+      CIBW_ARCHS_MACOS: "x86_64"
       CIBW_ARCHS_WINDOWS: "AMD64"
       CIBW_ARCHS_LINUX: "x86_64 aarch64"
       CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET="10.9" CC="clang++" CXX="clang++" CFLAGS="-std=c++11 -stdlib=libc++" CXXFLAGS="-stdlib=libc++" LDFLAGS="-stdlib=libc++"
@@ -32,7 +32,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       # TODO: support non-x86_64 platforms
-      - if: ${{ (matrix.os == 'ubuntu-20.04') && (matrix.python-version == '3.12') }}
+      - if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           wget -O - https://downloads.sourceforge.net/swig/swig-4.2.1.tar.gz | tar xzf - &&
           docker run --rm -e PLAT=manylinux2014_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /io/travis/build-wheels.sh
@@ -40,7 +40,8 @@ jobs:
       - if: ${{ matrix.os == 'windows-2019' }}
         run: |
           choco install swig
-      - if: ${{ matrix.os == 'macos-latest' }}
+
+      - if: ${{ matrix.os == 'macos-13' }}
         run: |
           brew update
           brew install swig
@@ -54,39 +55,44 @@ jobs:
           make travis-test
 
       - if: ${{ matrix.os != 'ubuntu-20.04' }}
-        name: Build a binary wheel and a source tarball
-        run: python -m build --sdist --wheel --outdir dist/ .
+        name: Build a binary wheel
+        run: python -m build  --wheel --outdir dist/ .
 
       - run: ls -alR dist/ || true
         shell: bash {0}
-        ##  - name: Publish distribution 📦 to Test PyPI
-        ##    uses: pypa/gh-action-pypi-publish@master
-        ##    with:
-        ##       password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        ##       repository_url: https://test.pypi.org/legacy/
 
-      - if: ${{ matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.12' }}
+      - if: ${{ matrix.os == 'ubuntu-20.04' }}
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
           name: sources-${{ matrix.os }}-${{ matrix.python-version }}
           compression-level: 0
-      - if: ${{  ((matrix.os != 'ubuntu-20.04') || (matrix.os == 'ubuntu-20.04' && matrix.python-version == '3.12')) }}
-        uses: actions/upload-artifact@v4
+
+      - uses: actions/upload-artifact@v4
         with:
           path: dist/*.whl
           name: wheels-${{ matrix.os }}-${{ matrix.python-version }}
           compression-level: 0
 
+  merge:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Merge All Artifacts
+      uses: actions/upload-artifact/merge@v4
+      with:
+        name: dist
+        delete-merged: true
+        compression-level: 0
+
   publish:
     runs-on: ubuntu-20.04
-    needs: build
+    needs: merge
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: dist
-      - run: mv dist/artifact/* dist/ || true
-      - run: rm -rf dist/artifact || true
+      - run: mv dist/*/* dist/ || true
       - run: rm -rf dist/*-linux_x86_64* || true  # only want manylinux wheels
       - run: ls -alR . || true
       - if: startsWith(github.ref, 'refs/tags')
