@@ -84,14 +84,28 @@ jobs:
           name: wheels-${{ matrix.os }}-${{ matrix.python-version }}
           compression-level: 0
 
+  merge:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Merge All Artifacts
+      uses: actions/upload-artifact/merge@v4
+      with:
+        name: dist
+        pattern: *
+        merge-multiple: true
+        delete-merged: true
+        compression-level: 0
+    - run: ls -R dist/
+
   publish:
     runs-on: ubuntu-20.04
-    needs: build
+    needs: merge
     steps:
       - uses: actions/download-artifact@v4
         with:
           path: dist
-      - run: mv dist/artifact/* dist/ || true
+      - run: mv dist/*/* dist/ || true
       - run: rm -rf dist/artifact || true
       - run: rm -rf dist/*-linux_x86_64* || true  # only want manylinux wheels
       - run: ls -alR . || true
