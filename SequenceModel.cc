@@ -184,7 +184,7 @@ class SequenceModel::Internal {
 SequenceModel::Internal::Internal(Node::Index nNodes, Node::Index nWordProbabilities) {
   nodes.reserve(nNodes+1);
   wordProbabilities.reserve(nWordProbabilities);
-};
+}
 
 SequenceModel::Internal::~Internal() {}
 
