@@ -31,7 +31,7 @@
 
 struct Hyp {
     int cost;
-    int pre_i, pre_j;
+    size_t pre_i, pre_j;
     Hyp() {};
     Hyp(int _cost, int _pre_i, int _pre_j) : cost(_cost), pre_i(_pre_i), pre_j(_pre_j) {}
 };
@@ -54,20 +54,20 @@ PyObject *python_align(PyObject *self, PyObject *args) {
   std::vector< std::vector<Hyp> > D(len_a + 1, std::vector<Hyp>(len_b + 1));
   int c;
   D[0][0] = Hyp(0, 0, 0);
-  for (int j = 1 ; j <= len_b ; ++j) {
+  for (size_t j = 1 ; j <= len_b ; ++j) {
     c = D[0][j-1].cost;
     c += 1; // del_cost(b[j-1])
     D[0][j] = Hyp(c, 0, j-1);
   }
 
-  for (int i = 1 ; i <= len_a ; ++i) {
+  for (size_t i = 1 ; i <= len_a ; ++i) {
     PyObject *ai = PySequence_GetItem(a, i-1);
 
     c = D[i-1][0].cost;
     c += 1; // ins_cost(ai);
     D[i][0] = Hyp(c, i-1, 0);
 
-    for (int j = 1 ; j <= len_b ; ++j) {
+    for (size_t j = 1 ; j <= len_b ; ++j) {
       PyObject *bj = PySequence_GetItem(b, j-1);
 
       c = D[i][j-1].cost;
