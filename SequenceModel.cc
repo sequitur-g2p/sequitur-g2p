@@ -1,4 +1,4 @@
-/*:qa!=uuuu=
+/*
  * $Id: SequenceModel.cc 1691 2011-08-03 13:38:08Z hahn $
  *
  * Copyright (c) 2004-2005  RWTH Aachen University
