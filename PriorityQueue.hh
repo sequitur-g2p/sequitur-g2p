@@ -257,9 +257,9 @@ struct select2nd
    * Heap-based priority queue class template with random access.
    */
   // the lambda version:
-  template <class T_Item, class T_Key = typename T_Item::first_type, class T_KeyFunction = select1st<T_Item>,
-           class T_PriorityFunction = std::binary_function<std::less<typename T_Item::second_type>,
-           select2nd<T_Item>, select2nd<T_Item> >,
+  template <class T_Item, class T_Key = typename T_Item::first_type,
+           class T_KeyFunction = select1st<T_Item>,
+           class T_PriorityFunction = std::less<void>,
            class T_Hash_Obj = stdhash<T_Key> >
              class TracedPriorityQueue :
                public PriorityQueueBase<

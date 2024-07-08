@@ -103,24 +103,24 @@ class SequenceModel::Node {
     LogProbability backOffWeight_;
     Depth depth_;  /**< number of words in history */
 
-    union {
+    union parent_t {
       Node *finalized;
       Index init;
     } parent_;
 
-    union {
-      struct {
+    union node_struct_t {
+      struct finalized_t {
         Node *firstChild_;
         WordProbability *firstWordProbability_;
       } finalized;
-      struct {
+      struct done_t {
         Index firstChild_;
         size_t firstWordProbability_;
       } done;
-      struct {
+      struct  init_t {
         InitItem *begin, *end;
       } init;
-    };
+    } node_struct ;
 
   public:
     Token token() const { return token_; }
@@ -129,11 +129,11 @@ class SequenceModel::Node {
 
     const Node *parent() const { return parent_.finalized; }
 
-    const Node *childrenBegin() const { return           finalized.firstChild_; }
-    const Node *childrenEnd()   const { return (this+1)->finalized.firstChild_; }
+    const Node *childrenBegin() const { return           node_struct.finalized.firstChild_; }
+    const Node *childrenEnd()   const { return (this+1)->node_struct.finalized.firstChild_; }
 
-    const WordProbability *probabilitiesBegin() const { return           finalized.firstWordProbability_; }
-    const WordProbability *probabilitiesEnd()   const { return (this+1)->finalized.firstWordProbability_; }
+    const WordProbability *probabilitiesBegin() const { return           node_struct.finalized.firstWordProbability_; }
+    const WordProbability *probabilitiesEnd()   const { return (this+1)->node_struct.finalized.firstWordProbability_; }
 
     const Node *findChild(Token) const;
     const WordProbability *findWordProbability(Token) const;
@@ -184,7 +184,7 @@ class SequenceModel::Internal {
 SequenceModel::Internal::Internal(Node::Index nNodes, Node::Index nWordProbabilities) {
   nodes.reserve(nNodes+1);
   wordProbabilities.reserve(nWordProbabilities);
-};
+}
 
 SequenceModel::Internal::~Internal() {}
 
@@ -194,16 +194,16 @@ const SequenceModel::Node *SequenceModel::Internal::build(InitItem *begin, InitI
   root.backOffWeight_ = LogProbability::impossible();
   root.depth_        = 0;
   root.parent_.init  = Node::invalidIndex;
-  root.init.begin    = begin;
-  root.init.end      = end;
+  root.node_struct.init.begin    = begin;
+  root.node_struct.init.end      = end;
   nodes.push_back(root);
 
   for (Node::Index n = 0; n < nodes.size(); ++n)
     buildNode(n);
 
   Node sentinel;
-  sentinel.done.firstChild_     = nodes.size();
-  sentinel.done.firstWordProbability_ = wordProbabilities.size();
+  sentinel.node_struct.done.firstChild_     = nodes.size();
+  sentinel.node_struct.done.firstWordProbability_ = wordProbabilities.size();
   sentinel.token_        = 0;   // phony
   sentinel.backOffWeight_ = LogProbability::certain(); // phony
   sentinel.depth_        = 0;   // phony
@@ -215,10 +215,10 @@ const SequenceModel::Node *SequenceModel::Internal::build(InitItem *begin, InitI
   for (Nodes::iterator n = nodes.begin(); n != nodes.end(); ++n) {
     Node::Index parent         = n->parent_.init;
     n->parent_.finalized       = (parent != Node::invalidIndex) ? &nodes[parent] : 0;
-    Node::Index firstChild     = n->done.firstChild_;
-    Node::Index firstWordProbability = n->done.firstWordProbability_;
-    n->finalized.firstChild_     = &nodes[firstChild];
-    n->finalized.firstWordProbability_ = &wordProbabilities[firstWordProbability];
+    Node::Index firstChild     = n->node_struct.done.firstChild_;
+    Node::Index firstWordProbability = n->node_struct.done.firstWordProbability_;
+    n->node_struct.finalized.firstChild_     = &nodes[firstChild];
+    n->node_struct.finalized.firstWordProbability_ = &wordProbabilities[firstWordProbability];
   }
   nodes[0].parent_.finalized = 0;
 
@@ -227,11 +227,11 @@ const SequenceModel::Node *SequenceModel::Internal::build(InitItem *begin, InitI
 
 void SequenceModel::Internal::buildNode(Node::Index ni) {
   Node &n(nodes[ni]);
-  InitItem *i = n.init.begin, *end = n.init.end;
+  InitItem *i = n.node_struct.init.begin, *end = n.node_struct.init.end;
 
   std::sort(i, end, InitItemOrdering());
 
-  n.done.firstWordProbability_ = wordProbabilities.size();
+  n.node_struct.done.firstWordProbability_ = wordProbabilities.size();
   for (; i < end && i->history[0] == 0; ++i) {
     if (i->token) {
       WordProbability ws;
@@ -243,7 +243,7 @@ void SequenceModel::Internal::buildNode(Node::Index ni) {
     }
   }
 
-  n.done.firstChild_ = nodes.size();
+  n.node_struct.done.firstChild_ = nodes.size();
   Node::Depth d = n.depth_ + 1;
   for (; i < end ;) {
     verify(i->history[0]);
@@ -252,9 +252,9 @@ void SequenceModel::Internal::buildNode(Node::Index ni) {
     nn.depth_          = d;
     nn.token_          = *i->history++;
     nn.backOffWeight_   = LogProbability::certain();
-    nn.init.begin      = i++;
+    nn.node_struct.init.begin      = i++;
     while (i < end && *i->history == nn.token_) { i->history++; ++i; }
-    nn.init.end        = i;
+    nn.node_struct.init.end        = i;
     nodes.push_back(nn); // CAVEAT: invalidates n
   }
 }
@@ -305,11 +305,8 @@ SequenceModel::History SequenceModel::initial() const {
 
 SequenceModel::History SequenceModel::advanced(const Node *old, Token w) const {
   require_(old);
-#ifdef _MSC_VER
   Token *hist = new Token[old->depth() + 1];
-#else
-  Token hist[old->depth() + 1];
-#endif
+
   for (const Node *n = old; n; n = n->parent())
     hist[n->depth()] = n->token();
   verify(!hist[0]);
@@ -322,9 +319,8 @@ SequenceModel::History SequenceModel::advanced(const Node *old, Token w) const {
     result = n;
   }
   ensure(result);
-#ifdef _MSC_VER
+
   delete[] hist;
-#endif
   return result;
 }
 

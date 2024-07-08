@@ -74,8 +74,7 @@ namespace Core {
 
     /** Generic unary functor for type conversion. */
     template <typename S, typename T>
-    struct conversion :
-        public std::unary_function<S, T>
+    struct conversion
     {
         T operator() (S s) const {
             return T(s);
@@ -161,9 +160,6 @@ namespace Core {
     /** Functor for f(g(x), h(y)) */
     template <class F, class G, class H>
     class composedBinaryFunction
-        : public std::binary_function<typename G::argument_type,
-                                      typename H::argument_type,
-                                      typename F::result_type>
     {
     protected:
         F f_;
