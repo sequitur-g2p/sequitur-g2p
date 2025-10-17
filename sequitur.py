@@ -218,7 +218,6 @@ class Sample(object):
                     repr((left, right)),
                 )
                 continue
-            eg.thisown = True
             if self.currentModel is not self.masterModel:
                 self.builder.setSequenceModel(
                     self.sequitur.inventory, self.currentModel
@@ -257,7 +256,6 @@ class Sample(object):
                             repr((left, right)),
                         )
                         continue
-                    eg.thisown = True
                     graphs.append(eg)
                 self.storedGraphs = graphs
                 self.currentModel = self.masterModel
@@ -450,7 +448,6 @@ class DefaultDiscountAdjuster:
             print("adjusting discount ...", file=context.log)
             maximumDiscount = min(evidence.maximum(), self.maximumReasonableDiscount)
             evidence = evidence.makeSequenceModelEstimator()
-            evidence.thisown = True
             if order == 0:
                 discount, logLik = self.adjustOrderZero(evidence, maximumDiscount)
             else:
@@ -547,7 +544,6 @@ class ModelTemplate:
         result = SequenceModel.SequenceModel()
         if type(evidence) is not sequitur_.SequenceModelEstimator:
             evidence = evidence.makeSequenceModelEstimator()
-            evidence.thisown = True
         evidence.makeSequenceModel(result, self.nPossibleMultigrams(), discount)
         return result
 
@@ -845,7 +841,6 @@ class Translator:
         except RuntimeError:
             exc = sys.exc_info()[1]
             raise self.TranslationFailure(*exc.args)
-        result.thisown = True
         result.logLikBest = self.translator.nBestBestLogLik(result)
         result.logLikTotal = self.translator.nBestTotalLogLik(result)
         return result
