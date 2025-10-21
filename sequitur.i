@@ -229,6 +229,8 @@ public:
     int memoryUsed();
 };
 
+%newobject EstimationGraphBuilder::create;
+
 class EstimationGraphBuilder {
 public:
     void setSequenceModel(MultigramInventory*, SequenceModel*);
@@ -246,6 +248,8 @@ public:
 };
 
 class SequenceModelEstimator {};
+
+%newobject EvidenceStore::makeSequenceModelEstimator;
 
 class EvidenceStore {
 public:
@@ -323,6 +327,8 @@ public:
     void draw(FILE*, const StringInventory*) const;
 #endif  // INSTRUMENTATION
 };
+
+%newobject Translator::nBestInit;
 
 class Translator {
 public:
