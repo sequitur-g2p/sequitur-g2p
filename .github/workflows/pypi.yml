@@ -9,7 +9,7 @@ jobs:
         python-version: ['3.10', '3.11', '3.12']
         os: [macos-15, windows-2019]
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             python-version: '3.12'
     runs-on: ${{ matrix.os }}
     env:
@@ -32,7 +32,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       # TODO: support non-x86_64 platforms
-      - if: ${{ matrix.os == 'ubuntu-20.04' }}
+      - if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
           wget -O - https://downloads.sourceforge.net/swig/swig-4.2.1.tar.gz | tar xzf - &&
           docker run --rm -e PLAT=manylinux2014_x86_64 -v `pwd`:/io quay.io/pypa/manylinux2014_x86_64 /io/travis/build-wheels.sh
@@ -47,21 +47,21 @@ jobs:
           brew install swig
 
       # windows/mac builds
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
+      - if: ${{ matrix.os != 'ubuntu-22.04' }}
         run: |
           pip install -r requirements.txt
           pip install -r dev-requirements.txt
           pip install .
           make travis-test
 
-      - if: ${{ matrix.os != 'ubuntu-20.04' }}
+      - if: ${{ matrix.os != 'ubuntu-22.04' }}
         name: Build a binary wheel
         run: python -m build  --wheel --outdir dist/ .
 
       - run: ls -alR dist/ || true
         shell: bash {0}
 
-      - if: ${{ matrix.os == 'ubuntu-20.04' }}
+      - if: ${{ matrix.os == 'ubuntu-22.04' }}
         uses: actions/upload-artifact@v4
         with:
           path: dist/*.tar.gz
@@ -76,7 +76,7 @@ jobs:
 
   merge:
     needs: build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Merge All Artifacts
       uses: actions/upload-artifact/merge@v4
