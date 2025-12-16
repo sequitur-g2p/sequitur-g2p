@@ -40,7 +40,7 @@ namespace AssertionsPrivate {
 
 %exception {
     try {
-        $function
+        $action
     } catch (ExistingPythonException) {
         return NULL;
     } catch (PythonException &e) {

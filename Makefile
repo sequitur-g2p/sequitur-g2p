@@ -1,6 +1,6 @@
 default:	build
 
-PYTHON	?= python
+PYTHON	?= python3.13
 
 build:
 	$(PYTHON) setup.py build

@@ -1,4 +1,4 @@
-PYTHON := python
+PYTHON ?= python3.13
 
 .PHONY: 001 002 003 004
 all : 001 002 003 004

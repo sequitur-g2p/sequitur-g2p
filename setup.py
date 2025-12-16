@@ -122,7 +122,6 @@ lmScripts = ["makeOvModel.py"]
 setup(
     name="sequitur-g2p",
     version=VERSION,
-    license="gpl-2.0",
     description="sequence and joint-sequence modelling tool for g2p",
     keywords="g2p grapheme-to-phoneme sequitur grapheme phoneme",
     long_description=long_description,
@@ -145,7 +144,6 @@ setup(
         "Development Status :: 6 - Mature",
         "Environment :: Console",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering",
         "Programming Language :: Python",
@@ -155,5 +153,6 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
     ],
+    license="GPL-2.0-only",
     python_requires=">=3.9.0",
 )
